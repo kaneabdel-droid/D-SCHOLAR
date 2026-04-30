@@ -25,21 +25,37 @@ function lireClasse(formData: FormData) {
 }
 
 // Crée les enseignements d'une classe à partir des coefficients de son niveau
-// (et de sa série), sans toucher à ceux qui existent déjà.
-async function completerEnseignements(supabase: Awaited<ReturnType<typeof createClient>>, classeId: string, etablissementId: string) {
+// (et de sa série), ou de toutes les matières actives si aucun coefficient n'est défini.
+async function completerEnseignements(supabase: Awaited<ReturnType<typeof createClient>>, classeId: string, etablissementId: string): Promise<{ ajoutes: number }> {
   const { data: classe } = await supabase.from('classes').select('niveau_id, serie_id').eq('id', classeId).single()
-  if (!classe) return
+  if (!classe) return { ajoutes: 0 }
   const [{ data: coefs }, { data: existants }] = await Promise.all([
     supabase.from('coefficients').select('matiere_id, serie_id').eq('niveau_id', classe.niveau_id),
     supabase.from('enseignements').select('matiere_id').eq('classe_id', classeId),
   ])
+
   // Coefficients propres à la série, sinon ceux valables pour tout le niveau.
   const propres = (coefs ?? []).filter((c) => c.serie_id === classe.serie_id)
-  const matieres = new Set((propres.length ? propres : (coefs ?? []).filter((c) => c.serie_id === null)).map((c) => c.matiere_id))
+  let matieres = new Set((propres.length ? propres : (coefs ?? []).filter((c) => c.serie_id === null)).map((c) => c.matiere_id))
+
+  // Fallback intelligent : si aucun coefficient n'est encore configuré pour ce niveau,
+  // on initialise la classe avec toutes les matières actives de l'établissement
+  if (matieres.size === 0) {
+    const { data: toutesMatieres } = await supabase
+      .from('matieres')
+      .select('id')
+      .eq('etablissement_id', etablissementId)
+      .eq('actif', true)
+    if (toutesMatieres && toutesMatieres.length > 0) {
+      matieres = new Set(toutesMatieres.map((m) => m.id))
+    }
+  }
+
   for (const e of existants ?? []) matieres.delete(e.matiere_id)
   if (matieres.size) {
     await supabase.from('enseignements').insert([...matieres].map((m) => ({ etablissement_id: etablissementId, classe_id: classeId, matiere_id: m })))
   }
+  return { ajoutes: matieres.size }
 }
 
 export async function creerClasse(anneeId: string, formData: FormData): Promise<ActionResult> {
@@ -94,13 +110,47 @@ export async function supprimerClasse(classeId: string): Promise<ActionResult> {
   return { success: true }
 }
 
-export async function genererEnseignements(classeId: string): Promise<ActionResult> {
+export async function genererEnseignements(classeId: string): Promise<ActionResult & { message?: string }> {
   const dict = await getDictionary()
   const garde = await contexteEcriture('organisation', dict)
   if ('erreur' in garde) return { error: garde.erreur }
   const supabase = await createClient()
-  await completerEnseignements(supabase, classeId, garde.context.etablissementId)
+  const { ajoutes } = await completerEnseignements(supabase, classeId, garde.context.etablissementId)
   revalidatePath(`/classes/${classeId}`)
+  const message = ajoutes > 0 
+    ? `${ajoutes} matière(s) synchronisée(s) avec succès`
+    : "Toutes les matières sont déjà synchronisées"
+  return { success: true, message }
+}
+
+export async function ajouterEnseignement(classeId: string, matiereId: string, enseignantId?: string | null): Promise<ActionResult> {
+  const dict = await getDictionary()
+  const garde = await contexteEcriture('organisation', dict)
+  if ('erreur' in garde) return { error: garde.erreur }
+
+  const supabase = await createClient()
+  const { error } = await supabase.from('enseignements').insert({
+    etablissement_id: garde.context.etablissementId,
+    classe_id: classeId,
+    matiere_id: matiereId,
+    enseignant_id: enseignantId || null,
+  })
+  if (error) return { error: messageErreur(error, dict, 'ajouterEnseignement') }
+
+  revalidatePath(`/classes/${classeId}`)
+  return { success: true }
+}
+
+export async function supprimerEnseignement(enseignementId: string): Promise<ActionResult> {
+  const dict = await getDictionary()
+  const garde = await contexteEcriture('organisation', dict)
+  if ('erreur' in garde) return { error: garde.erreur }
+
+  const supabase = await createClient()
+  const { data, error } = await supabase.from('enseignements').delete().eq('id', enseignementId).select('classe_id').single()
+  if (error) return { error: messageErreur(error, dict, 'supprimerEnseignement') }
+
+  if (data?.classe_id) revalidatePath(`/classes/${data.classe_id}`)
   return { success: true }
 }
 

@@ -204,6 +204,7 @@ export default async function ClassePage({ params, searchParams }: { params: Pro
         classeId={id}
         lignes={lignes.map((l) => ({
           id: l.id,
+          matiereId: l.matiere_id,
           matiere: l.matiere?.nom ?? '—',
           couleur: l.matiere?.couleur ?? '#94A3B8',
           coef: String(l.coef?.coefficient ?? '—'),
@@ -211,6 +212,7 @@ export default async function ClassePage({ params, searchParams }: { params: Pro
           enseignantId: l.prof?.id ?? null,
         }))}
         enseignants={referentiel!.enseignants}
+        matieres={referentiel!.matieres}
         dict={dict}
       />
     ) : (
