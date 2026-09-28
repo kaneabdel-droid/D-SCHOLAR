@@ -59,7 +59,7 @@ export async function updateSession(request: NextRequest) {
     // Connexion admin centralisée sur SIGGIE (www.dembasolution.com), retour ici
     // après authentification — même parcours que D-QUINCA. /admin/login local
     // reste utilisable en secours (session admin propre à D-Scholar).
-    const returnTo = `https://d-scholar.dembasolution.com${pathname}${request.nextUrl.search}`
+    const returnTo = `https://scholar.dembasolution.com${pathname}${request.nextUrl.search}`
     return NextResponse.redirect(`https://www.dembasolution.com/admin/login?next=${encodeURIComponent(returnTo)}`)
   }
 
