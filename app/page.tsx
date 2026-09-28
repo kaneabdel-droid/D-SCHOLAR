@@ -63,7 +63,7 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+      <section id="tarifs" className="mx-auto max-w-6xl scroll-mt-8 px-4 py-20 sm:px-6">
         <div className="text-center">
           <h2 className="font-heading text-3xl font-semibold tracking-tight text-foreground">{t.pricingTitle}</h2>
           <p className="mt-3 text-foreground-muted">{t.pricingSubtitle}</p>

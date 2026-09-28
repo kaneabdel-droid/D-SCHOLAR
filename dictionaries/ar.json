@@ -40,7 +40,8 @@
     "emailInvalid": "عنوان بريد إلكتروني غير صالح.",
     "selfAction": "لا يمكنك تطبيق هذا الإجراء على حسابك الخاص.",
     "coefficient": "يجب أن يكون كل معامل رقمًا موجبًا.",
-    "lectureSeule": "المؤسسة في وضع القراءة فقط: سوِّ وضعية الاشتراك لتعديل البيانات."
+    "lectureSeule": "المؤسسة في وضع القراءة فقط: سوِّ وضعية الاشتراك لتعديل البيانات.",
+    "invalidValue": "قيمة خارج الحدود المسموح بها."
   },
   "auth": {
     "login": {
@@ -113,7 +114,8 @@
     "parametres": "الإعدادات",
     "abonnement": "الاشتراك",
     "anneeActive": "السنة",
-    "aucuneAnnee": "لا توجد سنة نشطة"
+    "aucuneAnnee": "لا توجد سنة نشطة",
+    "passages": "الانتقال والاستدراك"
   },
   "roles": {
     "direction": "الإدارة",
@@ -149,7 +151,12 @@
     "actif": "نشط",
     "couleur": "اللون",
     "capacite": "السعة",
-    "type": "النوع"
+    "type": "النوع",
+    "libelle": "التسمية",
+    "poids": "الوزن",
+    "nombre_par_periode": "العدد في كل فترة",
+    "moyenne_min": "ابتداءً من (/20)",
+    "categorie": "الفئة"
   },
   "dashboard": {
     "greeting": "مرحبًا {prenom}",
@@ -184,7 +191,9 @@
       "matieres": "المواد",
       "coefficients": "المعاملات",
       "salles": "القاعات",
-      "utilisateurs": "المستخدمون"
+      "utilisateurs": "المستخدمون",
+      "evaluations": "التقييمات",
+      "appreciations": "الملاحظات"
     }
   },
   "etablissement": {
@@ -422,5 +431,196 @@
       "provider": "خدمة الدفع غير متاحة مؤقتًا. أعد المحاولة بعد بضع دقائق.",
       "enCours": "هناك عملية دفع جارية. انتظر بضع ثوانٍ ثم أعد المحاولة."
     }
+  },
+  "scolarite": {
+    "annee": "السنة الدراسية",
+    "cloturee": "مغلقة",
+    "active": "نشطة",
+    "annuel": "السنة",
+    "statutsInscription": {
+      "nouveau": "جديد",
+      "passant": "منتقل",
+      "redoublant": "معيد",
+      "transfere": "منقول"
+    },
+    "sexe": {
+      "M": "ذكر",
+      "F": "أنثى"
+    },
+    "decisions": {
+      "admis": "ناجح",
+      "repechage": "استدراك",
+      "redouble": "يعيد السنة",
+      "exclu": "مفصول"
+    },
+    "mouvements": {
+      "entree": "التحاق",
+      "transfert_entrant": "انتقال وارد",
+      "transfert_sortant": "انتقال صادر",
+      "abandon": "انقطاع",
+      "exclusion": "فصل",
+      "fin_de_cycle": "نهاية المرحلة"
+    },
+    "resultatsExamen": {
+      "admis": "ناجح",
+      "ajourne": "راسب"
+    },
+    "jours": [
+      "الإثنين",
+      "الثلاثاء",
+      "الأربعاء",
+      "الخميس",
+      "الجمعة",
+      "السبت"
+    ],
+    "categoriesAppreciation": {
+      "distinction": "تميّز",
+      "neutre": "محايدة",
+      "avertissement": "إنذار"
+    },
+    "sorti": "غادر",
+    "aucuneDonnee": "لا توجد بيانات لهذه السنة."
+  },
+  "eleves": {
+    "title": "التلاميذ",
+    "subtitle": "جميع التلاميذ المسجلين في السنة المختارة.",
+    "recherche": "ابحث عن اسم أو رقم تسجيل…",
+    "toutesClasses": "كل الأقسام",
+    "matricule": "رقم التسجيل",
+    "eleve": "التلميذ",
+    "classe": "القسم",
+    "inscription": "التسجيل",
+    "decision": "القرار",
+    "effectif": "{n} تلميذ",
+    "empty": "لا يوجد تلميذ مطابق.",
+    "naissance": "مولود(ة) في {date} بـ {lieu}",
+    "tuteur": "الولي",
+    "adresse": "العنوان",
+    "entree": "التحق(ت) في {date}",
+    "cursus": "المسار الدراسي",
+    "moyenneAnnuelle": "المعدل السنوي",
+    "rang": "الرتبة {rang}",
+    "repechage": "الاستدراك: {note}/20",
+    "orientation": "التوجيه: {texte}",
+    "examens": "الامتحانات الرسمية",
+    "mouvements": "الالتحاق والمغادرة",
+    "resultats": "نتائج {annee}",
+    "matiere": "المادة",
+    "coef": "المعامل",
+    "moyenneGenerale": "المعدل العام",
+    "appreciation": "الملاحظة",
+    "pasDeNotes": "لا توجد نقاط لهذه السنة (سنة جارية أو تلميذ لم يُقيَّم).",
+    "assiduite": "المواظبة {annee}",
+    "heuresAbsence": "{h} ساعة غياب، منها {nj} ساعة غير مبررة",
+    "retards": "{n} تأخر",
+    "aucuneAbsence": "لا غياب ولا تأخر.",
+    "absentEvaluation": "{n} تقييم فائت",
+    "retour": "العودة إلى التلاميذ"
+  },
+  "classes": {
+    "title": "الأقسام",
+    "subtitle": "أقسام السنة المختارة مع عدد التلاميذ والطاقم.",
+    "effectif": "{n} تلميذ",
+    "pp": "الأستاذ الرئيسي",
+    "salle": "القاعة",
+    "empty": "لا يوجد قسم لهذه السنة.",
+    "tabs": {
+      "eleves": "التلاميذ",
+      "bulletin": "النتائج",
+      "enseignements": "المواد",
+      "emploi": "جدول الحصص"
+    },
+    "periode": "الفترة",
+    "rangCol": "الرتبة",
+    "moyenne": "المعدل",
+    "moyenneClasse": "معدل القسم",
+    "plusHaute": "الأعلى",
+    "plusBasse": "الأدنى",
+    "reussite": "نسبة النجاح (≥ {seuil})",
+    "aucuneNote": "لا توجد نقاط لهذه الفترة.",
+    "enseignant": "الأستاذ",
+    "volume": "الحجم الساعي",
+    "heuresSemaine": "{h} ساعة / أسبوع",
+    "nonAffecte": "غير مسند",
+    "retour": "العودة إلى الأقسام"
+  },
+  "enseignants": {
+    "title": "الأساتذة",
+    "subtitle": "يمكن للأستاذ تدريس عدة مواد في عدة أقسام.",
+    "matieres": "المواد",
+    "classes": "الأقسام",
+    "heures": "{h} ساعة / أسبوع",
+    "multi": "عدة مواد",
+    "statuts": {
+      "titulaire": "رسمي",
+      "vacataire": "متعاقد"
+    },
+    "compte": "حساب مستخدم",
+    "empty": "لا يوجد أي أستاذ.",
+    "coursTitle": "الدروس المُدرَّسة",
+    "retour": "العودة إلى الأساتذة"
+  },
+  "emplois": {
+    "title": "جداول الحصص",
+    "subtitle": "حسب القسم أو الأستاذ. يُرفض أي تعارض (قسم، أستاذ، قاعة) عند الإدخال.",
+    "parClasse": "القسم",
+    "parEnseignant": "الأستاذ",
+    "choisir": "اختر…",
+    "vide": "لا توجد حصة.",
+    "invite": "اختر قسمًا أو أستاذًا.",
+    "afficher": "عرض"
+  },
+  "assiduite": {
+    "title": "المواظبة",
+    "subtitle": "الغيابات والتأخرات في السنة المختارة.",
+    "date": "التاريخ",
+    "type": "النوع",
+    "duree": "المدة",
+    "justification": "التبرير",
+    "motif": "السبب",
+    "types": {
+      "absence": "غياب",
+      "retard": "تأخر"
+    },
+    "heures": "{n} ساعة",
+    "minutes": "{n} دقيقة",
+    "justifiee": "مبرر",
+    "nonJustifiee": "غير مبرر",
+    "classement": "التلاميذ الأكثر غيابًا",
+    "totalHeures": "{n} ساعة إجمالًا",
+    "nonJustifiees": "{n} ساعة غير مبررة",
+    "empty": "لا يوجد أي غياب مسجل.",
+    "derniers": "آخر {n} حدث"
+  },
+  "passages": {
+    "title": "الانتقال والاستدراك",
+    "subtitle": "قرارات نهاية السنة وفق العتبات التي حددتها المؤسسة.",
+    "seuils": "الانتقال عند {p}/20 · الاستدراك ابتداءً من {r}/20",
+    "moyenne": "المعدل",
+    "proposition": "المقترح",
+    "repechage": "الاستدراك",
+    "finale": "القرار النهائي",
+    "orientation": "التوجيه",
+    "aucune": "لا توجد قرارات لهذه السنة (تُتخذ القرارات في نهاية السنة)."
+  },
+  "evaluations": {
+    "title": "أنواع التقييم",
+    "desc": "طبيعة كل تقييم وعدده المنتظر في كل فترة ووزنه. معدل المادة = المعدل المرجح حسب النوع.",
+    "newButton": "نوع جديد",
+    "newTitle": "نوع تقييم جديد",
+    "editTitle": "تعديل نوع التقييم",
+    "empty": "لا يوجد أي نوع تقييم.",
+    "seuilsTitle": "عتبات نهاية السنة",
+    "seuilsDesc": "عند عتبة الانتقال أو فوقها: ناجح؛ بين العتبتين: استدراك؛ دونها: إعادة السنة.",
+    "moyennePassage": "معدل الانتقال",
+    "moyenneRepechage": "معدل الاستدراك"
+  },
+  "appreciations": {
+    "title": "سلم الملاحظات",
+    "desc": "الملاحظة المعتمدة هي صاحبة أعلى عتبة لا تتجاوز معدل التلميذ.",
+    "newButton": "ملاحظة جديدة",
+    "newTitle": "ملاحظة جديدة",
+    "editTitle": "تعديل الملاحظة",
+    "empty": "لا توجد أي ملاحظة."
   }
 }

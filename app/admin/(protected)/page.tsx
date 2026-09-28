@@ -4,6 +4,7 @@ import type { PalierCode } from '@/lib/abonnements/paliers'
 import CreerEtablissementButton from './CreerEtablissementButton'
 import EtablissementActions from './EtablissementActions'
 import AccesOffertCell from './AccesOffertCell'
+import CreerDemoButton from './demo/CreerDemoButton'
 
 export default async function AdminPage() {
   const supabase = createAdminClient()
@@ -38,7 +39,10 @@ export default async function AdminPage() {
     <div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-heading text-2xl font-bold text-foreground">Établissements</h1>
-        <CreerEtablissementButton />
+        <div className="flex flex-wrap gap-2">
+          <CreerDemoButton />
+          <CreerEtablissementButton />
+        </div>
       </div>
 
       <div className="mb-6 grid grid-cols-2 gap-4 sm:max-w-md">

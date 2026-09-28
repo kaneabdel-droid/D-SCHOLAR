@@ -9,6 +9,8 @@ export function messageErreur(error: { code?: string; message: string }, dict: D
       return dict.errors.duplicate
     case '23503':
       return dict.errors.inUse
+    case '23514':
+      return dict.errors.invalidValue
     case '42501':
       return dict.errors.forbidden
     default:

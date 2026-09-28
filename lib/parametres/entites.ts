@@ -6,10 +6,12 @@
 export type TypeChamp = 'text' | 'number' | 'color' | 'checkbox' | 'select'
 
 // Source des libellés d'un champ select : section du dictionnaire.
-export type SourceOptions = 'cycles' | 'typesSalle'
+export type SourceOptions = 'cycles' | 'typesSalle' | 'categories'
 
 export type Champ = {
-  nom: 'code' | 'nom' | 'cycle' | 'ordre' | 'a_series' | 'actif' | 'couleur' | 'capacite' | 'type'
+  nom:
+    | 'code' | 'nom' | 'cycle' | 'ordre' | 'a_series' | 'actif' | 'couleur' | 'capacite' | 'type'
+    | 'libelle' | 'poids' | 'nombre_par_periode' | 'moyenne_min' | 'categorie'
   type: TypeChamp
   requis?: boolean
   max?: number
@@ -21,15 +23,17 @@ export type Champ = {
   colonne?: boolean
 }
 
-export type EntiteCle = 'niveaux' | 'series' | 'options' | 'matieres' | 'salles'
+export type EntiteCle = 'niveaux' | 'series' | 'options' | 'matieres' | 'salles' | 'evaluations' | 'appreciations'
 
 export type Entite = {
-  table: EntiteCle
+  // Table Supabase (peut différer de la clé, qui sert aussi de section du dictionnaire).
+  table: string
   tri: string
   champs: Champ[]
 }
 
 export const TYPES_SALLE = ['classe', 'laboratoire', 'informatique', 'polyvalente', 'autre'] as const
+export const CATEGORIES_APPRECIATION = ['distinction', 'neutre', 'avertissement'] as const
 
 export const ENTITES: Record<EntiteCle, Entite> = {
   niveaux: {
@@ -79,6 +83,29 @@ export const ENTITES: Record<EntiteCle, Entite> = {
       { nom: 'nom', type: 'text', requis: true, max: 50, colonne: true },
       { nom: 'type', type: 'select', requis: true, options: 'typesSalle', defaut: 'classe', colonne: true },
       { nom: 'capacite', type: 'number', entier: true, colonne: true },
+      { nom: 'actif', type: 'checkbox', defaut: true, colonne: true },
+    ],
+  },
+  // Règles d'évaluation propres à l'établissement (06_pedagogie.sql).
+  evaluations: {
+    table: 'types_evaluation',
+    tri: 'ordre',
+    champs: [
+      { nom: 'ordre', type: 'number', requis: true, entier: true, colonne: true },
+      { nom: 'code', type: 'text', requis: true, max: 20, majuscules: true, colonne: true },
+      { nom: 'libelle', type: 'text', requis: true, max: 60, colonne: true },
+      { nom: 'nombre_par_periode', type: 'number', requis: true, entier: true, defaut: 1, colonne: true },
+      { nom: 'poids', type: 'number', requis: true, defaut: 1, colonne: true },
+      { nom: 'actif', type: 'checkbox', defaut: true, colonne: true },
+    ],
+  },
+  appreciations: {
+    table: 'appreciations',
+    tri: 'moyenne_min',
+    champs: [
+      { nom: 'moyenne_min', type: 'number', requis: true, colonne: true },
+      { nom: 'libelle', type: 'text', requis: true, max: 60, colonne: true },
+      { nom: 'categorie', type: 'select', requis: true, options: 'categories', defaut: 'neutre', colonne: true },
       { nom: 'actif', type: 'checkbox', defaut: true, colonne: true },
     ],
   },

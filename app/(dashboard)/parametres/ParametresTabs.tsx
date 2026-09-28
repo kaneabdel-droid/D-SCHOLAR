@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-const ONGLETS = ['etablissement', 'annees', 'niveaux', 'matieres', 'coefficients', 'salles', 'utilisateurs'] as const
+const ONGLETS = ['etablissement', 'annees', 'niveaux', 'matieres', 'coefficients', 'evaluations', 'appreciations', 'salles', 'utilisateurs'] as const
 
 // Barre d'onglets défilante horizontalement sur mobile (jamais de débordement de page).
 export default function ParametresTabs({ libelles }: { libelles: Record<(typeof ONGLETS)[number], string> }) {

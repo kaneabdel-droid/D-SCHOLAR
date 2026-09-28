@@ -18,6 +18,7 @@ import {
   Menu,
   PenLine,
   School,
+  TrendingUp,
   Settings,
   Shirt,
   UserPlus,
@@ -54,16 +55,17 @@ function sections(role: Role): Section[] {
       titre: 'sectionScolarite',
       items: [
         { key: 'admissions', href: '/admissions', icon: UserPlus, bientot: true },
-        { key: 'eleves', href: '/eleves', icon: GraduationCap, bientot: true },
+        { key: 'eleves', href: '/eleves', icon: GraduationCap },
+        { key: 'passages', href: '/passages', icon: TrendingUp },
         { key: 'attestations', href: '/attestations', icon: FileBadge, bientot: true },
       ],
     },
     {
       titre: 'sectionPedagogie',
       items: [
-        { key: 'classes', href: '/classes', icon: School, bientot: true },
-        { key: 'enseignants', href: '/enseignants', icon: Users, bientot: true },
-        { key: 'emplois', href: '/emplois-du-temps', icon: CalendarClock, bientot: true },
+        { key: 'classes', href: '/classes', icon: School },
+        { key: 'enseignants', href: '/enseignants', icon: Users },
+        { key: 'emplois', href: '/emplois-du-temps', icon: CalendarClock },
         { key: 'notes', href: '/notes', icon: PenLine, bientot: true },
         { key: 'releves', href: '/releves', icon: FileText, bientot: true },
       ],
@@ -71,7 +73,7 @@ function sections(role: Role): Section[] {
     {
       titre: 'sectionVieScolaire',
       items: [
-        { key: 'assiduite', href: '/assiduite', icon: ClipboardCheck, bientot: true },
+        { key: 'assiduite', href: '/assiduite', icon: ClipboardCheck },
         { key: 'services', href: '/services', icon: Shirt, bientot: true },
         { key: 'communication', href: '/communication', icon: Megaphone, bientot: true },
       ],

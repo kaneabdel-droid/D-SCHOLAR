@@ -40,7 +40,8 @@
     "emailInvalid": "Invalid email address.",
     "selfAction": "You cannot apply this action to your own account.",
     "coefficient": "Each coefficient must be a positive number.",
-    "lectureSeule": "The school is in read-only mode: settle the subscription to change data."
+    "lectureSeule": "The school is in read-only mode: settle the subscription to change data.",
+    "invalidValue": "Value outside the allowed range."
   },
   "auth": {
     "login": {
@@ -113,7 +114,8 @@
     "parametres": "Settings",
     "abonnement": "Subscription",
     "anneeActive": "Year",
-    "aucuneAnnee": "No active year"
+    "aucuneAnnee": "No active year",
+    "passages": "Promotions & resits"
   },
   "roles": {
     "direction": "Management",
@@ -149,7 +151,12 @@
     "actif": "Active",
     "couleur": "Colour",
     "capacite": "Capacity",
-    "type": "Type"
+    "type": "Type",
+    "libelle": "Label",
+    "poids": "Weight",
+    "nombre_par_periode": "Number per period",
+    "moyenne_min": "From (/20)",
+    "categorie": "Category"
   },
   "dashboard": {
     "greeting": "Hello {prenom}",
@@ -184,7 +191,9 @@
       "matieres": "Subjects",
       "coefficients": "Coefficients",
       "salles": "Rooms",
-      "utilisateurs": "Users"
+      "utilisateurs": "Users",
+      "evaluations": "Assessments",
+      "appreciations": "Remarks"
     }
   },
   "etablissement": {
@@ -422,5 +431,196 @@
       "provider": "The payment service is temporarily unavailable. Please try again in a few minutes.",
       "enCours": "A payment is already in progress. Wait a few seconds and try again."
     }
+  },
+  "scolarite": {
+    "annee": "School year",
+    "cloturee": "closed",
+    "active": "active",
+    "annuel": "Year",
+    "statutsInscription": {
+      "nouveau": "New",
+      "passant": "Promoted",
+      "redoublant": "Repeating",
+      "transfere": "Transferred"
+    },
+    "sexe": {
+      "M": "Boy",
+      "F": "Girl"
+    },
+    "decisions": {
+      "admis": "Promoted",
+      "repechage": "Resit",
+      "redouble": "Repeats",
+      "exclu": "Excluded"
+    },
+    "mouvements": {
+      "entree": "Enrolment",
+      "transfert_entrant": "Transfer in",
+      "transfert_sortant": "Transfer out",
+      "abandon": "Dropped out",
+      "exclusion": "Exclusion",
+      "fin_de_cycle": "End of cycle"
+    },
+    "resultatsExamen": {
+      "admis": "Passed",
+      "ajourne": "Failed"
+    },
+    "jours": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ],
+    "categoriesAppreciation": {
+      "distinction": "Distinction",
+      "neutre": "Neutral",
+      "avertissement": "Warning"
+    },
+    "sorti": "Left",
+    "aucuneDonnee": "No data for this year."
+  },
+  "eleves": {
+    "title": "Students",
+    "subtitle": "All students enrolled for the selected year.",
+    "recherche": "Search a name or a student ID…",
+    "toutesClasses": "All classes",
+    "matricule": "Student ID",
+    "eleve": "Student",
+    "classe": "Class",
+    "inscription": "Enrolment",
+    "decision": "Decision",
+    "effectif": "{n} student(s)",
+    "empty": "No matching student.",
+    "naissance": "Born on {date} in {lieu}",
+    "tuteur": "Guardian",
+    "adresse": "Address",
+    "entree": "Joined on {date}",
+    "cursus": "Academic record",
+    "moyenneAnnuelle": "Annual average",
+    "rang": "Rank {rang}",
+    "repechage": "Resit: {note}/20",
+    "orientation": "Orientation: {texte}",
+    "examens": "National exams",
+    "mouvements": "Arrivals and departures",
+    "resultats": "Results {annee}",
+    "matiere": "Subject",
+    "coef": "Coef.",
+    "moyenneGenerale": "Overall average",
+    "appreciation": "Remark",
+    "pasDeNotes": "No grades for this year (current year or student not assessed).",
+    "assiduite": "Attendance {annee}",
+    "heuresAbsence": "{h} h absent, including {nj} h unexcused",
+    "retards": "{n} late arrival(s)",
+    "aucuneAbsence": "No absence or late arrival.",
+    "absentEvaluation": "{n} missed assessment(s)",
+    "retour": "Back to students"
+  },
+  "classes": {
+    "title": "Classes",
+    "subtitle": "Classes of the selected year, with their size and staff.",
+    "effectif": "{n} student(s)",
+    "pp": "Form teacher",
+    "salle": "Room",
+    "empty": "No class for this year.",
+    "tabs": {
+      "eleves": "Students",
+      "bulletin": "Results",
+      "enseignements": "Courses",
+      "emploi": "Timetable"
+    },
+    "periode": "Period",
+    "rangCol": "Rank",
+    "moyenne": "Average",
+    "moyenneClasse": "Class average",
+    "plusHaute": "Highest",
+    "plusBasse": "Lowest",
+    "reussite": "Pass rate (≥ {seuil})",
+    "aucuneNote": "No grades for this period.",
+    "enseignant": "Teacher",
+    "volume": "Hours",
+    "heuresSemaine": "{h} h / week",
+    "nonAffecte": "Not assigned",
+    "retour": "Back to classes"
+  },
+  "enseignants": {
+    "title": "Teachers",
+    "subtitle": "A teacher can teach several subjects in several classes.",
+    "matieres": "Subjects",
+    "classes": "Classes",
+    "heures": "{h} h / week",
+    "multi": "Several subjects",
+    "statuts": {
+      "titulaire": "Permanent",
+      "vacataire": "Part-time"
+    },
+    "compte": "User account",
+    "empty": "No teacher.",
+    "coursTitle": "Courses taught",
+    "retour": "Back to teachers"
+  },
+  "emplois": {
+    "title": "Timetables",
+    "subtitle": "By class or by teacher. Clashes (class, teacher, room) are rejected when entered.",
+    "parClasse": "Class",
+    "parEnseignant": "Teacher",
+    "choisir": "Choose…",
+    "vide": "No time slot.",
+    "invite": "Choose a class or a teacher.",
+    "afficher": "Show"
+  },
+  "assiduite": {
+    "title": "Attendance",
+    "subtitle": "Absences and late arrivals for the selected year.",
+    "date": "Date",
+    "type": "Type",
+    "duree": "Duration",
+    "justification": "Excuse",
+    "motif": "Reason",
+    "types": {
+      "absence": "Absence",
+      "retard": "Late"
+    },
+    "heures": "{n} h",
+    "minutes": "{n} min",
+    "justifiee": "Excused",
+    "nonJustifiee": "Unexcused",
+    "classement": "Most absent students",
+    "totalHeures": "{n} h in total",
+    "nonJustifiees": "{n} h unexcused",
+    "empty": "No absence recorded.",
+    "derniers": "Latest {n} events"
+  },
+  "passages": {
+    "title": "Promotions & resits",
+    "subtitle": "End-of-year decisions, based on the thresholds set by the school.",
+    "seuils": "Promotion at {p}/20 · resit from {r}/20",
+    "moyenne": "Average",
+    "proposition": "Proposal",
+    "repechage": "Resit",
+    "finale": "Final decision",
+    "orientation": "Orientation",
+    "aucune": "No decision for this year (decisions are made at the end of the year)."
+  },
+  "evaluations": {
+    "title": "Assessment types",
+    "desc": "Nature, expected number per period and weight of each assessment. Subject average = average weighted by type.",
+    "newButton": "New type",
+    "newTitle": "New assessment type",
+    "editTitle": "Edit assessment type",
+    "empty": "No assessment type.",
+    "seuilsTitle": "End-of-year thresholds",
+    "seuilsDesc": "At or above the promotion threshold: promoted; between the two thresholds: resit; below: repeats the year.",
+    "moyennePassage": "Promotion average",
+    "moyenneRepechage": "Resit average"
+  },
+  "appreciations": {
+    "title": "Remarks scale",
+    "desc": "The remark given is the one with the highest threshold not above the student's average.",
+    "newButton": "New remark",
+    "newTitle": "New remark",
+    "editTitle": "Edit remark",
+    "empty": "No remark."
   }
 }

@@ -40,7 +40,8 @@
     "emailInvalid": "Adresse email invalide.",
     "selfAction": "Vous ne pouvez pas appliquer cette action à votre propre compte.",
     "coefficient": "Chaque coefficient doit être un nombre positif.",
-    "lectureSeule": "L'établissement est en lecture seule : régularisez l'abonnement pour modifier les données."
+    "lectureSeule": "L'établissement est en lecture seule : régularisez l'abonnement pour modifier les données.",
+    "invalidValue": "Valeur hors des limites autorisées."
   },
   "auth": {
     "login": {
@@ -113,7 +114,8 @@
     "parametres": "Paramètres",
     "abonnement": "Abonnement",
     "anneeActive": "Année",
-    "aucuneAnnee": "Aucune année active"
+    "aucuneAnnee": "Aucune année active",
+    "passages": "Passages & repêchages"
   },
   "roles": {
     "direction": "Direction",
@@ -149,7 +151,12 @@
     "actif": "Actif",
     "couleur": "Couleur",
     "capacite": "Capacité",
-    "type": "Type"
+    "type": "Type",
+    "libelle": "Libellé",
+    "poids": "Poids",
+    "nombre_par_periode": "Nombre par période",
+    "moyenne_min": "À partir de (/20)",
+    "categorie": "Catégorie"
   },
   "dashboard": {
     "greeting": "Bonjour {prenom}",
@@ -184,7 +191,9 @@
       "matieres": "Matières",
       "coefficients": "Coefficients",
       "salles": "Salles",
-      "utilisateurs": "Utilisateurs"
+      "utilisateurs": "Utilisateurs",
+      "evaluations": "Évaluations",
+      "appreciations": "Appréciations"
     }
   },
   "etablissement": {
@@ -422,5 +431,196 @@
       "provider": "Le service de paiement est momentanément indisponible. Réessayez dans quelques minutes.",
       "enCours": "Un paiement est déjà en cours. Patientez quelques secondes puis réessayez."
     }
+  },
+  "scolarite": {
+    "annee": "Année scolaire",
+    "cloturee": "clôturée",
+    "active": "active",
+    "annuel": "Année",
+    "statutsInscription": {
+      "nouveau": "Nouveau",
+      "passant": "Passant",
+      "redoublant": "Redoublant",
+      "transfere": "Transféré"
+    },
+    "sexe": {
+      "M": "Garçon",
+      "F": "Fille"
+    },
+    "decisions": {
+      "admis": "Admis",
+      "repechage": "Repêchage",
+      "redouble": "Redouble",
+      "exclu": "Exclu"
+    },
+    "mouvements": {
+      "entree": "Entrée",
+      "transfert_entrant": "Transfert entrant",
+      "transfert_sortant": "Transfert sortant",
+      "abandon": "Abandon",
+      "exclusion": "Exclusion",
+      "fin_de_cycle": "Fin de cycle"
+    },
+    "resultatsExamen": {
+      "admis": "Admis",
+      "ajourne": "Ajourné"
+    },
+    "jours": [
+      "Lundi",
+      "Mardi",
+      "Mercredi",
+      "Jeudi",
+      "Vendredi",
+      "Samedi"
+    ],
+    "categoriesAppreciation": {
+      "distinction": "Distinction",
+      "neutre": "Neutre",
+      "avertissement": "Avertissement"
+    },
+    "sorti": "Sorti",
+    "aucuneDonnee": "Aucune donnée pour cette année."
+  },
+  "eleves": {
+    "title": "Élèves",
+    "subtitle": "Tous les élèves inscrits sur l'année choisie.",
+    "recherche": "Rechercher un nom ou un matricule…",
+    "toutesClasses": "Toutes les classes",
+    "matricule": "Matricule",
+    "eleve": "Élève",
+    "classe": "Classe",
+    "inscription": "Inscription",
+    "decision": "Décision",
+    "effectif": "{n} élève(s)",
+    "empty": "Aucun élève ne correspond.",
+    "naissance": "Né(e) le {date} à {lieu}",
+    "tuteur": "Tuteur",
+    "adresse": "Adresse",
+    "entree": "Entré(e) le {date}",
+    "cursus": "Cursus",
+    "moyenneAnnuelle": "Moyenne annuelle",
+    "rang": "Rang {rang}",
+    "repechage": "Repêchage : {note}/20",
+    "orientation": "Orientation : {texte}",
+    "examens": "Examens officiels",
+    "mouvements": "Entrées et sorties",
+    "resultats": "Résultats {annee}",
+    "matiere": "Matière",
+    "coef": "Coef.",
+    "moyenneGenerale": "Moyenne générale",
+    "appreciation": "Appréciation",
+    "pasDeNotes": "Pas de notes pour cette année (année en cours ou élève non évalué).",
+    "assiduite": "Assiduité {annee}",
+    "heuresAbsence": "{h} h d'absence, dont {nj} h non justifiées",
+    "retards": "{n} retard(s)",
+    "aucuneAbsence": "Aucune absence ni retard.",
+    "absentEvaluation": "{n} évaluation(s) manquée(s)",
+    "retour": "Retour aux élèves"
+  },
+  "classes": {
+    "title": "Classes",
+    "subtitle": "Classes de l'année choisie, avec leur effectif et leur équipe.",
+    "effectif": "{n} élève(s)",
+    "pp": "Prof. principal",
+    "salle": "Salle",
+    "empty": "Aucune classe pour cette année.",
+    "tabs": {
+      "eleves": "Élèves",
+      "bulletin": "Résultats",
+      "enseignements": "Enseignements",
+      "emploi": "Emploi du temps"
+    },
+    "periode": "Période",
+    "rangCol": "Rang",
+    "moyenne": "Moyenne",
+    "moyenneClasse": "Moyenne de la classe",
+    "plusHaute": "Plus haute",
+    "plusBasse": "Plus basse",
+    "reussite": "Réussite (≥ {seuil})",
+    "aucuneNote": "Aucune note pour cette période.",
+    "enseignant": "Enseignant",
+    "volume": "Volume",
+    "heuresSemaine": "{h} h / sem.",
+    "nonAffecte": "Non affecté",
+    "retour": "Retour aux classes"
+  },
+  "enseignants": {
+    "title": "Enseignants",
+    "subtitle": "Un enseignant peut dispenser plusieurs matières dans plusieurs classes.",
+    "matieres": "Matières",
+    "classes": "Classes",
+    "heures": "{h} h / semaine",
+    "multi": "Plusieurs matières",
+    "statuts": {
+      "titulaire": "Titulaire",
+      "vacataire": "Vacataire"
+    },
+    "compte": "Compte utilisateur",
+    "empty": "Aucun enseignant.",
+    "coursTitle": "Cours dispensés",
+    "retour": "Retour aux enseignants"
+  },
+  "emplois": {
+    "title": "Emplois du temps",
+    "subtitle": "Par classe ou par enseignant. Les conflits (classe, enseignant, salle) sont refusés à la saisie.",
+    "parClasse": "Classe",
+    "parEnseignant": "Enseignant",
+    "choisir": "Choisir…",
+    "vide": "Aucun créneau.",
+    "invite": "Choisissez une classe ou un enseignant.",
+    "afficher": "Afficher"
+  },
+  "assiduite": {
+    "title": "Assiduité",
+    "subtitle": "Absences et retards de l'année choisie.",
+    "date": "Date",
+    "type": "Type",
+    "duree": "Durée",
+    "justification": "Justification",
+    "motif": "Motif",
+    "types": {
+      "absence": "Absence",
+      "retard": "Retard"
+    },
+    "heures": "{n} h",
+    "minutes": "{n} min",
+    "justifiee": "Justifiée",
+    "nonJustifiee": "Non justifiée",
+    "classement": "Élèves les plus absents",
+    "totalHeures": "{n} h au total",
+    "nonJustifiees": "{n} h non justifiées",
+    "empty": "Aucune absence enregistrée.",
+    "derniers": "{n} derniers événements"
+  },
+  "passages": {
+    "title": "Passages & repêchages",
+    "subtitle": "Décisions de fin d'année, selon les seuils fixés par l'établissement.",
+    "seuils": "Passage à {p}/20 · repêchage à partir de {r}/20",
+    "moyenne": "Moyenne",
+    "proposition": "Proposition",
+    "repechage": "Repêchage",
+    "finale": "Décision finale",
+    "orientation": "Orientation",
+    "aucune": "Aucune décision pour cette année (les décisions sont prises en fin d'année)."
+  },
+  "evaluations": {
+    "title": "Types d'évaluation",
+    "desc": "Nature, nombre attendu par période et poids de chaque évaluation. Moyenne d'une matière = moyenne pondérée par type.",
+    "newButton": "Nouveau type",
+    "newTitle": "Nouveau type d'évaluation",
+    "editTitle": "Modifier le type d'évaluation",
+    "empty": "Aucun type d'évaluation.",
+    "seuilsTitle": "Seuils de fin d'année",
+    "seuilsDesc": "Au-dessus du seuil de passage : admis ; entre les deux seuils : repêchage ; en dessous : redoublement.",
+    "moyennePassage": "Moyenne de passage",
+    "moyenneRepechage": "Moyenne de repêchage"
+  },
+  "appreciations": {
+    "title": "Barème des appréciations",
+    "desc": "L'appréciation retenue est celle dont le seuil est le plus élevé sans dépasser la moyenne de l'élève.",
+    "newButton": "Nouvelle appréciation",
+    "newTitle": "Nouvelle appréciation",
+    "editTitle": "Modifier l'appréciation",
+    "empty": "Aucune appréciation."
   }
 }

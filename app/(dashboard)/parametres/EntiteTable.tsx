@@ -7,7 +7,7 @@ import Modal from '@/components/ui/Modal'
 import { btnIcon, btnPrimary, btnSecondary, cardClass, hintClass, inputClass, labelClass } from '@/components/ui/styles'
 import type { Dictionary } from '@/dictionaries'
 import { CYCLES } from '@/lib/abonnements/paliers'
-import { ENTITES, TYPES_SALLE, type Champ, type EntiteCle, type Ligne } from '@/lib/parametres/entites'
+import { CATEGORIES_APPRECIATION, ENTITES, TYPES_SALLE, type Champ, type EntiteCle, type Ligne } from '@/lib/parametres/entites'
 import { fmt } from '@/lib/i18n'
 import { enregistrerEntite, supprimerEntite } from './actions'
 
@@ -39,6 +39,7 @@ export default function EntiteTable({
       return CYCLES.map((v) => ({ valeur: v, libelle: dict.cycles[v], desactive: cyclesAutorises ? !cyclesAutorises.includes(v) : false }))
     }
     if (champ.options === 'typesSalle') return TYPES_SALLE.map((v) => ({ valeur: v, libelle: dict.salles.types[v] }))
+    if (champ.options === 'categories') return CATEGORIES_APPRECIATION.map((v) => ({ valeur: v, libelle: dict.scolarite.categoriesAppreciation[v] }))
     return []
   }
 
@@ -78,7 +79,7 @@ export default function EntiteTable({
   }
 
   const supprimer = (ligne: Ligne) => {
-    if (!confirm(fmt(c.confirmDelete, { nom: String(ligne.nom ?? ligne.code ?? '') }))) return
+    if (!confirm(fmt(c.confirmDelete, { nom: String(ligne.nom ?? ligne.libelle ?? ligne.code ?? '') }))) return
     startTransition(async () => {
       const res = await supprimerEntite(cle, ligne.id)
       if (res.error) toast.error(res.error)
@@ -116,12 +117,12 @@ export default function EntiteTable({
                 <div className="min-w-0 flex-1 space-y-1">
                   <p className="font-medium text-foreground">
                     {cle === 'matieres' && <span className="me-2 inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ background: String(ligne.couleur) }} />}
-                    {String(ligne.nom ?? '')}
+                    {String(ligne.nom ?? ligne.libelle ?? '')}
                     {ligne.code ? <span className="ms-2 text-xs font-semibold text-foreground-muted">{String(ligne.code)}</span> : null}
                   </p>
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-foreground-muted">
                     {colonnes
-                      .filter((ch) => !['nom', 'code', 'couleur'].includes(ch.nom))
+                      .filter((ch) => !['nom', 'libelle', 'code', 'couleur'].includes(ch.nom))
                       .map((ch) => (
                         <span key={ch.nom} className="inline-flex items-center gap-1">
                           {ch.nom !== 'actif' && <span className="text-foreground-muted/70">{dict.fields[ch.nom]}</span>}
@@ -155,7 +156,7 @@ export default function EntiteTable({
                 {lignes.map((ligne) => (
                   <tr key={ligne.id} className="transition-colors hover:bg-background/60">
                     {colonnes.map((ch) => (
-                      <td key={ch.nom} className={`px-5 py-3 ${ch.nom === 'nom' ? 'font-medium text-foreground' : 'text-foreground-muted'}`}>
+                      <td key={ch.nom} className={`px-5 py-3 ${ch.nom === 'nom' || ch.nom === 'libelle' ? 'font-medium text-foreground' : 'text-foreground-muted'}`}>
                         {affichage(ch, ligne[ch.nom])}
                       </td>
                     ))}

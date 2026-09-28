@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/utils/supabase/server'
 import { requireParametrage } from '@/lib/auth/getCurrentUserContext'
 import { cycleAutorise, CYCLES, type Cycle } from '@/lib/abonnements/paliers'
-import { ENTITES, TYPES_SALLE, type EntiteCle } from '@/lib/parametres/entites'
+import { CATEGORIES_APPRECIATION, ENTITES, TYPES_SALLE, type EntiteCle } from '@/lib/parametres/entites'
 import { messageErreur } from '@/lib/erreurs'
 import { fmt } from '@/lib/i18n'
 import { getDictionary } from '@/dictionaries'
@@ -14,6 +14,7 @@ type ActionResult = { success?: true; error?: string }
 const VALEURS_SELECT: Record<string, readonly string[]> = {
   cycles: CYCLES,
   typesSalle: TYPES_SALLE,
+  categories: CATEGORIES_APPRECIATION,
 }
 
 // Action générique des tables simples du référentiel : seules les colonnes
