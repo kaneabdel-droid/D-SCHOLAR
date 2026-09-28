@@ -1,0 +1,207 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Palette D-Scholar « Académie » : bleu encre, or discret, fond papier froid.
+     Mêmes noms de tokens que D-QUINCA (bg-surface, text-foreground-muted...). */
+  --background: #F5F7FB;
+  --surface: #FFFFFF;
+  --surface-border: #E3E8F1;
+  --foreground: #0F172A;
+  --foreground-muted: #5B6478;
+
+  /* Sidebar sombre (identité produit), indépendante du thème du contenu. */
+  --sidebar: #0F1B3D;
+  --sidebar-text: #C9D3EA;
+  --sidebar-text-strong: #FFFFFF;
+  --sidebar-hover: rgba(255, 255, 255, 0.07);
+  --sidebar-active: rgba(255, 255, 255, 0.12);
+  --sidebar-line: rgba(255, 255, 255, 0.09);
+
+  --primary: #2447B8;
+  --primary-hover: #1C3893;
+  --primary-soft: #E8EEFC;
+  --primary-foreground: #FFFFFF;
+  --secondary: #C9972B;
+  --secondary-foreground: #FFFFFF;
+  --danger: #D93A3A;
+  --success: #16A34A;
+  --warning: #D97706;
+  --info: #0284C7;
+
+  /* Tokens attendus par shadcn/ui, alignés sur la palette ci-dessus. */
+  --card: var(--surface);
+  --card-foreground: var(--foreground);
+  --popover: var(--surface);
+  --popover-foreground: var(--foreground);
+  --muted: var(--background);
+  --muted-foreground: var(--foreground-muted);
+  --accent: var(--background);
+  --accent-foreground: var(--foreground);
+  --destructive: var(--danger);
+  --border: var(--surface-border);
+  --input: var(--surface-border);
+  --ring: var(--primary);
+  --chart-1: var(--primary);
+  --chart-2: var(--secondary);
+  --chart-3: var(--info);
+  --chart-4: var(--success);
+  --chart-5: var(--warning);
+  --radius: 0.75rem;
+  --sidebar-foreground: var(--sidebar-text);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: var(--sidebar-active);
+  --sidebar-accent-foreground: var(--sidebar-text-strong);
+  --sidebar-border: var(--sidebar-line);
+  --sidebar-ring: var(--primary);
+}
+
+.theme-ardoise {
+  /* Ardoise : tout clair, sidebar gris-bleu — pour les écrans très lumineux. */
+  --background: #F4F5F7;
+  --surface: #FFFFFF;
+  --surface-border: #E1E4EA;
+  --foreground: #111827;
+  --foreground-muted: #5F6776;
+  --sidebar: #EBEEF3;
+  --sidebar-text: #4B5563;
+  --sidebar-text-strong: #111827;
+  --sidebar-hover: rgba(15, 23, 42, 0.05);
+  --sidebar-active: rgba(36, 71, 184, 0.1);
+  --sidebar-line: rgba(15, 23, 42, 0.08);
+  --primary: #2447B8;
+  --primary-hover: #1C3893;
+  --primary-soft: #E8EEFC;
+}
+
+.theme-nuit {
+  /* Nuit : thème sombre complet. */
+  --background: #0B1220;
+  --surface: #111A2E;
+  --surface-border: #1F2A44;
+  --foreground: #E7ECF7;
+  --foreground-muted: #93A0BC;
+  --sidebar: #0A1020;
+  --sidebar-text: #A9B6D3;
+  --sidebar-text-strong: #FFFFFF;
+  --sidebar-hover: rgba(255, 255, 255, 0.05);
+  --sidebar-active: rgba(255, 255, 255, 0.09);
+  --sidebar-line: rgba(255, 255, 255, 0.07);
+  --primary: #5B7FEA;
+  --primary-hover: #7593F0;
+  --primary-soft: rgba(91, 127, 234, 0.14);
+  --secondary: #E0B24C;
+  --muted: var(--surface);
+  --accent: var(--surface);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-border: var(--surface-border);
+  --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-secondary: var(--secondary);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+
+  --color-sidebar-text: var(--sidebar-text);
+  --color-sidebar-text-strong: var(--sidebar-text-strong);
+  --color-sidebar-hover: var(--sidebar-hover);
+  --color-sidebar-active: var(--sidebar-active);
+  --color-sidebar-line: var(--sidebar-line);
+
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-outfit);
+
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Arabe : police adaptée, chiffres et mise en page RTL gérés par dir="rtl". */
+html[lang="ar"] body {
+  font-family: var(--font-arabic), var(--font-sans), Arial, sans-serif;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rise-in {
+  animation: rise-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--rise-delay, 0s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise-in {
+    animation: none;
+  }
+}
