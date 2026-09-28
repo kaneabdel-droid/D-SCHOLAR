@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { ArrowRight, Check, FileBadge, GraduationCap, Route, School, Users } from 'lucide-react'
 import LanguageSelector from '@/components/LanguageSelector'
 import { PALIERS, PALIER_CODES } from '@/lib/abonnements/paliers'
@@ -46,6 +47,9 @@ export default async function LandingPage() {
           <a href="/login" className="rise-in mt-10 inline-flex items-center gap-2 rounded-xl bg-secondary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-black/20 hover:brightness-105" style={{ '--rise-delay': '160ms' } as React.CSSProperties}>
             {t.cta} <ArrowRight className="h-4 w-4 rtl:-scale-x-100" />
           </a>
+          <Link href="/decouvrir-dscholar" className="ms-3 mt-10 inline-flex items-center gap-2 rounded-xl border border-white/25 px-5 py-3 text-sm font-semibold text-white hover:bg-white/10">
+            {dict.demo.lien}
+          </Link>
         </div>
       </header>
 

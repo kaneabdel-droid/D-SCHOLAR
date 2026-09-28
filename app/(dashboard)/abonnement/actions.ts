@@ -21,7 +21,8 @@ const DUREE_REUTILISATION_MS = 30 * 60 * 1000
 async function contexteDirection() {
   const context = await getCurrentUserContext()
   const dict = await getDictionary()
-  return { context, dict, autorise: context.role === 'direction' }
+  // Démo publique : aucun paiement réel ne doit pouvoir être lancé.
+  return { context, dict, autorise: context.role === 'direction' && !context.estDemo }
 }
 
 function telephoneValide(pays: string, telephone: string) {
@@ -31,6 +32,7 @@ function telephoneValide(pays: string, telephone: string) {
 export async function souscrire(palier: string, plan: string, pays: string, telephone: string): Promise<ResultatDemarrage> {
   const { context, dict, autorise } = await contexteDirection()
   const e = dict.abonnement.erreurs
+  if (context.estDemo) return { error: dict.errors.demo }
   if (!autorise) return { error: dict.abonnement.directionOnly }
   if (!estPalierValide(palier)) return { error: e.palier }
   if (!estPlanValide(plan)) return { error: e.plan }
@@ -84,6 +86,7 @@ export async function souscrire(palier: string, plan: string, pays: string, tele
 export async function payerEcheance(echeanceId: string, pays: string, telephone: string): Promise<ResultatDemarrage> {
   const { context, dict, autorise } = await contexteDirection()
   const e = dict.abonnement.erreurs
+  if (context.estDemo) return { error: dict.errors.demo }
   if (!autorise) return { error: dict.abonnement.directionOnly }
   if (!telephoneValide(pays, telephone)) return { error: e.telephone }
 

@@ -14,6 +14,7 @@ export async function modifierEtablissement(formData: FormData): Promise<ActionR
   const dict = await getDictionary()
   // Lecture seule (retard de paiement) : écriture refusée, le RLS la bloquerait aussi.
   if (context.acces !== 'complet') return { error: dict.errors.lectureSeule }
+  if (context.estDemo) return { error: dict.errors.demo }
   const champ = (nom: string) => ((formData.get(nom) as string | null) ?? '').trim()
 
   if (!champ('nom')) return { error: fmt(dict.errors.required, { champ: dict.etablissement.nom }) }

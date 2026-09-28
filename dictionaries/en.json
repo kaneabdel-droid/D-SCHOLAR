@@ -41,7 +41,8 @@
     "selfAction": "You cannot apply this action to your own account.",
     "coefficient": "Each coefficient must be a positive number.",
     "lectureSeule": "The school is in read-only mode: settle the subscription to change data.",
-    "invalidValue": "Value outside the allowed range."
+    "invalidValue": "Value outside the allowed range.",
+    "demo": "Action disabled in the demo."
   },
   "auth": {
     "login": {
@@ -622,5 +623,22 @@
     "newTitle": "New remark",
     "editTitle": "Edit remark",
     "empty": "No remark."
+  },
+  "demo": {
+    "title": "Discover D-Scholar",
+    "subtitle": "Explore a real school in one click: Les Palmiers school (Dakar), with a complete 2025-2026 year and the 2026-2027 start of year.",
+    "avertissement": "No password: each button opens your own session. The data is shared by all visitors: do not enter any real information.",
+    "direction": {
+      "titre": "Management",
+      "desc": "Dashboard, students and academic records, class results, promotions and resits, attendance, settings."
+    },
+    "enseignant": {
+      "titre": "Teacher",
+      "desc": "Mr Ibrahima Ndiaye teaches Mathematics and Physical sciences in 3e, 2nde S and 1re S2."
+    },
+    "bouton": "Enter the demo",
+    "erreur": "The demo is temporarily unavailable. Please try again in a moment.",
+    "lien": "Try the demo without an account",
+    "astuce": "Tip: choose the 2025-2026 year to see grades, report cards and end-of-year decisions."
   }
 }

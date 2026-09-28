@@ -41,7 +41,8 @@
     "selfAction": "Vous ne pouvez pas appliquer cette action à votre propre compte.",
     "coefficient": "Chaque coefficient doit être un nombre positif.",
     "lectureSeule": "L'établissement est en lecture seule : régularisez l'abonnement pour modifier les données.",
-    "invalidValue": "Valeur hors des limites autorisées."
+    "invalidValue": "Valeur hors des limites autorisées.",
+    "demo": "Action désactivée dans la démonstration."
   },
   "auth": {
     "login": {
@@ -622,5 +623,22 @@
     "newTitle": "Nouvelle appréciation",
     "editTitle": "Modifier l'appréciation",
     "empty": "Aucune appréciation."
+  },
+  "demo": {
+    "title": "Découvrir D-Scholar",
+    "subtitle": "Explorez un vrai établissement en un clic : le Groupe scolaire Les Palmiers (Dakar), avec une année 2025-2026 complète et la rentrée 2026-2027.",
+    "avertissement": "Aucun mot de passe : chaque bouton ouvre votre propre session. Les données sont partagées entre tous les visiteurs : n’y saisissez aucune information réelle.",
+    "direction": {
+      "titre": "Direction",
+      "desc": "Tableau de bord, élèves et cursus, résultats par classe, passages et repêchages, assiduité, paramétrage."
+    },
+    "enseignant": {
+      "titre": "Enseignant",
+      "desc": "M. Ibrahima Ndiaye enseigne les Mathématiques et les Sciences physiques en 3e, 2nde S et 1re S2."
+    },
+    "bouton": "Entrer dans la démo",
+    "erreur": "La démonstration est momentanément indisponible. Réessayez dans un instant.",
+    "lien": "Essayer la démo sans compte",
+    "astuce": "Astuce : choisissez l’année 2025-2026 pour voir les notes, les bulletins et les décisions de fin d’année."
   }
 }

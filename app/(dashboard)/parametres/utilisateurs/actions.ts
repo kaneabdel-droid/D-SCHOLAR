@@ -24,6 +24,8 @@ export async function creerUtilisateur(formData: FormData): Promise<ActionResult
   const dict = await getDictionary()
   // Lecture seule (retard de paiement) : écriture refusée, le RLS la bloquerait aussi.
   if (context.acces !== 'complet') return { error: dict.errors.lectureSeule }
+  // Démo publique : les comptes (dont ceux utilisés par la connexion directe) ne se modifient pas.
+  if (context.estDemo) return { error: dict.errors.demo }
   const t = dict.utilisateurs
   const champ = (nom: string) => ((formData.get(nom) as string | null) ?? '').trim()
 
@@ -80,6 +82,8 @@ export async function changerRole(utilisateurId: string, role: Role): Promise<Ac
   const dict = await getDictionary()
   // Lecture seule (retard de paiement) : écriture refusée, le RLS la bloquerait aussi.
   if (context.acces !== 'complet') return { error: dict.errors.lectureSeule }
+  // Démo publique : les comptes (dont ceux utilisés par la connexion directe) ne se modifient pas.
+  if (context.estDemo) return { error: dict.errors.demo }
   if (utilisateurId === context.userId) return { error: dict.errors.selfAction }
   if (!ROLES.includes(role)) return { error: dict.errors.generic }
   if (!(await cibleDeMonEtablissement(utilisateurId, context.etablissementId))) return { error: dict.errors.forbidden }
@@ -99,6 +103,8 @@ export async function changerStatut(utilisateurId: string, actif: boolean): Prom
   const dict = await getDictionary()
   // Lecture seule (retard de paiement) : écriture refusée, le RLS la bloquerait aussi.
   if (context.acces !== 'complet') return { error: dict.errors.lectureSeule }
+  // Démo publique : les comptes (dont ceux utilisés par la connexion directe) ne se modifient pas.
+  if (context.estDemo) return { error: dict.errors.demo }
   if (utilisateurId === context.userId) return { error: dict.errors.selfAction }
   if (!(await cibleDeMonEtablissement(utilisateurId, context.etablissementId))) return { error: dict.errors.forbidden }
 

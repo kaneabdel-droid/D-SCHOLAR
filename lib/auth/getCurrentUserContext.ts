@@ -18,6 +18,8 @@ export type UserContext = {
   anneeActive: { id: string; libelle: string } | null
   // Calculé en base depuis les échéances (public.mon_acces(), 05_abonnements.sql).
   acces: Acces
+  // Établissement de démonstration public : actions sensibles désactivées.
+  estDemo: boolean
 }
 
 // Chokepoint unique, mémoïsé par requête serveur (layout + page + actions).
@@ -30,7 +32,7 @@ export const getCurrentUserContext = cache(async (): Promise<UserContext> => {
   const [{ data }, { data: annee }, { data: acces }] = await Promise.all([
     supabase
       .from('utilisateurs')
-      .select('etablissement_id, role, nom, prenom, actif, etablissements(nom, statut, palier)')
+      .select('etablissement_id, role, nom, prenom, actif, etablissements(nom, statut, palier, est_demo)')
       .eq('id', user.id)
       .maybeSingle(),
     // RLS : ne renvoie que les années de l'établissement de l'utilisateur.
@@ -54,6 +56,7 @@ export const getCurrentUserContext = cache(async (): Promise<UserContext> => {
     palier: (etablissement?.palier ?? 'elementaire') as PalierCode,
     anneeActive: annee ?? null,
     acces: ((acces as Acces | null) ?? 'lecture_seule'),
+    estDemo: etablissement?.est_demo ?? false,
   }
 })
 
