@@ -21,6 +21,8 @@ const VALEURS_SELECT: Record<string, readonly string[]> = {
 export async function enregistrerEntite(cle: EntiteCle, id: string | null, formData: FormData): Promise<ActionResult> {
   const context = await requireParametrage()
   const dict = await getDictionary()
+  // Lecture seule (retard de paiement) : écriture refusée, le RLS la bloquerait aussi.
+  if (context.acces !== 'complet') return { error: dict.errors.lectureSeule }
   const entite = ENTITES[cle]
   if (!entite) return { error: dict.errors.generic }
 
@@ -79,8 +81,10 @@ export async function enregistrerEntite(cle: EntiteCle, id: string | null, formD
 }
 
 export async function supprimerEntite(cle: EntiteCle, id: string): Promise<ActionResult> {
-  await requireParametrage()
+  const context = await requireParametrage()
   const dict = await getDictionary()
+  // Lecture seule (retard de paiement) : écriture refusée, le RLS la bloquerait aussi.
+  if (context.acces !== 'complet') return { error: dict.errors.lectureSeule }
   const entite = ENTITES[cle]
   if (!entite) return { error: dict.errors.generic }
 

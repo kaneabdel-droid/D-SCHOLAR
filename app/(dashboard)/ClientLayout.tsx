@@ -6,7 +6,9 @@ import { usePathname } from 'next/navigation'
 import {
   CalendarClock,
   CalendarDays,
+  AlertTriangle,
   ClipboardCheck,
+  CreditCard,
   FileBadge,
   FileText,
   GraduationCap,
@@ -31,6 +33,13 @@ import { peutGererParametres, type Role } from '@/lib/roles'
 type CleNav = keyof Dictionary['nav']
 type Item = { key: CleNav; href: string; icon: LucideIcon; bientot?: boolean }
 type Section = { titre: CleNav; items: Item[] }
+
+export type Bandeau = {
+  niveau: 'alerte' | 'avertissement'
+  texte: string
+  action?: { libelle: string; href: string }
+  complement?: string
+}
 
 // Les modules marqués `bientot` arrivent dans les lots suivants : affichés
 // (feuille de route visible) mais non cliquables.
@@ -68,7 +77,15 @@ function sections(role: Role): Section[] {
       ],
     },
     ...(parametrage
-      ? [{ titre: 'sectionAdministration' as CleNav, items: [{ key: 'parametres' as CleNav, href: '/parametres', icon: Settings }] }]
+      ? [
+          {
+            titre: 'sectionAdministration' as CleNav,
+            items: [
+              { key: 'parametres' as CleNav, href: '/parametres', icon: Settings },
+              ...(role === 'direction' ? [{ key: 'abonnement' as CleNav, href: '/abonnement', icon: CreditCard }] : []),
+            ],
+          },
+        ]
       : []),
   ]
 }
@@ -88,6 +105,7 @@ export default function ClientLayout({
   etablissementNom,
   anneeLibelle,
   utilisateurNom,
+  bandeau,
   locale,
   dict,
 }: {
@@ -96,6 +114,7 @@ export default function ClientLayout({
   etablissementNom: string
   anneeLibelle: string | null
   utilisateurNom: string
+  bandeau: Bandeau | null
   locale: string
   dict: Dictionary
 }) {
@@ -216,6 +235,26 @@ export default function ClientLayout({
             <ThemeSwitcher libelles={dict.theme} />
           </div>
         </header>
+
+        {bandeau && (
+          <div
+            role="status"
+            className={`flex flex-wrap items-center gap-x-3 gap-y-2 border-b px-4 py-2.5 text-sm sm:px-6 lg:px-8 ${
+              bandeau.niveau === 'alerte' ? 'border-danger/20 bg-danger/10 text-danger' : 'border-warning/20 bg-warning/10 text-warning'
+            }`}
+          >
+            <AlertTriangle className="h-4 w-4 shrink-0" />
+            <p className="min-w-0 flex-1 font-medium">
+              {bandeau.texte}
+              {bandeau.complement && <span className="font-normal"> {bandeau.complement}</span>}
+            </p>
+            {bandeau.action && (
+              <Link href={bandeau.action.href} className="rounded-lg bg-surface px-3 py-1 text-xs font-semibold text-foreground shadow-xs hover:bg-background">
+                {bandeau.action.libelle}
+              </Link>
+            )}
+          </div>
+        )}
 
         <main className="px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
           <div className="mx-auto max-w-7xl">{children}</div>

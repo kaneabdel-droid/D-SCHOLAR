@@ -2,6 +2,7 @@ import { cache } from 'react'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 import type { PalierCode } from '@/lib/abonnements/paliers'
+import type { Acces } from '@/lib/abonnements/plans'
 import { peutGererParametres, type Role } from '@/lib/roles'
 
 export type UserContext = {
@@ -15,6 +16,8 @@ export type UserContext = {
   etablissementStatut: 'actif' | 'suspendu'
   palier: PalierCode
   anneeActive: { id: string; libelle: string } | null
+  // Calculé en base depuis les échéances (public.mon_acces(), 05_abonnements.sql).
+  acces: Acces
 }
 
 // Chokepoint unique, mémoïsé par requête serveur (layout + page + actions).
@@ -24,7 +27,7 @@ export const getCurrentUserContext = cache(async (): Promise<UserContext> => {
 
   if (!user) redirect('/login')
 
-  const [{ data }, { data: annee }] = await Promise.all([
+  const [{ data }, { data: annee }, { data: acces }] = await Promise.all([
     supabase
       .from('utilisateurs')
       .select('etablissement_id, role, nom, prenom, actif, etablissements(nom, statut, palier)')
@@ -32,6 +35,7 @@ export const getCurrentUserContext = cache(async (): Promise<UserContext> => {
       .maybeSingle(),
     // RLS : ne renvoie que les années de l'établissement de l'utilisateur.
     supabase.from('annees_scolaires').select('id, libelle').eq('active', true).maybeSingle(),
+    supabase.rpc('mon_acces'),
   ])
 
   if (!data || !data.actif) redirect('/login?message=compte')
@@ -49,6 +53,7 @@ export const getCurrentUserContext = cache(async (): Promise<UserContext> => {
     etablissementStatut: etablissement?.statut ?? 'actif',
     palier: (etablissement?.palier ?? 'elementaire') as PalierCode,
     anneeActive: annee ?? null,
+    acces: ((acces as Acces | null) ?? 'lecture_seule'),
   }
 })
 

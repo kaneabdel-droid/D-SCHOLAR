@@ -3,14 +3,24 @@ import { createAdminClient } from '@/utils/supabase/admin'
 import type { PalierCode } from '@/lib/abonnements/paliers'
 import CreerEtablissementButton from './CreerEtablissementButton'
 import EtablissementActions from './EtablissementActions'
+import AccesOffertCell from './AccesOffertCell'
 
 export default async function AdminPage() {
   const supabase = createAdminClient()
 
   const [{ data: etablissements }, { data: utilisateurs }] = await Promise.all([
-    supabase.from('etablissements').select('id, nom, ville, palier, statut, abonnement_expire_le, created_at').order('created_at', { ascending: false }),
+    supabase.from('etablissements').select('id, nom, ville, palier, statut, abonnement_expire_le, acces_manuel_jusqu_au, created_at').order('created_at', { ascending: false }),
     supabase.from('utilisateurs').select('etablissement_id, role, email'),
   ])
+
+  // Niveau d'accès calculé en base (même fonction que le RLS).
+  const acces = new Map<string, string>()
+  await Promise.all(
+    (etablissements ?? []).map(async (e) => {
+      const { data } = await supabase.rpc('acces_etablissement', { p_etablissement_id: e.id })
+      acces.set(e.id, (data as string | null) ?? 'suspendu')
+    })
+  )
 
   const personnel = new Map<string, number>()
   const directions = new Map<string, string>()
@@ -50,6 +60,8 @@ export default async function AdminPage() {
               <th className="px-4 py-3 text-start">Personnel</th>
               <th className="px-4 py-3 text-start">Palier</th>
               <th className="px-4 py-3 text-start">Statut</th>
+              <th className="px-4 py-3 text-start">Accès</th>
+              <th className="px-4 py-3 text-start">Payé jusqu&apos;au</th>
               <th className="px-4 py-3 text-start">Créé le</th>
             </tr>
           </thead>
@@ -63,12 +75,14 @@ export default async function AdminPage() {
                 <td className="px-4 py-3 text-foreground-muted">{directions.get(e.id) ?? '—'}</td>
                 <td className="px-4 py-3 tabular-nums text-foreground-muted">{personnel.get(e.id) ?? 0}</td>
                 <EtablissementActions id={e.id} palier={e.palier as PalierCode} statut={e.statut as 'actif' | 'suspendu'} />
+                <AccesOffertCell id={e.id} acces={acces.get(e.id) ?? 'suspendu'} jusquAu={e.acces_manuel_jusqu_au} />
+                <td className="px-4 py-3 text-foreground-muted">{e.abonnement_expire_le ? new Date(e.abonnement_expire_le).toLocaleDateString('fr-FR') : '—'}</td>
                 <td className="px-4 py-3 text-foreground-muted">{new Date(e.created_at).toLocaleDateString('fr-FR')}</td>
               </tr>
             ))}
             {(etablissements ?? []).length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-10 text-center text-foreground-muted">Aucun établissement</td>
+                <td colSpan={8} className="px-4 py-10 text-center text-foreground-muted">Aucun établissement</td>
               </tr>
             )}
           </tbody>

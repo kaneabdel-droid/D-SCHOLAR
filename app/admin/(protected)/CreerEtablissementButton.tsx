@@ -8,6 +8,12 @@ import { btnPrimary, btnSecondary, hintClass, inputClass, labelClass } from '@/c
 import { PALIERS, PALIER_CODES, type PalierCode } from '@/lib/abonnements/paliers'
 import { creerEtablissement } from './actions'
 
+function dansTrenteJours() {
+  const d = new Date()
+  d.setDate(d.getDate() + 30)
+  return d.toISOString().slice(0, 10)
+}
+
 const NOMS_PALIERS: Record<PalierCode, string> = { elementaire: 'Élémentaire', secondaire: 'Secondaire', complet: 'Cycle complet' }
 
 export default function CreerEtablissementButton() {
@@ -29,6 +35,7 @@ export default function CreerEtablissementButton() {
         directionPrenom: v('direction_prenom'),
         directionEmail: v('direction_email'),
         directionPassword: v('direction_password'),
+        accesOffertJusquAu: v('acces_offert'),
       })
       if (res.error) setMessage(res.error)
       else {
@@ -82,6 +89,11 @@ export default function CreerEtablissementButton() {
                 ))}
               </select>
               <p className={hintClass}>Le référentiel sénégalais (niveaux, séries, matières) du palier est créé automatiquement.</p>
+            </div>
+            <div>
+              <label className={labelClass} htmlFor="e-essai">Accès offert jusqu&apos;au</label>
+              <input id="e-essai" name="acces_offert" type="date" defaultValue={dansTrenteJours()} className={`${inputClass} sm:max-w-xs`} />
+              <p className={hintClass}>Période d&apos;essai : accès complet sans paiement jusqu&apos;à cette date. Laisser vide pour exiger la première tranche.</p>
             </div>
           </fieldset>
           <fieldset className="space-y-4">

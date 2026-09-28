@@ -12,8 +12,10 @@ type ActionResult = { success?: true; error?: string }
 const DATE = /^\d{4}-\d{2}-\d{2}$/
 
 export async function creerAnnee(formData: FormData): Promise<ActionResult> {
-  await requireParametrage()
+  const context = await requireParametrage()
   const dict = await getDictionary()
+  // Lecture seule (retard de paiement) : écriture refusée, le RLS la bloquerait aussi.
+  if (context.acces !== 'complet') return { error: dict.errors.lectureSeule }
   const t = dict.annees
 
   const libelle = ((formData.get('libelle') as string) ?? '').trim().slice(0, 20)
@@ -40,8 +42,10 @@ export async function creerAnnee(formData: FormData): Promise<ActionResult> {
 }
 
 export async function activerAnnee(id: string): Promise<ActionResult> {
-  await requireParametrage()
+  const context = await requireParametrage()
   const dict = await getDictionary()
+  // Lecture seule (retard de paiement) : écriture refusée, le RLS la bloquerait aussi.
+  if (context.acces !== 'complet') return { error: dict.errors.lectureSeule }
   const supabase = await createClient()
 
   const { error } = await supabase.rpc('activer_annee_scolaire', { p_annee_id: id })
@@ -53,8 +57,10 @@ export async function activerAnnee(id: string): Promise<ActionResult> {
 }
 
 export async function supprimerAnnee(id: string): Promise<ActionResult> {
-  await requireParametrage()
+  const context = await requireParametrage()
   const dict = await getDictionary()
+  // Lecture seule (retard de paiement) : écriture refusée, le RLS la bloquerait aussi.
+  if (context.acces !== 'complet') return { error: dict.errors.lectureSeule }
   const supabase = await createClient()
 
   const { data: annee } = await supabase.from('annees_scolaires').select('active').eq('id', id).maybeSingle()
@@ -68,8 +74,10 @@ export async function supprimerAnnee(id: string): Promise<ActionResult> {
 }
 
 export async function modifierPeriode(id: string, debut: string, fin: string): Promise<ActionResult> {
-  await requireParametrage()
+  const context = await requireParametrage()
   const dict = await getDictionary()
+  // Lecture seule (retard de paiement) : écriture refusée, le RLS la bloquerait aussi.
+  if (context.acces !== 'complet') return { error: dict.errors.lectureSeule }
   if (!DATE.test(debut) || !DATE.test(fin)) return { error: fmt(dict.errors.required, { champ: dict.annees.periode }) }
   if (fin < debut) return { error: dict.errors.dates }
 

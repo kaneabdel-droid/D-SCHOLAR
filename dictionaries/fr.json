@@ -39,7 +39,8 @@
     "passwordShort": "Le mot de passe doit contenir au moins 8 caractères.",
     "emailInvalid": "Adresse email invalide.",
     "selfAction": "Vous ne pouvez pas appliquer cette action à votre propre compte.",
-    "coefficient": "Chaque coefficient doit être un nombre positif."
+    "coefficient": "Chaque coefficient doit être un nombre positif.",
+    "lectureSeule": "L'établissement est en lecture seule : régularisez l'abonnement pour modifier les données."
   },
   "auth": {
     "login": {
@@ -343,5 +344,83 @@
     "pricingSecondaire": "Collège et lycée",
     "pricingComplet": "Tous les cycles, du préscolaire à la terminale",
     "footer": "D-Scholar, une solution DembaSolution."
+  },
+  "abonnement": {
+    "title": "Abonnement",
+    "subtitle": "Abonnement annuel de l'établissement, payable en une fois ou par tranches.",
+    "directionOnly": "Seule la direction peut gérer l'abonnement.",
+    "etatTitle": "État de l'accès",
+    "acces": {
+      "complet": "Accès complet",
+      "lecture_seule": "Lecture seule",
+      "suspendu": "Suspendu"
+    },
+    "accesDesc": {
+      "complet": "Toutes les fonctionnalités sont disponibles.",
+      "lecture_seule": "Consultation uniquement : aucune modification possible tant que le paiement attendu n’est pas réglé.",
+      "suspendu": "Accès coupé. Vos données sont conservées et l’accès revient dès le paiement."
+    },
+    "periode": "Période couverte : du {debut} au {fin}",
+    "accesOffert": "Accès offert par D-Scholar jusqu'au {date}.",
+    "aucune": "Aucun abonnement actif. Choisissez une formule ci-dessous pour activer l'établissement.",
+    "echeancier": "Échéancier",
+    "tranche": "Tranche {n}",
+    "montant": "Montant",
+    "echeance": "Échéance",
+    "statut": "Statut",
+    "payee": "Payée",
+    "payeeLe": "Payée le {date}",
+    "aPayer": "À payer",
+    "enRetard": "En retard",
+    "payer": "Payer",
+    "souscrireTitle": "Souscrire",
+    "renouvelerTitle": "Renouveler pour l'année suivante",
+    "souscrireDesc": "Au moins 50 % à la première tranche. Les tranches suivantes tombent 3 et 6 mois après le premier paiement.",
+    "choisirPalier": "Formule",
+    "choisirPlan": "Mode de paiement",
+    "plans": {
+      "comptant": "Comptant",
+      "deux_tranches": "2 tranches",
+      "trois_tranches": "3 tranches"
+    },
+    "planDetail": {
+      "comptant": "100 % à la souscription",
+      "deux_tranches": "50 % maintenant, 50 % à 3 mois",
+      "trois_tranches": "50 % maintenant, 25 % à 3 mois, 25 % à 6 mois"
+    },
+    "aPayerMaintenant": "À payer maintenant",
+    "total": "Total annuel",
+    "fcfa": "FCFA",
+    "pays": "Pays",
+    "telephone": "Numéro Mobile Money",
+    "telephoneHint": "Numéro utilisé sur la page de paiement sécurisée (Orange Money, Wave, Free Money, carte…).",
+    "continuer": "Continuer vers le paiement",
+    "redirection": "Redirection vers le paiement…",
+    "enAttente": "Souscription en attente de la première tranche.",
+    "renouvellementLe": "Le renouvellement sera possible à partir du {date}.",
+    "bannerNonPaye": "Réglez la première tranche de l’abonnement pour activer toutes les fonctionnalités.",
+    "bannerRetard": "La tranche {n} ({montant} FCFA) est en retard de {jours} jour(s). Lecture seule au-delà de {seuil} jours de retard.",
+    "bannerLectureSeule": "Établissement en lecture seule : un paiement est en retard.",
+    "bannerAction": "Régulariser",
+    "bannerContact": "Contactez la direction de l’établissement.",
+    "retour": {
+      "verification": "Vérification du paiement…",
+      "paye": "Paiement confirmé. Merci !",
+      "echoue": "Le paiement n'a pas abouti.",
+      "lent": "Le paiement est en cours de traitement.",
+      "lentDesc": "La confirmation peut prendre quelques minutes ; elle sera appliquée automatiquement.",
+      "reessayer": "Réessayer",
+      "retourAbonnement": "Retour à l'abonnement"
+    },
+    "erreurs": {
+      "palier": "Formule invalide.",
+      "plan": "Mode de paiement invalide.",
+      "telephone": "Le numéro de téléphone est requis.",
+      "dejaCouvert": "Une souscription couvre déjà cette période.",
+      "rienAPayer": "Aucune tranche à payer.",
+      "ordre": "Réglez d’abord la tranche précédente.",
+      "provider": "Le service de paiement est momentanément indisponible. Réessayez dans quelques minutes.",
+      "enCours": "Un paiement est déjà en cours. Patientez quelques secondes puis réessayez."
+    }
   }
 }

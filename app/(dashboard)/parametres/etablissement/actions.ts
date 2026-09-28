@@ -10,8 +10,10 @@ import { getDictionary } from '@/dictionaries'
 type ActionResult = { success?: true; error?: string }
 
 export async function modifierEtablissement(formData: FormData): Promise<ActionResult> {
-  await requireDirection()
+  const context = await requireDirection()
   const dict = await getDictionary()
+  // Lecture seule (retard de paiement) : écriture refusée, le RLS la bloquerait aussi.
+  if (context.acces !== 'complet') return { error: dict.errors.lectureSeule }
   const champ = (nom: string) => ((formData.get(nom) as string | null) ?? '').trim()
 
   if (!champ('nom')) return { error: fmt(dict.errors.required, { champ: dict.etablissement.nom }) }

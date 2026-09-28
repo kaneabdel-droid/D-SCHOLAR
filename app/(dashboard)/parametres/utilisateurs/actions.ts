@@ -22,6 +22,8 @@ const BAN_DUREE_DESACTIVATION = '87600h'
 export async function creerUtilisateur(formData: FormData): Promise<ActionResult> {
   const context = await requireDirection()
   const dict = await getDictionary()
+  // Lecture seule (retard de paiement) : écriture refusée, le RLS la bloquerait aussi.
+  if (context.acces !== 'complet') return { error: dict.errors.lectureSeule }
   const t = dict.utilisateurs
   const champ = (nom: string) => ((formData.get(nom) as string | null) ?? '').trim()
 
@@ -76,6 +78,8 @@ async function cibleDeMonEtablissement(utilisateurId: string, etablissementId: s
 export async function changerRole(utilisateurId: string, role: Role): Promise<ActionResult> {
   const context = await requireDirection()
   const dict = await getDictionary()
+  // Lecture seule (retard de paiement) : écriture refusée, le RLS la bloquerait aussi.
+  if (context.acces !== 'complet') return { error: dict.errors.lectureSeule }
   if (utilisateurId === context.userId) return { error: dict.errors.selfAction }
   if (!ROLES.includes(role)) return { error: dict.errors.generic }
   if (!(await cibleDeMonEtablissement(utilisateurId, context.etablissementId))) return { error: dict.errors.forbidden }
@@ -93,6 +97,8 @@ export async function changerRole(utilisateurId: string, role: Role): Promise<Ac
 export async function changerStatut(utilisateurId: string, actif: boolean): Promise<ActionResult> {
   const context = await requireDirection()
   const dict = await getDictionary()
+  // Lecture seule (retard de paiement) : écriture refusée, le RLS la bloquerait aussi.
+  if (context.acces !== 'complet') return { error: dict.errors.lectureSeule }
   if (utilisateurId === context.userId) return { error: dict.errors.selfAction }
   if (!(await cibleDeMonEtablissement(utilisateurId, context.etablissementId))) return { error: dict.errors.forbidden }
 

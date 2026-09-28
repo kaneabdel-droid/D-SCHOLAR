@@ -23,6 +23,7 @@ Migrations SQL numérotées dans `supabase/migrations/` (à appliquer dans l'ord
 - **Contexte** : `getCurrentUserContext()` (mémoïsé par requête) + gardes `requireParametrage()` / `requireDirection()` en tête de chaque page et action.
 - **Proxy** : `proxy.ts` (la convention `middleware` est dépréciée en Next 16) → `utils/supabase/proxy.ts`.
 - **Référentiel simple** (niveaux, séries, options, matières, salles) : déclaré une fois dans `lib/parametres/entites.ts`, rendu par `EntiteTable` et écrit par l'action générique `enregistrerEntite` (liste blanche des colonnes).
+- **Abonnements** (`lib/abonnements/`, migration 05) : `souscriptions` (une par année) → `echeances_abonnement` (1 à 3 tranches, tranche 1 ≥ 50 %) → `paiements_abonnement` (une ligne par tentative, anti-doublon repris de D-QUINCA). L'accès (`complet` / `lecture_seule` / `suspendu`) est **calculé à la volée** par `acces_etablissement()` depuis les retards (15 j → lecture seule, 30 j → suspendu) ; `can_manage_parametres()` l'intègre, donc le RLS bloque les écritures en lecture seule. Toute nouvelle fonction d'écriture RLS doit appeler `ecriture_autorisee()`, et toute action serveur doit refuser si `context.acces !== 'complet'`. Crédit d'une tranche : uniquement via `reconcile.ts` (re-pull provider, jamais le corps du webhook). Chariow = produits à prix fixe par palier × part (100/50/25 %), Moneroo = montant libre.
 - **Actions serveur** : renvoient `{ success }` ou `{ error }` ; les erreurs Postgres passent par `lib/erreurs.ts` pour un message traduit.
 
 ## Règles

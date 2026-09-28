@@ -10,8 +10,10 @@ type ActionResult = { success?: true; error?: string }
 type LigneCoefficient = { matiere_id: string; coefficient: string; volume_horaire: string }
 
 export async function enregistrerCoefficients(niveauId: string, serieId: string | null, lignes: LigneCoefficient[]): Promise<ActionResult> {
-  await requireParametrage()
+  const context = await requireParametrage()
   const dict = await getDictionary()
+  // Lecture seule (retard de paiement) : écriture refusée, le RLS la bloquerait aussi.
+  if (context.acces !== 'complet') return { error: dict.errors.lectureSeule }
 
   const payload = []
   for (const l of lignes) {

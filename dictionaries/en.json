@@ -39,7 +39,8 @@
     "passwordShort": "The password must be at least 8 characters long.",
     "emailInvalid": "Invalid email address.",
     "selfAction": "You cannot apply this action to your own account.",
-    "coefficient": "Each coefficient must be a positive number."
+    "coefficient": "Each coefficient must be a positive number.",
+    "lectureSeule": "The school is in read-only mode: settle the subscription to change data."
   },
   "auth": {
     "login": {
@@ -343,5 +344,83 @@
     "pricingSecondaire": "Lower and upper secondary",
     "pricingComplet": "Every cycle, from pre-school to final year",
     "footer": "D-Scholar, a DembaSolution product."
+  },
+  "abonnement": {
+    "title": "Subscription",
+    "subtitle": "The school's annual subscription, paid at once or in instalments.",
+    "directionOnly": "Only the management can manage the subscription.",
+    "etatTitle": "Access status",
+    "acces": {
+      "complet": "Full access",
+      "lecture_seule": "Read-only",
+      "suspendu": "Suspended"
+    },
+    "accesDesc": {
+      "complet": "All features are available.",
+      "lecture_seule": "View only: no changes are possible until the expected payment is settled.",
+      "suspendu": "Access is cut off. Your data is kept and access returns as soon as payment is made."
+    },
+    "periode": "Covered period: {debut} to {fin}",
+    "accesOffert": "Access granted by D-Scholar until {date}.",
+    "aucune": "No active subscription. Choose a plan below to activate the school.",
+    "echeancier": "Payment schedule",
+    "tranche": "Instalment {n}",
+    "montant": "Amount",
+    "echeance": "Due date",
+    "statut": "Status",
+    "payee": "Paid",
+    "payeeLe": "Paid on {date}",
+    "aPayer": "Due",
+    "enRetard": "Overdue",
+    "payer": "Pay",
+    "souscrireTitle": "Subscribe",
+    "renouvelerTitle": "Renew for next year",
+    "souscrireDesc": "At least 50% on the first instalment. The next instalments fall due 3 and 6 months after the first payment.",
+    "choisirPalier": "Plan",
+    "choisirPlan": "Payment method",
+    "plans": {
+      "comptant": "Single payment",
+      "deux_tranches": "2 instalments",
+      "trois_tranches": "3 instalments"
+    },
+    "planDetail": {
+      "comptant": "100% when subscribing",
+      "deux_tranches": "50% now, 50% after 3 months",
+      "trois_tranches": "50% now, 25% after 3 months, 25% after 6 months"
+    },
+    "aPayerMaintenant": "Due now",
+    "total": "Annual total",
+    "fcfa": "FCFA",
+    "pays": "Country",
+    "telephone": "Mobile Money number",
+    "telephoneHint": "Number used on the secure payment page (Orange Money, Wave, Free Money, card…).",
+    "continuer": "Continue to payment",
+    "redirection": "Redirecting to payment…",
+    "enAttente": "Subscription awaiting its first instalment.",
+    "renouvellementLe": "Renewal will be possible from {date}.",
+    "bannerNonPaye": "Pay the first subscription instalment to unlock every feature.",
+    "bannerRetard": "Instalment {n} ({montant} FCFA) is {jours} day(s) overdue. Read-only beyond {seuil} days overdue.",
+    "bannerLectureSeule": "School in read-only mode: a payment is overdue.",
+    "bannerAction": "Settle now",
+    "bannerContact": "Please contact the school's management.",
+    "retour": {
+      "verification": "Checking the payment…",
+      "paye": "Payment confirmed. Thank you!",
+      "echoue": "The payment did not go through.",
+      "lent": "The payment is being processed.",
+      "lentDesc": "Confirmation may take a few minutes; it will be applied automatically.",
+      "reessayer": "Try again",
+      "retourAbonnement": "Back to subscription"
+    },
+    "erreurs": {
+      "palier": "Invalid plan.",
+      "plan": "Invalid payment method.",
+      "telephone": "The phone number is required.",
+      "dejaCouvert": "A subscription already covers this period.",
+      "rienAPayer": "No instalment to pay.",
+      "ordre": "Please pay the previous instalment first.",
+      "provider": "The payment service is temporarily unavailable. Please try again in a few minutes.",
+      "enCours": "A payment is already in progress. Wait a few seconds and try again."
+    }
   }
 }
