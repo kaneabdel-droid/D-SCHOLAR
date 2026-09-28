@@ -1229,7 +1229,7 @@ declare
   a1 uuid;
   a2 uuid;
   v_labo uuid;
-  bases numeric[] := array[17.4, 15.2, 14.1, 12.9, 12.3, 11.5, 10.9, 10.4, 9.5, 9.4, 8.2, 6.8];
+  bases numeric[] := array[17.4, 15.2, 14.1, 12.9, 12.3, 11.5, 10.9, 10.4, 9.5, 9.4, 7.2, 5.4];
   g integer := 0;
   c record;
   r record;
@@ -1413,7 +1413,7 @@ begin
   join public.matieres m on m.id = co.matiere_id;
 
   -- ─── Élèves 2025-2026 ────────────────────────────────────────────────────
-  -- 12 élèves par classe, du très bon (Félicitations) au très faible. Rangs
+  -- 12 élèves par classe, du très bon (Félicitations) au très faible (Blâme). Rangs
   -- 9 et 10 : moyennes proches de 9,5 → repêchage (le 1er réussit, le 2e non).
   create temp table _el (id uuid, cle text, base numeric, cas text) on commit drop;
   for c in select * from _cls where annee = a1 order by ordre loop
@@ -1488,8 +1488,10 @@ begin
         ) / 4
       from _el el
       where el.cle = r.cle
-        and not (el.cas = 'transfert' and r.rang = 1)
-        and not (el.cas = 'depart' and r.rang = 3);
+        -- coalesce : el.cas est NULL pour la plupart des élèves, et « not (NULL and …) »
+        -- vaut NULL, ce qui exclurait ces élèves des 1er et 3e trimestres.
+        and not (coalesce(el.cas, '') = 'transfert' and r.rang = 1)
+        and not (coalesce(el.cas, '') = 'depart' and r.rang = 3);
     end loop;
   end loop;
 
@@ -1666,13 +1668,16 @@ begin
     loop
       v_besoin := ceil(coalesce(r.vol, 2) / 2.0);
       v_place := 0;
+      -- 1re passe : au plus une séance de la matière par jour ; 2e passe (si des
+      -- heures restent à placer) : cette contrainte de confort est levée.
+      for passe in 1..2 loop
       for s in 0..16 loop
         exit when v_place >= v_besoin;
         v_slot := (s * 7 + c.ordre * 3) % 17; -- 7 premier avec 17 : parcourt tous les créneaux
         v_jour := case when v_slot < 15 then v_slot / 3 + 1 else 6 end;
         v_debut := case when v_slot < 15 then (array[time '08:00', time '10:00', time '15:00'])[v_slot % 3 + 1]
                         else (array[time '08:00', time '10:00'])[v_slot - 14] end;
-        continue when exists (select 1 from public.creneaux cr where cr.enseignement_id = r.ens_id and cr.jour = v_jour);
+        continue when passe = 1 and exists (select 1 from public.creneaux cr where cr.enseignement_id = r.ens_id and cr.jour = v_jour);
         v_salle := case when r.mat in ('PC', 'SVT') and c.niv <> 'CM2' then v_labo else (select salle_id from public.classes where id = c.id) end;
         begin
           insert into public.creneaux (etablissement_id, enseignement_id, jour, heure_debut, heure_fin, salle_id)
@@ -1690,6 +1695,7 @@ begin
             end;
           end if;
         end;
+      end loop;
       end loop;
     end loop;
   end loop;
