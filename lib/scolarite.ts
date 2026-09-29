@@ -1,12 +1,12 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
-export type Annee = { id: string; libelle: string; active: boolean; cloturee: boolean }
+export type Annee = { id: string; libelle: string; active: boolean; cloturee: boolean; date_debut: string }
 export type Appreciation = { libelle: string; moyenne_min: number; categorie: 'distinction' | 'neutre' | 'avertissement' }
 
 // Années de l'établissement (RLS), la plus récente d'abord, et année retenue :
 // celle demandée dans l'URL, sinon l'année active.
 export async function anneesEtSelection(supabase: SupabaseClient, anneeParam?: string) {
-  const { data } = await supabase.from('annees_scolaires').select('id, libelle, active, cloturee').order('date_debut', { ascending: false })
+  const { data } = await supabase.from('annees_scolaires').select('id, libelle, active, cloturee, date_debut').order('date_debut', { ascending: false })
   const annees = (data ?? []) as Annee[]
   const selection = annees.find((a) => a.id === anneeParam) ?? annees.find((a) => a.active) ?? annees[0] ?? null
   return { annees, selection }

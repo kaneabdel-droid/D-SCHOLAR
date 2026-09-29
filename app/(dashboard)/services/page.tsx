@@ -6,7 +6,7 @@ import { createClient } from '@/utils/supabase/server'
 import { getCurrentUserContext } from '@/lib/auth/getCurrentUserContext'
 import { peutEcrire } from '@/lib/roles'
 import { anneesEtSelection, un } from '@/lib/scolarite'
-import { situationsFinancieres } from '@/lib/finances'
+import { CYCLES, situationsFinancieres } from '@/lib/finances'
 import type { Ligne } from '@/lib/parametres/entites'
 import { intlLocale } from '@/lib/i18n'
 import { getDictionary, getLocale } from '@/dictionaries'
@@ -37,6 +37,8 @@ export default async function ServicesPage({ searchParams }: { searchParams: Pro
     .map((i) => ({ id: i.eleve_id, nom: `${un(i.eleves)?.nom ?? ''} ${un(i.eleves)?.prenom ?? ''}`.trim(), classe: un(i.classes)?.nom ?? '' }))
     .sort((a, b) => a.classe.localeCompare(b.classe) || a.nom.localeCompare(b.nom))
   const nomEleve = new Map(eleves.map((e) => [e.id, e]))
+  const { data: etab } = await supabase.from('etablissements').select('statut_juridique, mois_scolarite').eq('id', context.etablissementId).single()
+  const regime = { prive: (etab?.statut_juridique ?? 'prive') === 'prive', mois: Number(etab?.mois_scolarite ?? 9) }
 
   const onglet = (v: Vue) => (
     <Link key={v} href={`/services?annee=${anneeId}&vue=${v}`} className={`whitespace-nowrap rounded-lg px-3.5 py-2 text-sm font-medium transition-colors ${vue === v ? 'bg-primary text-primary-foreground shadow-sm' : 'text-foreground-muted hover:bg-primary-soft hover:text-foreground'}`}>
@@ -53,14 +55,22 @@ export default async function ServicesPage({ searchParams }: { searchParams: Pro
 
   if (vue === 'frais') {
     const [{ data: frais }, { data: niveaux }] = await Promise.all([
-      supabase.from('frais_scolarite').select('id, libelle, montant, date_echeance, niveaux(nom)').eq('annee_id', anneeId).order('libelle'),
-      supabase.from('niveaux').select('id, nom').eq('actif', true).order('ordre'),
+      supabase.from('frais_scolarite').select('id, libelle, montant, periodicite, cycle, date_echeance, niveaux(nom, ordre)').eq('annee_id', anneeId).order('libelle'),
+      supabase.from('niveaux').select('id, nom, cycle').eq('actif', true).order('ordre'),
     ])
+    const lignes = (frais ?? [])
+      .map((f) => {
+        const niv = un(f.niveaux as unknown as { nom: string; ordre: number } | null)
+        return { id: f.id, libelle: f.libelle, montant: Number(f.montant), periodicite: f.periodicite, cycle: f.cycle, date_echeance: f.date_echeance, niveau: niv?.nom ?? null, rang: niv ? 2000 + niv.ordre : f.cycle ? 1000 + CYCLES.indexOf(f.cycle) : 0 }
+      })
+      .sort((a, b) => a.libelle.localeCompare(b.libelle) || a.rang - b.rang)
     contenu = (
       <section className={cardClass}>
         <FraisEditor
           anneeId={anneeId}
-          frais={(frais ?? []).map((f) => ({ id: f.id, libelle: f.libelle, montant: Number(f.montant), date_echeance: f.date_echeance, niveau: un(f.niveaux as unknown as { nom: string } | null)?.nom ?? null }))}
+          frais={lignes}
+          prive={regime.prive}
+          mois={regime.mois}
           niveaux={niveaux ?? []}
           ecriture={finances}
           locale={loc}
@@ -93,7 +103,7 @@ export default async function ServicesPage({ searchParams }: { searchParams: Pro
     const [{ data: paiements }, situations, { data: frais }, { data: catalogue }] = await Promise.all([
       supabase.from('paiements_eleves').select('id, eleve_id, libelle, montant, mode, date_paiement, numero_recu').eq('annee_id', anneeId).order('created_at', { ascending: false }).limit(100),
       situationsFinancieres(supabase, anneeId),
-      supabase.from('frais_scolarite').select('libelle').eq('annee_id', anneeId),
+      supabase.from('frais_scolarite').select('libelle, periodicite').eq('annee_id', anneeId),
       supabase.from('services').select('nom').eq('actif', true),
     ])
     const totaux = [...situations.values()].reduce((a, x) => ({ du: a.du + x.du, paye: a.paye + x.paye, reste: a.reste + x.reste }), { du: 0, paye: 0, reste: 0 })
@@ -153,7 +163,15 @@ export default async function ServicesPage({ searchParams }: { searchParams: Pro
       </div>
     )
     // Suggestions de libellés pour l'encaissement (frais et services de l'année).
-    const suggestions = [...new Set([...(frais ?? []).map((f) => f.libelle), ...(catalogue ?? []).map((c) => c.nom)])]
+    // Mensualités : une suggestion par mois de l'année scolaire (« Mensualité · octobre »…).
+    const debut = selection ? new Date(selection.date_debut + 'T00:00:00') : new Date()
+    const moisAnnee = Array.from({ length: regime.mois }, (_, k) => new Date(debut.getFullYear(), debut.getMonth() + k, 1).toLocaleDateString(loc, { month: 'long', year: 'numeric' }))
+    const suggestions = [
+      ...new Set([
+        ...(frais ?? []).flatMap((f) => (f.periodicite === 'mensuel' ? moisAnnee.map((m) => `${f.libelle} · ${m}`) : [f.libelle])),
+        ...(catalogue ?? []).map((c) => c.nom),
+      ]),
+    ]
     return (
       <div>
         <PageHeader

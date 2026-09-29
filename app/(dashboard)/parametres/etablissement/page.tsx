@@ -17,7 +17,7 @@ export default async function EtablissementPage() {
   const [{ data: etab }, { data: niveaux }] = await Promise.all([
     supabase
       .from('etablissements')
-      .select('nom, sigle, adresse, ville, telephone, email, niveau_min_compte_eleve, palier, abonnement_expire_le')
+      .select('nom, sigle, adresse, ville, telephone, email, niveau_min_compte_eleve, statut_juridique, mois_scolarite, palier, abonnement_expire_le')
       .eq('id', context.etablissementId)
       .single(),
     supabase.from('niveaux').select('code, nom').eq('actif', true).order('ordre'),

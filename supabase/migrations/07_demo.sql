@@ -578,16 +578,24 @@ begin
     (e, 'fournitures', 'Kit de fournitures', 18000, 'annuel'),
     (e, 'activite', 'Club informatique', 5000, 'trimestriel');
 
-  -- ─── Frais de scolarité (inscription + scolarité annuelle par cycle) ─────
-  insert into public.frais_scolarite (etablissement_id, annee_id, niveau_id, libelle, montant, date_echeance)
-  select e, a.id, null, 'Frais d''inscription', 25000, a.date_debut
+  -- ─── Frais de scolarité (établissement privé : mensualités) ─────────────
+  -- Inscription pour tous ; mensualité fixée par cycle, remplacée pour les
+  -- classes d'examen (CM2, 3e, Tle) par un montant propre au niveau.
+  update public.etablissements set statut_juridique = 'prive', mois_scolarite = 9 where id = e;
+  insert into public.frais_scolarite (etablissement_id, annee_id, niveau_id, cycle, libelle, montant, periodicite, date_echeance)
+  select e, a.id, null, null, 'Frais d''inscription', 25000, 'unique', a.date_debut
   from public.annees_scolaires a where a.id in (a1, a2);
-  insert into public.frais_scolarite (etablissement_id, annee_id, niveau_id, libelle, montant, date_echeance)
-  select distinct e, cla.annee_id, n.id, 'Scolarité annuelle',
-    case n.cycle when 'elementaire' then 180000 when 'moyen' then 225000 else 270000 end,
-    (select date_debut + 30 from public.annees_scolaires where id = cla.annee_id)
-  from public.classes cla join public.niveaux n on n.id = cla.niveau_id
-  where cla.etablissement_id = e;
+  insert into public.frais_scolarite (etablissement_id, annee_id, niveau_id, cycle, libelle, montant, periodicite, date_echeance)
+  select e, a.id, null, x.cycle, 'Mensualité', x.montant, 'mensuel', a.date_debut + 5
+  from public.annees_scolaires a
+  cross join (values ('elementaire', 20000), ('moyen', 25000), ('secondaire', 30000)) as x(cycle, montant)
+  where a.id in (a1, a2);
+  insert into public.frais_scolarite (etablissement_id, annee_id, niveau_id, cycle, libelle, montant, periodicite, date_echeance)
+  select e, a.id, n.id, null, 'Mensualité', x.montant, 'mensuel', a.date_debut + 5
+  from public.annees_scolaires a
+  cross join (values ('CM2', 22500), ('3E', 27500), ('TLE', 35000)) as x(niv, montant)
+  join public.niveaux n on n.etablissement_id = e and n.code = x.niv
+  where a.id in (a1, a2);
 
   -- ─── Souscriptions aux services (rentrée 2026-2027) ─────────────────────
   insert into public.souscriptions_services (etablissement_id, eleve_id, service_id, annee_id, details)
@@ -605,36 +613,45 @@ begin
       else public._demo_alea(i.eleve_id::text || 'club') < 0.12 end;
 
   -- ─── Paiements des familles ──────────────────────────────────────────────
-  -- 2025-2026 : scolarité soldée pour la plupart, trois familles avec un reste dû.
-  insert into public.paiements_eleves (etablissement_id, eleve_id, annee_id, libelle, montant, mode, date_paiement)
-  select e, i.eleve_id, a1, x.libelle, x.montant,
-    (array['especes', 'mobile_money', 'mobile_money', 'virement'])[1 + floor(public._demo_alea(i.eleve_id::text || x.libelle) * 4)::integer],
-    x.date_p
+  -- Mensualité applicable à chaque élève : celle de son niveau, sinon de son cycle.
+  create temp table _mens on commit drop as
+  select i.eleve_id, i.annee_id,
+    (select f.montant from public.frais_scolarite f
+     where f.annee_id = i.annee_id and f.libelle = 'Mensualité' and (f.niveau_id = cla.niveau_id or f.cycle = n.cycle)
+     order by (f.niveau_id is not null) desc limit 1) as montant
   from public.inscriptions i
   join public.classes cla on cla.id = i.classe_id
   join public.niveaux n on n.id = cla.niveau_id
-  cross join lateral (values
-    ('Frais d''inscription', 25000, date '2025-09-22'),
-    ('Scolarité · 1re tranche', (case n.cycle when 'elementaire' then 180000 when 'moyen' then 225000 else 270000 end) / 3, date '2025-10-20'),
-    ('Scolarité · 2e tranche', (case n.cycle when 'elementaire' then 180000 when 'moyen' then 225000 else 270000 end) / 3, date '2026-01-12'),
-    ('Scolarité · 3e tranche', (case n.cycle when 'elementaire' then 180000 when 'moyen' then 225000 else 270000 end) / 3, date '2026-04-13')
-  ) as x(libelle, montant, date_p)
-  where i.annee_id = a1
-    and not (x.libelle = 'Scolarité · 3e tranche' and public._demo_alea(i.eleve_id::text || 'impaye') < 0.06);
+  where i.etablissement_id = e;
 
-  -- Rentrée 2026-2027 : inscription réglée par la plupart, 1re tranche par certains.
+  -- 2025-2026 : inscription puis 9 mensualités (octobre à juin) ; quelques
+  -- familles n'ont pas réglé mai et juin (restes à payer).
   insert into public.paiements_eleves (etablissement_id, eleve_id, annee_id, libelle, montant, mode, date_paiement)
-  select e, i.eleve_id, a2, x.libelle, x.montant,
-    (array['especes', 'mobile_money', 'mobile_money', 'virement'])[1 + floor(public._demo_alea(i.eleve_id::text || x.libelle || '27') * 4)::integer],
-    date '2026-09-14' + floor(public._demo_alea(i.eleve_id::text || 'jour' || x.libelle) * 14)::integer
-  from public.inscriptions i
-  join public.classes cla on cla.id = i.classe_id
-  join public.niveaux n on n.id = cla.niveau_id
+  select e, m.eleve_id, a1, x.libelle, x.montant,
+    (array['especes', 'mobile_money', 'mobile_money', 'virement'])[1 + floor(public._demo_alea(m.eleve_id::text || x.libelle) * 4)::integer],
+    x.date_p
+  from _mens m
+  cross join lateral (
+    select 'Frais d''inscription' as libelle, 25000 as montant, date '2025-09-22' as date_p, 0 as rang
+    union all
+    select 'Mensualité · ' || (array['octobre 2025', 'novembre 2025', 'décembre 2025', 'janvier 2026', 'février 2026', 'mars 2026', 'avril 2026', 'mai 2026', 'juin 2026'])[k],
+      m.montant, (date '2025-10-01' + (k - 1) * interval '1 month')::date + floor(public._demo_alea(m.eleve_id::text || k) * 8)::integer, k
+    from generate_series(1, 9) k
+  ) as x
+  where m.annee_id = a1 and m.montant is not null
+    and not (x.rang >= 8 and public._demo_alea(m.eleve_id::text || 'impaye') < 0.08);
+
+  -- Rentrée 2026-2027 : inscription réglée par la plupart, octobre payé d'avance par certains.
+  insert into public.paiements_eleves (etablissement_id, eleve_id, annee_id, libelle, montant, mode, date_paiement)
+  select e, m.eleve_id, a2, x.libelle, x.montant,
+    (array['especes', 'mobile_money', 'mobile_money', 'virement'])[1 + floor(public._demo_alea(m.eleve_id::text || x.libelle || '27') * 4)::integer],
+    date '2026-09-14' + floor(public._demo_alea(m.eleve_id::text || 'jour' || x.libelle) * 14)::integer
+  from _mens m
   cross join lateral (values
     ('Frais d''inscription', 25000, 0.9),
-    ('Scolarité · 1re tranche', (case n.cycle when 'elementaire' then 180000 when 'moyen' then 225000 else 270000 end) / 3, 0.55)
+    ('Mensualité · octobre 2026', m.montant, 0.55)
   ) as x(libelle, montant, part)
-  where i.annee_id = a2 and public._demo_alea(i.eleve_id::text || 'paye' || x.libelle) < x.part;
+  where m.annee_id = a2 and m.montant is not null and public._demo_alea(m.eleve_id::text || 'paye' || x.libelle) < x.part;
 
   -- ─── Admissions pour la rentrée 2026-2027 ────────────────────────────────
   insert into public.candidatures (etablissement_id, annee_id, niveau_id, serie_id, prenom, nom, sexe, date_naissance, lieu_naissance,

@@ -220,7 +220,15 @@
     "cyclesOuverts": "Included cycles",
     "expireLe": "Paid until {date}",
     "nonPaye": "No paid period",
-    "directionOnly": "Only the management can change this information."
+    "directionOnly": "Only the management can change this information.",
+    "statutJuridique": "School status",
+    "statuts": {
+      "prive": "Private",
+      "public": "Public"
+    },
+    "statutHint": "In private schools, tuition is usually paid every month.",
+    "moisScolarite": "Monthly payments per year",
+    "moisHint": "9 by default (October to June)."
   },
   "annees": {
     "title": "School years",
@@ -398,7 +406,7 @@
     "payer": "Pay",
     "souscrireTitle": "Subscribe",
     "renouvelerTitle": "Renew for next year",
-    "souscrireDesc": "At least 50% on the first instalment. The next instalments fall due 3 and 6 months after the first payment.",
+    "souscrireDesc": "At least 50% on the first instalment: pay in full, or in two 50% instalments (the second one 3 months after the first payment).",
     "choisirPalier": "Plan",
     "choisirPlan": "Payment method",
     "plans": {
@@ -408,8 +416,7 @@
     },
     "planDetail": {
       "comptant": "100% when subscribing",
-      "deux_tranches": "50% now, 50% after 3 months",
-      "trois_tranches": "50% now, 25% after 3 months, 25% after 6 months"
+      "deux_tranches": "50% now, 50% after 3 months"
     },
     "aPayerMaintenant": "Due now",
     "total": "Annual total",
@@ -888,7 +895,22 @@
     "aucunImpaye": "No outstanding balance.",
     "derniersPaiements": "Latest payments",
     "situation": "Financial status {annee}",
-    "servicesSouscrits": "Subscribed services"
+    "servicesSouscrits": "Subscribed services",
+    "regimePrive": "Private school: monthly fees are due {mois} times a year (set in Settings › School).",
+    "regimePublic": "Public school: registration fees and one-off contributions.",
+    "parMois": "/ month",
+    "totalAnnuel": "i.e. {total} a year",
+    "mensualitePlaceholder": "Monthly fee",
+    "portee": "Applies to",
+    "parCycle": "By cycle",
+    "parNiveau": "By class level",
+    "periodicitesFrais": {
+      "unique": "One-off",
+      "mensuel": "Monthly"
+    },
+    "montantMensuel": "Amount per month",
+    "premiereEcheance": "First due date",
+    "aidePortee": "For the same label, an amount set for a class level (CI, 5e, 2nde…) overrides the cycle amount, which overrides the all-levels amount."
   },
   "documents": {
     "title": "Certificates",

@@ -6,6 +6,7 @@ import { contexteEcriture } from '@/lib/auth/getCurrentUserContext'
 import { messageErreur } from '@/lib/erreurs'
 import { fmt } from '@/lib/i18n'
 import { getDictionary } from '@/dictionaries'
+import { CYCLES } from '@/lib/finances'
 
 type ActionResult = { success?: true; error?: string }
 
@@ -26,13 +27,17 @@ export async function ajouterFrais(anneeId: string, formData: FormData): Promise
   if (!v('libelle')) return { error: fmt(dict.errors.required, { champ: dict.fields.libelle }) }
   if (!m) return { error: fmt(dict.errors.invalidNumber, { champ: dict.finances.montant }) }
 
+  // Portée : '' (tous niveaux), 'cycle:<cycle>' ou 'niveau:<id>'.
+  const [genre, valeur] = v('portee').split(':')
   const supabase = await createClient()
   const { error } = await supabase.from('frais_scolarite').insert({
     etablissement_id: garde.context.etablissementId,
     annee_id: anneeId,
-    niveau_id: v('niveau_id') || null,
+    niveau_id: genre === 'niveau' && valeur ? valeur : null,
+    cycle: genre === 'cycle' && (CYCLES as readonly string[]).includes(valeur) ? valeur : null,
     libelle: v('libelle').slice(0, 100),
     montant: m,
+    periodicite: v('periodicite') === 'mensuel' ? 'mensuel' : 'unique',
     date_echeance: DATE.test(v('date_echeance')) ? v('date_echeance') : null,
   })
   if (error) return { error: messageErreur(error, dict, 'ajouterFrais') }

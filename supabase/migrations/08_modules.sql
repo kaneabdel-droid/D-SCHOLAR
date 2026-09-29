@@ -315,14 +315,40 @@ create table public.souscriptions_services (
 );
 
 -- Frais de scolarité par année, pour un niveau (ou tous : niveau_id null).
+-- Établissement privé ou public. Dans le privé, la scolarité est le plus souvent
+-- mensuelle (mois_scolarite mensualités par an, 9 par défaut : octobre à juin).
+alter table public.etablissements
+  add column statut_juridique varchar(10) not null default 'prive' check (statut_juridique in ('prive', 'public')),
+  add column mois_scolarite smallint not null default 9 check (mois_scolarite between 1 and 12);
+
+create or replace function public.modifier_regime_etablissement(p_statut_juridique text, p_mois_scolarite integer) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  if public.current_role() is distinct from 'direction' or not public.ecriture_autorisee() then
+    raise exception 'Réservé à la direction';
+  end if;
+  update public.etablissements
+  set statut_juridique = case when p_statut_juridique in ('prive', 'public') then p_statut_juridique else statut_juridique end,
+      mois_scolarite = greatest(1, least(12, coalesce(p_mois_scolarite, mois_scolarite)))
+  where id = public.current_etablissement_id();
+end;
+$$;
+
+-- Frais d'une année : pour tous les niveaux, pour un cycle (préscolaire,
+-- élémentaire, moyen, secondaire) ou pour un niveau de classe (CI, 5e, 2nde…).
+-- À libellé égal, le frais le plus précis l'emporte (niveau > cycle > tous),
+-- cf. lib/finances.ts. Une mensualité compte mois_scolarite fois dans l'année.
 create table public.frais_scolarite (
   id uuid default gen_random_uuid() primary key,
   etablissement_id uuid references public.etablissements(id) on delete cascade not null,
   annee_id uuid references public.annees_scolaires(id) on delete cascade not null,
   niveau_id uuid references public.niveaux(id) on delete cascade,
+  cycle varchar(20) check (cycle in ('prescolaire', 'elementaire', 'moyen', 'secondaire')),
   libelle varchar(100) not null,
   montant integer not null check (montant > 0),
-  date_echeance date
+  periodicite varchar(10) not null default 'unique' check (periodicite in ('unique', 'mensuel')),
+  date_echeance date,
+  constraint frais_portee_unique check (niveau_id is null or cycle is null)
 );
 
 create table public.paiements_eleves (

@@ -220,7 +220,15 @@
     "cyclesOuverts": "Cycles inclus",
     "expireLe": "Payé jusqu'au {date}",
     "nonPaye": "Aucune période payée",
-    "directionOnly": "Seule la direction peut modifier ces informations."
+    "directionOnly": "Seule la direction peut modifier ces informations.",
+    "statutJuridique": "Statut de l'établissement",
+    "statuts": {
+      "prive": "Privé",
+      "public": "Public"
+    },
+    "statutHint": "Dans le privé, la scolarité est en général payée chaque mois.",
+    "moisScolarite": "Mensualités par an",
+    "moisHint": "9 par défaut (octobre à juin)."
   },
   "annees": {
     "title": "Années scolaires",
@@ -398,7 +406,7 @@
     "payer": "Payer",
     "souscrireTitle": "Souscrire",
     "renouvelerTitle": "Renouveler pour l'année suivante",
-    "souscrireDesc": "Au moins 50 % à la première tranche. Les tranches suivantes tombent 3 et 6 mois après le premier paiement.",
+    "souscrireDesc": "Au moins 50 % à la première tranche : paiement comptant, ou deux tranches de 50 % (la seconde 3 mois après le premier paiement).",
     "choisirPalier": "Formule",
     "choisirPlan": "Mode de paiement",
     "plans": {
@@ -408,8 +416,7 @@
     },
     "planDetail": {
       "comptant": "100 % à la souscription",
-      "deux_tranches": "50 % maintenant, 50 % à 3 mois",
-      "trois_tranches": "50 % maintenant, 25 % à 3 mois, 25 % à 6 mois"
+      "deux_tranches": "50 % maintenant, 50 % à 3 mois"
     },
     "aPayerMaintenant": "À payer maintenant",
     "total": "Total annuel",
@@ -888,7 +895,22 @@
     "aucunImpaye": "Aucun impayé.",
     "derniersPaiements": "Derniers paiements",
     "situation": "Situation financière {annee}",
-    "servicesSouscrits": "Services souscrits"
+    "servicesSouscrits": "Services souscrits",
+    "regimePrive": "Établissement privé : les mensualités sont dues {mois} fois dans l'année (réglable dans Paramètres › Établissement).",
+    "regimePublic": "Établissement public : frais d'inscription et contributions ponctuelles.",
+    "parMois": "/ mois",
+    "totalAnnuel": "soit {total} par an",
+    "mensualitePlaceholder": "Mensualité",
+    "portee": "S'applique à",
+    "parCycle": "Par cycle",
+    "parNiveau": "Par niveau de classe",
+    "periodicitesFrais": {
+      "unique": "Paiement unique",
+      "mensuel": "Mensuel"
+    },
+    "montantMensuel": "Montant par mois",
+    "premiereEcheance": "1re échéance",
+    "aidePortee": "Un montant fixé pour un niveau de classe (CI, 5e, 2nde…) remplace celui du cycle, qui remplace celui de tous les niveaux, à libellé identique."
   },
   "documents": {
     "title": "Attestations & certificats",

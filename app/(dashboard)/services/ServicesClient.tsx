@@ -4,11 +4,11 @@ import { useMemo, useState, useTransition } from 'react'
 import { Plus, Printer, Trash2, Wallet } from 'lucide-react'
 import { toast } from 'sonner'
 import Modal from '@/components/ui/Modal'
-import { btnIcon, btnPrimary, btnSecondary, inputClass, labelClass } from '@/components/ui/styles'
+import { btnIcon, btnPrimary, btnSecondary, hintClass, inputClass, labelClass } from '@/components/ui/styles'
 import type { Dictionary } from '@/dictionaries'
 import { echapper, enteteHtml, imprimerPages } from '@/lib/impression'
 import { fmt } from '@/lib/i18n'
-import { MODES_PAIEMENT } from '@/lib/finances'
+import { CYCLES, MODES_PAIEMENT, PERIODICITES_FRAIS } from '@/lib/finances'
 import { ajouterFrais, annulerPaiement, donneesRecu, encaisser, retirerService, souscrireService, supprimerFrais } from './actions'
 
 export type EleveAnnee = { id: string; nom: string; classe: string }
@@ -36,19 +36,29 @@ function ChoixEleve({ eleves, dict, name = 'eleve_id' }: { eleves: EleveAnnee[];
   )
 }
 
-export function FraisEditor({ anneeId, frais, niveaux, ecriture, locale, dict }: { anneeId: string; frais: { id: string; libelle: string; montant: number; niveau: string | null; date_echeance: string | null }[]; niveaux: { id: string; nom: string }[]; ecriture: boolean; locale: string; dict: Dictionary }) {
+export type FraisLigne = { id: string; libelle: string; montant: number; niveau: string | null; cycle: string | null; periodicite: string; date_echeance: string | null }
+
+export function FraisEditor({ anneeId, frais, niveaux, prive, mois, ecriture, locale, dict }: { anneeId: string; frais: FraisLigne[]; niveaux: { id: string; nom: string; cycle: string }[]; prive: boolean; mois: number; ecriture: boolean; locale: string; dict: Dictionary }) {
   const t = dict.finances
   const [erreur, setErreur] = useState<string | null>(null)
+  const [periodicite, setPeriodicite] = useState(prive ? 'mensuel' : 'unique')
   const [enCours, startTransition] = useTransition()
+  const portee = (f: FraisLigne) => f.niveau ?? (f.cycle ? dict.cycles[f.cycle as keyof typeof dict.cycles] : t.tousNiveaux)
   return (
     <div>
+      <p className="border-b border-surface-border px-5 py-3 text-sm text-foreground-muted">
+        {prive ? fmt(t.regimePrive, { mois }) : t.regimePublic}
+      </p>
       <ul className="divide-y divide-surface-border">
         {frais.map((f) => (
           <li key={f.id} className="flex flex-wrap items-center gap-3 px-5 py-3">
             <span className="min-w-40 flex-1 font-medium text-foreground">{f.libelle}</span>
-            <span className="text-sm text-foreground-muted">{f.niveau ?? t.tousNiveaux}</span>
+            <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${f.niveau ? 'bg-primary-soft text-primary' : f.cycle ? 'bg-warning/10 text-warning' : 'bg-background text-foreground-muted'}`}>{portee(f)}</span>
             {f.date_echeance && <span className="text-xs text-foreground-muted">{new Date(f.date_echeance + 'T00:00:00').toLocaleDateString(locale)}</span>}
-            <span className="font-semibold tabular-nums">{f.montant.toLocaleString(locale)} {dict.abonnement.fcfa}</span>
+            <span className="font-semibold tabular-nums">
+              {f.montant.toLocaleString(locale)} {dict.abonnement.fcfa}
+              {f.periodicite === 'mensuel' && <span className="text-xs font-normal text-foreground-muted"> {t.parMois} · {fmt(t.totalAnnuel, { total: (f.montant * mois).toLocaleString(locale) })}</span>}
+            </span>
             {ecriture && (
               <button type="button" onClick={() => startTransition(async () => { const r = await supprimerFrais(f.id); if (r.error) toast.error(r.error) })} className={`${btnIcon} hover:text-danger`} aria-label={dict.common.delete}>
                 <Trash2 className="h-4 w-4" />
@@ -68,20 +78,32 @@ export function FraisEditor({ anneeId, frais, niveaux, ecriture, locale, dict }:
               else toast.success(dict.common.created)
             })
           }
-          className="grid gap-3 border-t border-surface-border p-5 sm:grid-cols-2 lg:grid-cols-[2fr_1.4fr_1fr_1fr_auto] lg:items-end"
+          className="grid gap-3 border-t border-surface-border p-5 sm:grid-cols-2 lg:grid-cols-[1.6fr_1.4fr_1fr_1fr_1fr_auto] lg:items-end"
         >
-          <div><label htmlFor="fr-lib" className={labelClass}>{dict.fields.libelle}</label><input id="fr-lib" name="libelle" required placeholder={t.libelleFraisPlaceholder} className={inputClass} /></div>
+          <div><label htmlFor="fr-lib" className={labelClass}>{dict.fields.libelle}</label><input id="fr-lib" name="libelle" required placeholder={periodicite === 'mensuel' ? t.mensualitePlaceholder : t.libelleFraisPlaceholder} className={inputClass} /></div>
           <div>
-            <label htmlFor="fr-niv" className={labelClass}>{dict.coefficients.niveau}</label>
-            <select id="fr-niv" name="niveau_id" className={inputClass}>
+            <label htmlFor="fr-portee" className={labelClass}>{t.portee}</label>
+            <select id="fr-portee" name="portee" className={inputClass}>
               <option value="">{t.tousNiveaux}</option>
-              {niveaux.map((n) => <option key={n.id} value={n.id}>{n.nom}</option>)}
+              <optgroup label={t.parCycle}>
+                {CYCLES.filter((c) => niveaux.some((n) => n.cycle === c)).map((c) => <option key={c} value={`cycle:${c}`}>{dict.cycles[c]}</option>)}
+              </optgroup>
+              <optgroup label={t.parNiveau}>
+                {niveaux.map((n) => <option key={n.id} value={`niveau:${n.id}`}>{n.nom}</option>)}
+              </optgroup>
             </select>
           </div>
-          <div><label htmlFor="fr-mt" className={labelClass}>{t.montant}</label><input id="fr-mt" name="montant" inputMode="numeric" required className={inputClass} /></div>
-          <div><label htmlFor="fr-ech" className={labelClass}>{dict.abonnement.echeance}</label><input id="fr-ech" name="date_echeance" type="date" className={inputClass} /></div>
+          <div>
+            <label htmlFor="fr-per" className={labelClass}>{dict.fields.periodicite}</label>
+            <select id="fr-per" name="periodicite" value={periodicite} onChange={(e) => setPeriodicite(e.target.value)} className={inputClass}>
+              {PERIODICITES_FRAIS.map((p) => <option key={p} value={p}>{t.periodicitesFrais[p]}</option>)}
+            </select>
+          </div>
+          <div><label htmlFor="fr-mt" className={labelClass}>{periodicite === 'mensuel' ? t.montantMensuel : t.montant}</label><input id="fr-mt" name="montant" inputMode="numeric" required className={inputClass} /></div>
+          <div><label htmlFor="fr-ech" className={labelClass}>{periodicite === 'mensuel' ? t.premiereEcheance : dict.abonnement.echeance}</label><input id="fr-ech" name="date_echeance" type="date" className={inputClass} /></div>
           <button type="submit" disabled={enCours} className={btnPrimary}><Plus className="h-4 w-4" /> {dict.emplois.ajouter}</button>
-          <div className="sm:col-span-2 lg:col-span-5">{erreurBloc(erreur)}</div>
+          <p className={`${hintClass} sm:col-span-2 lg:col-span-6`}>{t.aidePortee}</p>
+          <div className="sm:col-span-2 lg:col-span-6">{erreurBloc(erreur)}</div>
         </form>
       )}
     </div>

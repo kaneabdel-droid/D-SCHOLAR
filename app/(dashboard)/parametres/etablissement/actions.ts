@@ -35,6 +35,14 @@ export async function modifierEtablissement(formData: FormData): Promise<ActionR
   })
   if (error) return { error: messageErreur(error, dict, 'modifierEtablissement') }
 
+  // Régime : privé (scolarité souvent mensuelle) ou public, nombre de mensualités.
+  const mois = Math.round(Number(champ('mois_scolarite')))
+  const { error: e2 } = await supabase.rpc('modifier_regime_etablissement', {
+    p_statut_juridique: champ('statut_juridique') === 'public' ? 'public' : 'prive',
+    p_mois_scolarite: mois >= 1 && mois <= 12 ? mois : 9,
+  })
+  if (e2) return { error: messageErreur(e2, dict, 'modifierRegime') }
+
   revalidatePath('/', 'layout')
   return { success: true }
 }

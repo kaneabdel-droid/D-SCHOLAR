@@ -110,3 +110,18 @@ begin
   return v_doc;
 end;
 $$;
+
+-- ═══ 3. Abonnements : deux paiements au plus par formule ═════════════════════
+-- Comptant (100 %) ou deux tranches (50 % + 50 %). Les anciennes contraintes
+-- (05_abonnements.sql) acceptaient aussi 3 tranches (50 / 25 / 25) ; NOT VALID :
+-- les lignes déjà enregistrées ne sont pas revérifiées, seules les nouvelles.
+alter table public.souscriptions drop constraint if exists souscriptions_plan_check;
+alter table public.souscriptions add constraint souscriptions_plan_check
+  check (plan in ('comptant', 'deux_tranches')) not valid;
+alter table public.echeances_abonnement drop constraint if exists echeances_abonnement_pourcentage_check;
+alter table public.echeances_abonnement add constraint echeances_abonnement_pourcentage_check
+  check (pourcentage in (50, 100)) not valid;
+-- Produits Chariow : un par formule × part (100 %, 50 %), soit 6 au total.
+delete from public.chariow_produits where pourcentage not in (50, 100);
+alter table public.chariow_produits drop constraint if exists chariow_produits_pourcentage_check;
+alter table public.chariow_produits add constraint chariow_produits_pourcentage_check check (pourcentage in (50, 100));

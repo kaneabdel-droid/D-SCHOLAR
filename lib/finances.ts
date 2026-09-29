@@ -7,12 +7,31 @@ export const TYPES_SERVICE = ['tenue', 'transport', 'restauration', 'fournitures
 export const PERIODICITES = ['unique', 'mensuel', 'trimestriel', 'annuel'] as const
 export const MODES_PAIEMENT = ['especes', 'mobile_money', 'virement', 'cheque', 'autre'] as const
 
-export type Situation = { du: number; paye: number; reste: number }
+export const CYCLES = ['prescolaire', 'elementaire', 'moyen', 'secondaire'] as const
+export const PERIODICITES_FRAIS = ['unique', 'mensuel'] as const
 
-// Situation financière des élèves d'une année : frais de scolarité de leur
-// niveau (et frais communs) + services souscrits, moins les paiements.
+export type Situation = { du: number; paye: number; reste: number }
+export type Frais = { libelle: string; montant: number; periodicite: string; niveau_id: string | null; cycle: string | null }
+
+// Frais dus par un élève : à libellé égal, le plus précis l'emporte (niveau de
+// classe > cycle > tous niveaux) ; une mensualité compte `mois` fois.
+export function fraisDus(frais: Frais[], niveauId: string | null | undefined, cycle: string | null | undefined, mois: number) {
+  const precision = (f: Frais) => (f.niveau_id ? (f.niveau_id === niveauId ? 3 : -1) : f.cycle ? (f.cycle === cycle ? 2 : -1) : 1)
+  const retenus = new Map<string, { f: Frais; p: number }>()
+  for (const f of frais) {
+    const p = precision(f)
+    if (p < 0) continue
+    const cle = f.libelle.trim().toLowerCase()
+    const cur = retenus.get(cle)
+    if (!cur || p > cur.p) retenus.set(cle, { f, p })
+  }
+  return [...retenus.values()].reduce((t, { f }) => t + Number(f.montant) * (f.periodicite === 'mensuel' ? mois : 1), 0)
+}
+
+// Situation financière des élèves d'une année : frais de scolarité (communs,
+// du cycle ou du niveau) + services souscrits, moins les paiements.
 export async function situationsFinancieres(supabase: SupabaseClient, anneeId: string, eleveIds?: string[]) {
-  let qInsc = supabase.from('inscriptions').select('eleve_id, classes(niveau_id)').eq('annee_id', anneeId)
+  let qInsc = supabase.from('inscriptions').select('eleve_id, classes(niveau_id, niveaux(cycle))').eq('annee_id', anneeId)
   let qSous = supabase.from('souscriptions_services').select('eleve_id, services(tarif, periodicite)').eq('annee_id', anneeId)
   let qPaie = supabase.from('paiements_eleves').select('eleve_id, montant').eq('annee_id', anneeId)
   if (eleveIds) {
@@ -20,17 +39,21 @@ export async function situationsFinancieres(supabase: SupabaseClient, anneeId: s
     qSous = qSous.in('eleve_id', eleveIds)
     qPaie = qPaie.in('eleve_id', eleveIds)
   }
-  const [{ data: inscriptions }, { data: frais }, { data: souscriptions }, { data: paiements }] = await Promise.all([
+  const [{ data: inscriptions }, { data: frais }, { data: souscriptions }, { data: paiements }, { data: etab }] = await Promise.all([
     qInsc,
-    supabase.from('frais_scolarite').select('niveau_id, montant').eq('annee_id', anneeId),
+    supabase.from('frais_scolarite').select('libelle, montant, periodicite, niveau_id, cycle').eq('annee_id', anneeId),
     qSous,
     qPaie,
+    // RLS : l'établissement du lecteur (personnel ou famille).
+    supabase.from('etablissements').select('mois_scolarite').limit(1).maybeSingle(),
   ])
+  const mois = Number(etab?.mois_scolarite ?? 9)
 
   const situations = new Map<string, Situation>()
-  for (const i of (inscriptions ?? []) as unknown as { eleve_id: string; classes: { niveau_id: string } | null }[]) {
-    const niveau = un(i.classes)?.niveau_id
-    const du = (frais ?? []).filter((f) => f.niveau_id === null || f.niveau_id === niveau).reduce((t, f) => t + Number(f.montant), 0)
+  type Insc = { eleve_id: string; classes: { niveau_id: string; niveaux: { cycle: string } | null } | null }
+  for (const i of (inscriptions ?? []) as unknown as Insc[]) {
+    const classe = un(i.classes)
+    const du = fraisDus((frais ?? []) as Frais[], classe?.niveau_id, un(classe?.niveaux)?.cycle, mois)
     situations.set(i.eleve_id, { du, paye: 0, reste: 0 })
   }
   for (const s of (souscriptions ?? []) as unknown as { eleve_id: string; services: { tarif: number; periodicite: string } | null }[]) {

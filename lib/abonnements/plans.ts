@@ -1,21 +1,20 @@
 // Plans de paiement d'une souscription annuelle. Tranche 1 ≥ 50 % (règle
 // commerciale, réimposée en base par premiere_tranche_min_50 et
-// creer_souscription()). Les parts sont limitées à 100 / 50 / 25 % parce que
-// Chariow n'accepte que des produits à prix fixe (cf. chariow_produits).
+// creer_souscription()). Deux paiements au plus : 100 %, ou 50 % + 50 % —
+// ce qui limite aussi les produits Chariow (prix fixes) à 2 par formule.
 
 import { PALIERS, type PalierCode } from './paliers'
 
-export type PlanCode = 'comptant' | 'deux_tranches' | 'trois_tranches'
-export type Pourcentage = 100 | 50 | 25
+export type PlanCode = 'comptant' | 'deux_tranches'
+export type Pourcentage = 100 | 50
 
 export const PLANS: Record<PlanCode, { repartition: Pourcentage[]; decalagesMois: number[] }> = {
   comptant: { repartition: [100], decalagesMois: [0] },
   deux_tranches: { repartition: [50, 50], decalagesMois: [0, 3] },
-  trois_tranches: { repartition: [50, 25, 25], decalagesMois: [0, 3, 6] },
 }
 
 export const PLAN_CODES = Object.keys(PLANS) as PlanCode[]
-export const POURCENTAGES: Pourcentage[] = [100, 50, 25]
+export const POURCENTAGES: Pourcentage[] = [100, 50]
 
 // Accès selon le retard de paiement — miroir de public.acces_etablissement()
 // (05_abonnements.sql), à garder synchronisé.

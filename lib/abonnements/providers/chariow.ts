@@ -18,7 +18,7 @@ function apiKey(): string {
 }
 
 // Chariow débite le prix DU PRODUIT configuré dans sa boutique : un produit
-// par palier × part de tranche (100 / 50 / 25 %), au prix exact issu de
+// par palier × part de tranche (100 / 50 %), au prix exact issu de
 // montantPourcentage() (cf. .env.local.example).
 // Table admin-éditable (chariow_produits, /admin/config) en priorité, repli sur
 // la variable d'env CHARIOW_PRODUCT_<PALIER>_<POURCENTAGE>.
