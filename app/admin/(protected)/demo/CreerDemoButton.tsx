@@ -18,7 +18,7 @@ export default function CreerDemoButton() {
     setMessage(null)
     const v = (n: string) => (formData.get(n) as string | null) ?? ''
     startTransition(async () => {
-      const res = await creerDemo(v('direction'), v('enseignant'), v('password'))
+      const res = await creerDemo(v('direction'), v('enseignant'), v('parent'), v('password'))
       if (res.error) setMessage(res.error)
       else {
         toast.success('Établissement de démonstration créé')
@@ -53,14 +53,18 @@ export default function CreerDemoButton() {
           {message && <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{message}</p>}
           <div>
             <label className={labelClass} htmlFor="demo-direction">Compte direction (Mme Awa Ndoye)</label>
-            <input id="demo-direction" name="direction" type="email" required autoComplete="off" className={inputClass} />
+            <input id="demo-direction" name="direction" type="email" required autoComplete="off" defaultValue="demo.direction@dembasolution.com" className={inputClass} />
           </div>
           <div>
             <label className={labelClass} htmlFor="demo-enseignant">Compte enseignant (M. Ibrahima Ndiaye, Maths + PC)</label>
-            <input id="demo-enseignant" name="enseignant" type="email" required autoComplete="off" className={inputClass} />
+            <input id="demo-enseignant" name="enseignant" type="email" required autoComplete="off" defaultValue="demo.ndiaye@dembasolution.com" className={inputClass} />
           </div>
           <div>
-            <label className={labelClass} htmlFor="demo-password">Mot de passe des deux comptes</label>
+            <label className={labelClass} htmlFor="demo-parent">Compte parent (Mme Mariama Diagne, deux enfants)</label>
+            <input id="demo-parent" name="parent" type="email" required autoComplete="off" defaultValue="demo.parent@dembasolution.com" className={inputClass} />
+          </div>
+          <div>
+            <label className={labelClass} htmlFor="demo-password">Mot de passe des trois comptes</label>
             <input id="demo-password" name="password" type="text" required minLength={8} autoComplete="new-password" className={inputClass} />
             <p className={hintClass}>Au moins 8 caractères.</p>
           </div>

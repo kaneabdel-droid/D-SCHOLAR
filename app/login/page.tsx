@@ -14,8 +14,8 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
     <AuthShell dict={dict} locale={locale} title={t.title} desc={t.desc} message={message}>
       <form className="space-y-5" action={login}>
         <div>
-          <label htmlFor="email" className={labelClass}>{t.email}</label>
-          <input id="email" name="email" type="email" autoComplete="email" required className={inputClass} />
+          <label htmlFor="email" className={labelClass}>{t.identifiant}</label>
+          <input id="email" name="email" type="text" autoComplete="username" required className={inputClass} />
         </div>
         <div>
           <div className="flex items-center justify-between">

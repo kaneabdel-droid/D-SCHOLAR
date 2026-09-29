@@ -1,21 +1,24 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { CalendarRange, Lock, Plus, Trash2, Zap } from 'lucide-react'
+import { CalendarRange, Lock, LockOpen, Plus, Trash2, Zap } from 'lucide-react'
 import { toast } from 'sonner'
 import Modal from '@/components/ui/Modal'
-import { btnIcon, btnPrimary, btnSecondary, cardClass, inputClass, labelClass } from '@/components/ui/styles'
+import { btnIcon, btnPrimary, btnSecondary, cardClass, hintClass, inputClass, labelClass } from '@/components/ui/styles'
 import type { Dictionary } from '@/dictionaries'
+import type { Cycle } from '@/lib/abonnements/paliers'
 import { fmt, intlLocale } from '@/lib/i18n'
-import { activerAnnee, creerAnnee, modifierPeriode, supprimerAnnee } from './actions'
+import { activerAnnee, creerAnnee, modifierPeriode, supprimerAnnee, verrouillerPeriode } from './actions'
 
-type Periode = { id: string; rang: number; date_debut: string | null; date_fin: string | null; verrouillee: boolean }
+type Decoupage = 'trimestre' | 'semestre'
+type Periode = { id: string; rang: number; decoupage: Decoupage; date_debut: string | null; date_fin: string | null; verrouillee: boolean }
 export type Annee = {
   id: string
   libelle: string
   date_debut: string
   date_fin: string
-  decoupage: 'trimestre' | 'semestre'
+  decoupage: Decoupage
+  decoupage_cycles: Partial<Record<Cycle, Decoupage>>
   active: boolean
   cloturee: boolean
   periodes: Periode[]
@@ -43,8 +46,18 @@ function PeriodeLigne({ periode, libelle, dict }: { periode: Periode; libelle: s
       else toast.success(t.periodeSaved)
     })
 
+  // Verrouiller fige les notes de la période : bulletins et relevés deviennent définitifs.
+  const basculer = () => {
+    if (!periode.verrouillee && !confirm(t.confirmVerrou)) return
+    startTransition(async () => {
+      const res = await verrouillerPeriode(periode.id, !periode.verrouillee)
+      if (res.error) toast.error(res.error)
+      else toast.success(periode.verrouillee ? t.deverrouillee : t.verrouillee)
+    })
+  }
+
   return (
-    <li className="grid gap-2 py-3 sm:grid-cols-[10rem_1fr_1fr_auto] sm:items-center sm:gap-3">
+    <li className="grid gap-2 py-3 sm:grid-cols-[9rem_1fr_1fr_auto_auto] sm:items-center sm:gap-3">
       <p className="flex items-center gap-2 text-sm font-medium text-foreground">
         {libelle}
         {periode.verrouillee && (
@@ -55,20 +68,24 @@ function PeriodeLigne({ periode, libelle, dict }: { periode: Periode; libelle: s
       </p>
       <label className="flex items-center gap-2 text-xs text-foreground-muted">
         <span className="w-8 shrink-0">{t.du}</span>
-        <input type="date" value={debut} onChange={(e) => setDebut(e.target.value)} className={`${inputClass} mt-0`} />
+        <input type="date" value={debut} onChange={(e) => setDebut(e.target.value)} disabled={periode.verrouillee} className={`${inputClass} mt-0`} />
       </label>
       <label className="flex items-center gap-2 text-xs text-foreground-muted">
         <span className="w-8 shrink-0">{t.au}</span>
-        <input type="date" value={fin} onChange={(e) => setFin(e.target.value)} className={`${inputClass} mt-0`} />
+        <input type="date" value={fin} onChange={(e) => setFin(e.target.value)} disabled={periode.verrouillee} className={`${inputClass} mt-0`} />
       </label>
       <button type="button" onClick={enregistrer} disabled={!modifie || enCours} className={`${btnSecondary} py-1.5`}>
         {enCours ? dict.common.saving : dict.common.save}
+      </button>
+      <button type="button" onClick={basculer} disabled={enCours} className={`${btnSecondary} py-1.5`} title={periode.verrouillee ? t.deverrouiller : t.verrouiller}>
+        {periode.verrouillee ? <LockOpen className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
+        <span className="hidden lg:inline">{periode.verrouillee ? t.deverrouiller : t.verrouiller}</span>
       </button>
     </li>
   )
 }
 
-export default function AnneesClient({ annees, dict, locale }: { annees: Annee[]; dict: Dictionary; locale: string }) {
+export default function AnneesClient({ annees, dict, locale, cycles }: { annees: Annee[]; dict: Dictionary; locale: string; cycles: Cycle[] }) {
   const t = dict.annees
   const c = dict.common
   const [ouvert, setOuvert] = useState(false)
@@ -76,6 +93,11 @@ export default function AnneesClient({ annees, dict, locale }: { annees: Annee[]
   const [enCours, startTransition] = useTransition()
 
   const dateLisible = (iso: string) => new Date(iso + 'T00:00:00').toLocaleDateString(intlLocale(locale), { day: 'numeric', month: 'short', year: 'numeric' })
+  const libelleDecoupage = (d: Decoupage) => (d === 'trimestre' ? t.trimestre : t.semestre)
+  const libellePeriode = (p: Periode) => fmt(p.decoupage === 'trimestre' ? t.trimestreN : t.semestreN, { n: p.rang })
+
+  // Cycles concernés par chaque découpage de l'année (pour l'en-tête des périodes).
+  const cyclesDe = (a: Annee, d: Decoupage) => cycles.filter((cy) => (a.decoupage_cycles[cy] ?? a.decoupage) === d)
 
   const soumettre = (formData: FormData) => {
     setErreur(null)
@@ -126,44 +148,49 @@ export default function AnneesClient({ annees, dict, locale }: { annees: Annee[]
         </div>
       )}
 
-      {annees.map((annee) => (
-        <article key={annee.id} className={`${cardClass} overflow-hidden ${annee.active ? 'ring-2 ring-primary/30' : ''}`}>
-          <header className="flex flex-wrap items-center gap-3 border-b border-surface-border px-5 py-4">
-            <div className="min-w-0 flex-1">
-              <p className="flex items-center gap-2 font-heading text-lg font-semibold text-foreground">
-                {annee.libelle}
-                {annee.active && <span className="rounded-full bg-primary px-2.5 py-0.5 text-xs font-semibold text-primary-foreground">{t.active}</span>}
-              </p>
-              <p className="mt-0.5 text-sm text-foreground-muted">
-                {dateLisible(annee.date_debut)} → {dateLisible(annee.date_fin)} · {annee.decoupage === 'trimestre' ? t.trimestre : t.semestre}
-              </p>
-            </div>
-            {!annee.active && (
-              <div className="flex gap-1">
-                <button type="button" onClick={() => activer(annee.id)} disabled={enCours} className={btnSecondary}>
-                  <Zap className="h-4 w-4" /> {t.activer}
-                </button>
-                <button type="button" onClick={() => supprimer(annee)} disabled={enCours} className={`${btnIcon} hover:text-danger`} aria-label={c.delete} title={c.delete}>
-                  <Trash2 className="h-4 w-4" />
-                </button>
+      {annees.map((annee) => {
+        const decoupages = [...new Set(annee.periodes.map((p) => p.decoupage))].sort()
+        return (
+          <article key={annee.id} className={`${cardClass} overflow-hidden ${annee.active ? 'ring-2 ring-primary/30' : ''}`}>
+            <header className="flex flex-wrap items-center gap-3 border-b border-surface-border px-5 py-4">
+              <div className="min-w-0 flex-1">
+                <p className="flex items-center gap-2 font-heading text-lg font-semibold text-foreground">
+                  {annee.libelle}
+                  {annee.active && <span className="rounded-full bg-primary px-2.5 py-0.5 text-xs font-semibold text-primary-foreground">{t.active}</span>}
+                </p>
+                <p className="mt-0.5 text-sm text-foreground-muted">
+                  {dateLisible(annee.date_debut)} → {dateLisible(annee.date_fin)}
+                </p>
               </div>
-            )}
-          </header>
-          <div className="px-5 py-2">
-            <p className="pt-2 text-xs font-semibold uppercase tracking-wide text-foreground-muted">{t.periodes}</p>
-            <ul className="divide-y divide-surface-border">
-              {annee.periodes.map((p) => (
-                <PeriodeLigne
-                  key={p.id}
-                  periode={p}
-                  libelle={fmt(annee.decoupage === 'trimestre' ? t.trimestreN : t.semestreN, { n: p.rang })}
-                  dict={dict}
-                />
-              ))}
-            </ul>
-          </div>
-        </article>
-      ))}
+              {!annee.active && (
+                <div className="flex gap-1">
+                  <button type="button" onClick={() => activer(annee.id)} disabled={enCours} className={btnSecondary}>
+                    <Zap className="h-4 w-4" /> {t.activer}
+                  </button>
+                  <button type="button" onClick={() => supprimer(annee)} disabled={enCours} className={`${btnIcon} hover:text-danger`} aria-label={c.delete} title={c.delete}>
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
+            </header>
+            {decoupages.map((d) => (
+              <div key={d} className="border-b border-surface-border px-5 py-2 last:border-b-0">
+                <p className="pt-2 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
+                  {libelleDecoupage(d)}
+                  <span className="ms-2 font-normal normal-case">{cyclesDe(annee, d).map((cy) => dict.cycles[cy]).join(' · ')}</span>
+                </p>
+                <ul className="divide-y divide-surface-border">
+                  {annee.periodes
+                    .filter((p) => p.decoupage === d)
+                    .map((p) => (
+                      <PeriodeLigne key={p.id} periode={p} libelle={libellePeriode(p)} dict={dict} />
+                    ))}
+                </ul>
+              </div>
+            ))}
+          </article>
+        )
+      })}
 
       <Modal
         open={ouvert}
@@ -194,13 +221,17 @@ export default function AnneesClient({ annees, dict, locale }: { annees: Annee[]
             </div>
           </div>
           <fieldset>
-            <legend className={labelClass}>{t.decoupage}</legend>
-            <div className="mt-1.5 grid grid-cols-2 gap-2">
-              {(['trimestre', 'semestre'] as const).map((d) => (
-                <label key={d} className="flex cursor-pointer items-center gap-2 rounded-lg border border-surface-border px-3 py-2.5 text-sm has-[:checked]:border-primary has-[:checked]:bg-primary-soft">
-                  <input type="radio" name="decoupage" value={d} defaultChecked={d === 'trimestre'} className="accent-[var(--primary)]" />
-                  {d === 'trimestre' ? t.trimestre : t.semestre}
-                </label>
+            <legend className={labelClass}>{t.decoupageParCycle}</legend>
+            <p className={hintClass}>{t.decoupageParCycleHint}</p>
+            <div className="mt-2 space-y-2">
+              {cycles.map((cy) => (
+                <div key={cy} className="flex items-center justify-between gap-3 rounded-lg border border-surface-border px-3 py-2">
+                  <span className="text-sm text-foreground">{dict.cycles[cy]}</span>
+                  <select name={`decoupage_${cy}`} defaultValue={cy === 'prescolaire' || cy === 'elementaire' ? 'trimestre' : 'semestre'} className={`${inputClass} mt-0 w-40`}>
+                    <option value="trimestre">{t.trimestre}</option>
+                    <option value="semestre">{t.semestre}</option>
+                  </select>
+                </div>
               ))}
             </div>
           </fieldset>

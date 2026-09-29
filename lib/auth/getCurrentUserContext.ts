@@ -40,7 +40,11 @@ export const getCurrentUserContext = cache(async (): Promise<UserContext> => {
     supabase.rpc('mon_acces'),
   ])
 
-  if (!data || !data.actif) redirect('/login?message=compte')
+  if (!data || !data.actif) {
+    // Parent ou élève : leur espace est le portail, pas le tableau de bord du personnel.
+    const { data: famille } = await supabase.from('comptes_famille').select('actif').eq('id', user.id).maybeSingle()
+    redirect(famille?.actif ? '/portail' : '/login?message=compte')
+  }
 
   const etablissement = Array.isArray(data.etablissements) ? data.etablissements[0] : data.etablissements
 

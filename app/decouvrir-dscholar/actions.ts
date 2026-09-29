@@ -13,6 +13,7 @@ import { withRetry } from '@/utils/supabase/retry'
 const COMPTES_DEMO = {
   direction: 'demo.direction@dembasolution.com',
   enseignant: 'demo.ndiaye@dembasolution.com',
+  parent: 'demo.parent@dembasolution.com',
 } as const
 
 const echec: () => never = () => redirect('/decouvrir-dscholar?demo_error=1')
@@ -35,6 +36,12 @@ export async function connexionDemo(formData: FormData) {
   if (erreurVerification) {
     console.error('Erreur de connexion à la démonstration :', erreurVerification)
     echec()
+  }
+
+  // Parent : directement sur le portail des familles.
+  if (role === 'parent') {
+    revalidatePath('/', 'layout')
+    redirect('/portail')
   }
 
   // Les données complètes (notes, décisions) sont sur la dernière année clôturée.

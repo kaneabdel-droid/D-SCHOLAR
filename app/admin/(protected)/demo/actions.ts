@@ -19,13 +19,14 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 // deux comptes (direction et M. Ibrahima Ndiaye, enseignant Maths + PC), puis
 // remplit toutes les données via creer_demo() (07_demo.sql). Compensation
 // complète en cas d'échec : aucun établissement ni compte orphelin.
-export async function creerDemo(emailDirection: string, emailEnseignant: string, motDePasse: string): Promise<ActionResult> {
+export async function creerDemo(emailDirection: string, emailEnseignant: string, emailParent: string, motDePasse: string): Promise<ActionResult> {
   const authError = await checkAdmin()
   if (authError) return { error: authError }
   const direction = emailDirection.trim().toLowerCase()
   const enseignant = emailEnseignant.trim().toLowerCase()
-  if (!EMAIL.test(direction) || !EMAIL.test(enseignant)) return { error: 'Emails invalides' }
-  if (direction === enseignant) return { error: 'Les deux emails doivent être différents' }
+  const parent = emailParent.trim().toLowerCase()
+  if (![direction, enseignant, parent].every((m) => EMAIL.test(m))) return { error: 'Emails invalides' }
+  if (new Set([direction, enseignant, parent]).size < 3) return { error: 'Les trois emails doivent être différents' }
   if (motDePasse.length < 8) return { error: 'Le mot de passe doit contenir au moins 8 caractères' }
 
   const supabase = createAdminClient()
@@ -69,8 +70,12 @@ export async function creerDemo(emailDirection: string, emailEnseignant: string,
   try {
     await creerCompte(direction, 'direction', 'Awa', 'Ndoye')
     const idEnseignant = await creerCompte(enseignant, 'enseignant', 'Ibrahima', 'Ndiaye')
+    // Parent : compte auth seul, le profil famille (et ses deux enfants) est créé par creer_demo().
+    const { data: p, error: ep } = await withRetryResult(() => supabase.auth.admin.createUser({ email: parent, password: motDePasse, email_confirm: true }))
+    if (ep || !p?.user) throw new Error(`Compte ${parent} : ${ep?.message ?? 'échec de création'}`)
+    comptes.push(p.user.id)
 
-    const { error } = await supabase.rpc('creer_demo', { p_etablissement_id: etab.id, p_utilisateur_enseignant: idEnseignant })
+    const { error } = await supabase.rpc('creer_demo', { p_etablissement_id: etab.id, p_utilisateur_enseignant: idEnseignant, p_utilisateur_parent: p.user.id })
     if (error) throw new Error(`Génération des données : ${error.message}`)
   } catch (err) {
     await annuler()

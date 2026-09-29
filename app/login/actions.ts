@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
+import { identifiantVersEmail } from '@/lib/famille'
 
 // Verrouillage 1 minute après 3 échecs (même mécanisme que D-QUINCA). Les
 // messages sont des codes traduits par AuthShell (dict.auth.messages).
@@ -17,7 +18,8 @@ export async function login(formData: FormData) {
 
   const supabase = await createClient()
   const { error } = await supabase.auth.signInWithPassword({
-    email: formData.get('email') as string,
+    // Email, ou numéro de téléphone d'un parent inscrit sans email (cf. lib/famille.ts).
+    email: identifiantVersEmail((formData.get('email') as string) ?? ''),
     password: formData.get('password') as string,
   })
 

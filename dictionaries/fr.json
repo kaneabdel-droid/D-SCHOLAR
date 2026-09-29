@@ -42,7 +42,10 @@
     "coefficient": "Chaque coefficient doit être un nombre positif.",
     "lectureSeule": "L'établissement est en lecture seule : régularisez l'abonnement pour modifier les données.",
     "invalidValue": "Valeur hors des limites autorisées.",
-    "demo": "Action désactivée dans la démonstration."
+    "demo": "Action désactivée dans la démonstration.",
+    "periodeVerrouillee": "La période est verrouillée : ses évaluations et ses notes ne peuvent plus être modifiées.",
+    "niveauCompteEleve": "Le compte élève n'est pas disponible à ce niveau (voir Paramètres › Établissement).",
+    "conflitCreneau": "Conflit d'emploi du temps : la classe, l'enseignant ou la salle est déjà occupé sur ce créneau."
   },
   "auth": {
     "login": {
@@ -54,7 +57,8 @@
       "submit": "Se connecter",
       "noAccount": "Les comptes sont créés par la direction de votre établissement.",
       "panelTitle": "Toute la scolarité, au même endroit.",
-      "panelText": "Inscriptions, classes, emplois du temps, notes, bulletins, assiduité et communication avec les familles."
+      "panelText": "Inscriptions, classes, emplois du temps, notes, bulletins, assiduité et communication avec les familles.",
+      "identifiant": "Email ou numéro de téléphone"
     },
     "forgotPassword": {
       "title": "Mot de passe oublié",
@@ -238,7 +242,13 @@
     "periodeSaved": "Période enregistrée",
     "verrouillee": "Verrouillée",
     "trimestreN": "Trimestre {n}",
-    "semestreN": "Semestre {n}"
+    "semestreN": "Semestre {n}",
+    "decoupageParCycle": "Découpage par cycle",
+    "decoupageParCycleHint": "Par exemple : trimestres à l'élémentaire, semestres au collège et au lycée.",
+    "verrouiller": "Verrouiller",
+    "deverrouiller": "Déverrouiller",
+    "deverrouillee": "Période déverrouillée",
+    "confirmVerrou": "Verrouiller cette période ? Ses évaluations et ses notes ne pourront plus être modifiées, et les bulletins deviennent consultables par les familles."
   },
   "niveaux": {
     "title": "Niveaux",
@@ -639,7 +649,11 @@
     "bouton": "Entrer dans la démo",
     "erreur": "La démonstration est momentanément indisponible. Réessayez dans un instant.",
     "lien": "Essayer la démo sans compte",
-    "astuce": "Astuce : choisissez l’année 2025-2026 pour voir les notes, les bulletins et les décisions de fin d’année."
+    "astuce": "Astuce : choisissez l’année 2025-2026 pour voir les notes, les bulletins et les décisions de fin d’année.",
+    "parent": {
+      "titre": "Parent",
+      "desc": "Mme Mariama Diagne suit ses deux enfants : notes et bulletins publiés, emplois du temps, absences, paiements et annonces."
+    }
   },
   "tarifs": {
     "title": "Abonnez votre établissement",

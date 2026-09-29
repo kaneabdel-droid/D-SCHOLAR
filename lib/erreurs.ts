@@ -13,6 +13,13 @@ export function messageErreur(error: { code?: string; message: string }, dict: D
       return dict.errors.invalidValue
     case '42501':
       return dict.errors.forbidden
+    // Codes propres à D-Scholar (08_modules.sql, 06_pedagogie.sql).
+    case 'DSVER':
+      return dict.errors.periodeVerrouillee
+    case 'DSNIV':
+      return dict.errors.niveauCompteEleve
+    case '23P01':
+      return dict.errors.conflitCreneau
     default:
       console.error(`${contexte}:`, error.code, error.message)
       return dict.errors.generic

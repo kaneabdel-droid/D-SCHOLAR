@@ -42,7 +42,10 @@
     "coefficient": "Each coefficient must be a positive number.",
     "lectureSeule": "The school is in read-only mode: settle the subscription to change data.",
     "invalidValue": "Value outside the allowed range.",
-    "demo": "Action disabled in the demo."
+    "demo": "Action disabled in the demo.",
+    "periodeVerrouillee": "The period is locked: its assessments and grades can no longer be changed.",
+    "niveauCompteEleve": "Student accounts are not available at this level (see Settings › School).",
+    "conflitCreneau": "Timetable clash: the class, the teacher or the room is already booked for this slot."
   },
   "auth": {
     "login": {
@@ -54,7 +57,8 @@
       "submit": "Sign in",
       "noAccount": "Accounts are created by your school's management.",
       "panelTitle": "All of school life, in one place.",
-      "panelText": "Enrolment, classes, timetables, grades, report cards, attendance and communication with families."
+      "panelText": "Enrolment, classes, timetables, grades, report cards, attendance and communication with families.",
+      "identifiant": "Email or phone number"
     },
     "forgotPassword": {
       "title": "Forgot password",
@@ -238,7 +242,13 @@
     "periodeSaved": "Period saved",
     "verrouillee": "Locked",
     "trimestreN": "Term {n}",
-    "semestreN": "Semester {n}"
+    "semestreN": "Semester {n}",
+    "decoupageParCycle": "Division by cycle",
+    "decoupageParCycleHint": "For example: terms in primary, semesters in lower and upper secondary.",
+    "verrouiller": "Lock",
+    "deverrouiller": "Unlock",
+    "deverrouillee": "Period unlocked",
+    "confirmVerrou": "Lock this period? Its assessments and grades can no longer be changed, and report cards become visible to families."
   },
   "niveaux": {
     "title": "Levels",
@@ -639,7 +649,11 @@
     "bouton": "Enter the demo",
     "erreur": "The demo is temporarily unavailable. Please try again in a moment.",
     "lien": "Try the demo without an account",
-    "astuce": "Tip: choose the 2025-2026 year to see grades, report cards and end-of-year decisions."
+    "astuce": "Tip: choose the 2025-2026 year to see grades, report cards and end-of-year decisions.",
+    "parent": {
+      "titre": "Parent",
+      "desc": "Mrs Mariama Diagne follows her two children: published grades and report cards, timetables, absences, payments and announcements."
+    }
   },
   "tarifs": {
     "title": "Subscribe your school",

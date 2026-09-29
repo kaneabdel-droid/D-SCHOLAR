@@ -68,7 +68,10 @@ begin
 end;
 $$;
 
-create or replace function public.creer_demo(p_etablissement_id uuid, p_utilisateur_enseignant uuid)
+-- Signature étendue (compte parent) : l'ancienne version à deux paramètres est retirée.
+drop function if exists public.creer_demo(uuid, uuid);
+
+create or replace function public.creer_demo(p_etablissement_id uuid, p_utilisateur_enseignant uuid, p_utilisateur_parent uuid default null)
 returns void
 language plpgsql security definer set search_path = public as $$
 declare
@@ -93,6 +96,8 @@ declare
   v_jour smallint;
   v_debut time;
   v_salle uuid;
+  v_enfant1 uuid;
+  v_enfant2 uuid;
 begin
   if not exists (select 1 from public.etablissements where id = e) then
     raise exception 'Établissement introuvable';
@@ -122,7 +127,8 @@ begin
   -- Règles d'évaluation et barème d'appréciations choisis par l'établissement.
   insert into public.types_evaluation (etablissement_id, code, libelle, poids, nombre_par_periode, ordre) values
     (e, 'DEV', 'Devoir', 1, 2, 1),
-    (e, 'TEST', 'Interrogation écrite (test)', 1, 1, 2),
+    -- Poids nul : le test est noté et visible, mais ne compte pas dans la moyenne.
+    (e, 'TEST', 'Interrogation écrite (test)', 0, 1, 2),
     (e, 'COMPO', 'Composition', 2, 1, 3)
   on conflict do nothing;
 
@@ -136,21 +142,29 @@ begin
     (e, 'Blâme', 0, 'avertissement')
   on conflict do nothing;
 
-  -- ─── Années et trimestres ────────────────────────────────────────────────
-  insert into public.annees_scolaires (etablissement_id, libelle, date_debut, date_fin, decoupage, active, cloturee)
-  values (e, '2025-2026', '2025-10-06', '2026-07-10', 'trimestre', false, true)
+  -- ─── Années et périodes ──────────────────────────────────────────────────
+  -- Découpage par cycle : semestres au moyen et au secondaire (défaut de l'année),
+  -- trimestres au préscolaire et à l'élémentaire. Périodes créées ouvertes, puis
+  -- 2025-2026 verrouillée en fin de génération (le trigger verifier_periode_ouverte
+  -- refuserait sinon les notes).
+  insert into public.annees_scolaires (etablissement_id, libelle, date_debut, date_fin, decoupage, decoupage_cycles, active, cloturee)
+  values (e, '2025-2026', '2025-10-06', '2026-07-10', 'semestre', '{"prescolaire": "trimestre", "elementaire": "trimestre"}', false, true)
   returning id into a1;
-  insert into public.annees_scolaires (etablissement_id, libelle, date_debut, date_fin, decoupage, active, cloturee)
-  values (e, '2026-2027', '2026-10-05', '2027-07-09', 'trimestre', true, false)
+  insert into public.annees_scolaires (etablissement_id, libelle, date_debut, date_fin, decoupage, decoupage_cycles, active, cloturee)
+  values (e, '2026-2027', '2026-10-05', '2027-07-09', 'semestre', '{"prescolaire": "trimestre", "elementaire": "trimestre"}', true, false)
   returning id into a2;
 
-  insert into public.periodes (etablissement_id, annee_id, rang, libelle, date_debut, date_fin, verrouillee) values
-    (e, a1, 1, 'Trimestre 1', '2025-10-06', '2025-12-20', true),
-    (e, a1, 2, 'Trimestre 2', '2026-01-05', '2026-03-28', true),
-    (e, a1, 3, 'Trimestre 3', '2026-04-06', '2026-07-10', true),
-    (e, a2, 1, 'Trimestre 1', '2026-10-05', '2026-12-19', false),
-    (e, a2, 2, 'Trimestre 2', '2027-01-04', '2027-03-27', false),
-    (e, a2, 3, 'Trimestre 3', '2027-04-05', '2027-07-09', false);
+  insert into public.periodes (etablissement_id, annee_id, decoupage, rang, libelle, date_debut, date_fin) values
+    (e, a1, 'trimestre', 1, 'Trimestre 1', '2025-10-06', '2025-12-20'),
+    (e, a1, 'trimestre', 2, 'Trimestre 2', '2026-01-05', '2026-03-28'),
+    (e, a1, 'trimestre', 3, 'Trimestre 3', '2026-04-06', '2026-07-10'),
+    (e, a1, 'semestre', 1, 'Semestre 1', '2025-10-06', '2026-02-20'),
+    (e, a1, 'semestre', 2, 'Semestre 2', '2026-02-23', '2026-07-10'),
+    (e, a2, 'trimestre', 1, 'Trimestre 1', '2026-10-05', '2026-12-19'),
+    (e, a2, 'trimestre', 2, 'Trimestre 2', '2027-01-04', '2027-03-27'),
+    (e, a2, 'trimestre', 3, 'Trimestre 3', '2027-04-05', '2027-07-09'),
+    (e, a2, 'semestre', 1, 'Semestre 1', '2026-10-05', '2027-02-19'),
+    (e, a2, 'semestre', 2, 'Semestre 2', '2027-02-22', '2027-07-09');
 
   -- ─── Coefficients et volumes horaires hebdomadaires ──────────────────────
   insert into public.coefficients (etablissement_id, niveau_id, serie_id, matiere_id, coefficient, volume_horaire)
@@ -299,11 +313,13 @@ begin
   -- Note = niveau de l'élève + affinité avec la matière + aléa de l'épreuve,
   -- ramenée au barème (le test est noté sur 10), arrondie au quart de point.
   for r in
-    select en.id as ens_id, en.matiere_id, cl.cle, p.id as per_id, p.rang, p.date_debut, p.date_fin,
+    select en.id as ens_id, en.matiere_id, cl.cle, p.id as per_id, p.rang, p.decoupage, p.date_debut, p.date_fin,
            t.id as type_id, t.code as type_code, t.nombre_par_periode as nb
     from public.enseignements en
     join _cls cl on cl.id = en.classe_id and cl.annee = a1
-    join public.periodes p on p.annee_id = a1
+    join public.niveaux nv on nv.etablissement_id = e and nv.code = cl.niv
+    -- Périodes du découpage du cycle de la classe (trimestres ou semestres).
+    join public.periodes p on p.annee_id = a1 and p.decoupage = public.decoupage_cycle(a1, nv.cycle)
     cross join public.types_evaluation t
     where t.etablissement_id = e
   loop
@@ -318,7 +334,7 @@ begin
         case r.type_code
           when 'DEV' then 'Devoir n°' || k
           when 'TEST' then 'Interrogation écrite'
-          else 'Composition du trimestre ' || r.rang end,
+          else 'Composition du ' || r.decoupage || ' ' || r.rang end,
         v_date,
         case r.type_code when 'TEST' then 10 else 20 end
       )
@@ -336,13 +352,15 @@ begin
       from _el el
       where el.cle = r.cle
         -- coalesce : el.cas est NULL pour la plupart des élèves, et « not (NULL and …) »
-        -- vaut NULL, ce qui exclurait ces élèves des 1er et 3e trimestres.
-        and not (coalesce(el.cas, '') = 'transfert' and r.rang = 1)
-        and not (coalesce(el.cas, '') = 'depart' and r.rang = 3);
+        -- vaut NULL, ce qui exclurait ces élèves. Arrivé le 5 janvier : pas noté sur
+        -- une période commencée avant ; parti le 13 avril : pas noté sur une période
+        -- qui se termine après.
+        and not (coalesce(el.cas, '') = 'transfert' and r.date_debut < date '2026-01-05')
+        and not (coalesce(el.cas, '') = 'depart' and r.date_fin > date '2026-04-13');
     end loop;
   end loop;
 
-  -- Absence justifiée (maladie) à la composition de Mathématiques du 2e trimestre.
+  -- Absence justifiée (maladie) à la composition de Mathématiques de la 2e période.
   update public.notes n set valeur = null, absent = true, absence_justifiee = true
   from public.evaluations ev, public.enseignements en, public.matieres m, public.periodes p, public.types_evaluation t, _el el
   where n.evaluation_id = ev.id and ev.enseignement_id = en.id and en.matiere_id = m.id and m.code = 'MATH'
@@ -350,11 +368,11 @@ begin
     and ev.type_id = t.id and t.code = 'COMPO'
     and n.eleve_id = el.id and el.cas = 'absent_compo';
 
-  -- Absence non justifiée au 1er devoir de Français du 3e trimestre (absentéiste).
+  -- Absence non justifiée au 1er devoir de Français de la dernière période (absentéiste).
   update public.notes n set valeur = null, absent = true, absence_justifiee = false
   from public.evaluations ev, public.enseignements en, public.matieres m, public.periodes p, public.types_evaluation t, _el el
   where n.evaluation_id = ev.id and ev.enseignement_id = en.id and en.matiere_id = m.id and m.code = 'FR'
-    and ev.periode_id = p.id and p.annee_id = a1 and p.rang = 3
+    and ev.periode_id = p.id and p.annee_id = a1 and p.date_fin = date '2026-07-10'
     and ev.type_id = t.id and t.code = 'DEV' and ev.libelle = 'Devoir n°1'
     and n.eleve_id = el.id and el.cas = 'absenteiste';
 
@@ -546,8 +564,140 @@ begin
       end loop;
     end loop;
   end loop;
+
+  -- ─── Clôture de 2025-2026 : notes publiées, périodes verrouillées ────────
+  update public.evaluations ev set publiee = true from public.periodes p where ev.periode_id = p.id and p.annee_id = a1;
+  update public.periodes set verrouillee = true where annee_id = a1;
+
+  -- ─── Services proposés aux élèves ────────────────────────────────────────
+  insert into public.services (etablissement_id, type, nom, tarif, periodicite) values
+    (e, 'restauration', 'Cantine (déjeuner)', 15000, 'mensuel'),
+    (e, 'transport', 'Bus scolaire · circuit Parcelles / Grand Yoff', 12000, 'mensuel'),
+    (e, 'transport', 'Bus scolaire · circuit Ouakam / Yoff', 12000, 'mensuel'),
+    (e, 'tenue', 'Tenue scolaire (2 ensembles)', 25000, 'unique'),
+    (e, 'fournitures', 'Kit de fournitures', 18000, 'annuel'),
+    (e, 'activite', 'Club informatique', 5000, 'trimestriel');
+
+  -- ─── Frais de scolarité (inscription + scolarité annuelle par cycle) ─────
+  insert into public.frais_scolarite (etablissement_id, annee_id, niveau_id, libelle, montant, date_echeance)
+  select e, a.id, null, 'Frais d''inscription', 25000, a.date_debut
+  from public.annees_scolaires a where a.id in (a1, a2);
+  insert into public.frais_scolarite (etablissement_id, annee_id, niveau_id, libelle, montant, date_echeance)
+  select distinct e, c.annee_id, n.id, 'Scolarité annuelle',
+    case n.cycle when 'elementaire' then 180000 when 'moyen' then 225000 else 270000 end,
+    (select date_debut + 30 from public.annees_scolaires where id = c.annee_id)
+  from public.classes c join public.niveaux n on n.id = c.niveau_id
+  where c.etablissement_id = e;
+
+  -- ─── Souscriptions aux services (rentrée 2026-2027) ─────────────────────
+  insert into public.souscriptions_services (etablissement_id, eleve_id, service_id, annee_id, details)
+  select e, i.eleve_id, s.id, a2,
+    case when s.type = 'transport' then 'Arrêt ' || (array['Marché', 'Mosquée', 'Rond-point', 'Station'])[1 + floor(public._demo_alea(i.eleve_id::text || 'arret') * 4)::integer] end
+  from public.inscriptions i
+  join public.services s on s.etablissement_id = e
+  where i.annee_id = a2
+    and case s.nom
+      when 'Cantine (déjeuner)' then public._demo_alea(i.eleve_id::text || 'cantine') < 0.45
+      when 'Bus scolaire · circuit Parcelles / Grand Yoff' then public._demo_alea(i.eleve_id::text || 'bus') < 0.15
+      when 'Bus scolaire · circuit Ouakam / Yoff' then public._demo_alea(i.eleve_id::text || 'bus') between 0.15 and 0.28
+      when 'Tenue scolaire (2 ensembles)' then i.statut in ('nouveau', 'transfere')
+      when 'Kit de fournitures' then public._demo_alea(i.eleve_id::text || 'kit') < 0.6
+      else public._demo_alea(i.eleve_id::text || 'club') < 0.12 end;
+
+  -- ─── Paiements des familles ──────────────────────────────────────────────
+  -- 2025-2026 : scolarité soldée pour la plupart, trois familles avec un reste dû.
+  insert into public.paiements_eleves (etablissement_id, eleve_id, annee_id, libelle, montant, mode, date_paiement)
+  select e, i.eleve_id, a1, x.libelle, x.montant,
+    (array['especes', 'mobile_money', 'mobile_money', 'virement'])[1 + floor(public._demo_alea(i.eleve_id::text || x.libelle) * 4)::integer],
+    x.date_p
+  from public.inscriptions i
+  join public.classes c on c.id = i.classe_id
+  join public.niveaux n on n.id = c.niveau_id
+  cross join lateral (values
+    ('Frais d''inscription', 25000, date '2025-09-22'),
+    ('Scolarité · 1re tranche', (case n.cycle when 'elementaire' then 180000 when 'moyen' then 225000 else 270000 end) / 3, date '2025-10-20'),
+    ('Scolarité · 2e tranche', (case n.cycle when 'elementaire' then 180000 when 'moyen' then 225000 else 270000 end) / 3, date '2026-01-12'),
+    ('Scolarité · 3e tranche', (case n.cycle when 'elementaire' then 180000 when 'moyen' then 225000 else 270000 end) / 3, date '2026-04-13')
+  ) as x(libelle, montant, date_p)
+  where i.annee_id = a1
+    and not (x.libelle = 'Scolarité · 3e tranche' and public._demo_alea(i.eleve_id::text || 'impaye') < 0.06);
+
+  -- Rentrée 2026-2027 : inscription réglée par la plupart, 1re tranche par certains.
+  insert into public.paiements_eleves (etablissement_id, eleve_id, annee_id, libelle, montant, mode, date_paiement)
+  select e, i.eleve_id, a2, x.libelle, x.montant,
+    (array['especes', 'mobile_money', 'mobile_money', 'virement'])[1 + floor(public._demo_alea(i.eleve_id::text || x.libelle || '27') * 4)::integer],
+    date '2026-09-14' + floor(public._demo_alea(i.eleve_id::text || 'jour' || x.libelle) * 14)::integer
+  from public.inscriptions i
+  join public.classes c on c.id = i.classe_id
+  join public.niveaux n on n.id = c.niveau_id
+  cross join lateral (values
+    ('Frais d''inscription', 25000, 0.9),
+    ('Scolarité · 1re tranche', (case n.cycle when 'elementaire' then 180000 when 'moyen' then 225000 else 270000 end) / 3, 0.55)
+  ) as x(libelle, montant, part)
+  where i.annee_id = a2 and public._demo_alea(i.eleve_id::text || 'paye' || x.libelle) < x.part;
+
+  -- ─── Admissions pour la rentrée 2026-2027 ────────────────────────────────
+  insert into public.candidatures (etablissement_id, annee_id, niveau_id, serie_id, prenom, nom, sexe, date_naissance, lieu_naissance,
+                                   etablissement_origine, moyenne_origine, tuteur_nom, tuteur_telephone, statut, date_test, note_test, commentaire)
+  select e, a2, (select id from public.niveaux where etablissement_id = e and code = v.niv),
+    (select id from public.series where etablissement_id = e and code = v.ser),
+    v.prenom, v.nom, v.sexe, v.naissance::date, v.lieu, v.origine, v.moy, v.tuteur, v.tel, v.statut, v.test::date, v.note, v.comm
+  from (values
+    ('6E', null, 'Khadija', 'Sarr', 'F', '2014-03-12', 'Dakar', 'École Sainte-Bernadette', 15.2, 'Ibrahima Sarr', '77 402 11 58', 'soumise', null, null, null),
+    ('6E', null, 'Oumar', 'Diallo', 'M', '2014-07-02', 'Pikine', 'École Liberté 6', 12.8, 'Aminata Diallo', '78 551 20 33', 'en_etude', null, null, 'Bulletins du CM2 reçus'),
+    ('2NDE', 'S', 'Ndèye Maguette', 'Fall', 'F', '2010-11-21', 'Thiès', 'CEM Malick Sy', 14.1, 'Moustapha Fall', '76 318 90 12', 'test_planifie', '2026-10-02', null, 'Test de positionnement en mathématiques'),
+    ('1ERE', 'S2', 'Saliou', 'Ndour', 'M', '2009-05-17', 'Rufisque', 'Lycée de Rufisque', 13.4, 'Awa Ndour', '77 620 44 81', 'admise', '2026-09-18', 14.5, 'Admis après test'),
+    ('3E', null, 'Rama', 'Seck', 'F', '2011-01-30', 'Dakar', 'CEM Grand Yoff', 11.2, 'Pape Seck', '70 118 72 40', 'liste_attente', '2026-09-18', 10.5, 'Classe de 3e complète'),
+    ('TLE', 'S2', 'Moustapha', 'Kane', 'M', '2008-08-08', 'Kaolack', 'Lycée Valdiodio Ndiaye', 8.9, 'Fatou Kane', '77 903 15 26', 'refusee', '2026-09-18', 7.0, 'Niveau insuffisant en sciences')
+  ) as v(niv, ser, prenom, nom, sexe, naissance, lieu, origine, moy, tuteur, tel, statut, test, note, comm);
+
+  -- ─── Compte parent de démonstration (deux enfants) ───────────────────────
+  if p_utilisateur_parent is not null then
+    select i.eleve_id into v_enfant1 from public.inscriptions i join _cls cl on cl.id = i.classe_id
+    where i.annee_id = a2 and cl.cle = '6A' and i.statut = 'passant' order by i.eleve_id limit 1;
+    select i.eleve_id into v_enfant2 from public.inscriptions i join _cls cl on cl.id = i.classe_id
+    where i.annee_id = a2 and cl.cle = '1S' and i.statut = 'passant' order by i.eleve_id limit 1;
+    insert into public.comptes_famille (id, etablissement_id, type, prenom, nom, telephone, email)
+    values (p_utilisateur_parent, e, 'parent', 'Mariama', 'Diagne', '77 455 23 10', (select email from auth.users where id = p_utilisateur_parent));
+    insert into public.liens_famille (compte_id, eleve_id, lien)
+    select p_utilisateur_parent, x, 'mere' from unnest(array[v_enfant1, v_enfant2]) x where x is not null;
+  end if;
+
+  -- ─── Annonces (notifient le personnel et les familles concernés) ─────────
+  insert into public.annonces (etablissement_id, titre, contenu, cible, classe_id, auteur_id, publiee_le) values
+    (e, 'Rentrée 2026-2027 le lundi 5 octobre',
+     'Les cours reprennent le lundi 5 octobre à 8 h. Les emplois du temps sont consultables sur le portail. Pensez à régler les frais d''inscription avant la rentrée.',
+     'tous', null, null, '2026-09-21 09:00'),
+    (e, 'Réunion parents-professeurs de 3e A',
+     'Réunion d''information sur le BFEM le samedi 17 octobre à 10 h, salle polyvalente.',
+     'classe', (select id from _cls where cle = '3A' and annee = a2), null, '2026-09-25 10:00'),
+    (e, 'Conseil pédagogique de rentrée',
+     'Conseil pédagogique le vendredi 2 octobre à 15 h : répartition des classes, progression commune, calendrier des compositions.',
+     'personnel', null, null, '2026-09-24 08:30');
+
+  -- ─── Documents émis (numérotés, vérifiables par QR code) ─────────────────
+  insert into public.documents_emis (etablissement_id, eleve_id, annee_id, type, numero, contenu, emis_le)
+  select e, x.eleve_id, x.annee_id, x.type,
+    x.prefixe || '-2026-' || lpad(public.prochain_numero(e, 'doc-' || x.prefixe || '-2026')::text, 4, '0'),
+    jsonb_build_object('classe', x.classe), x.emis_le
+  from (
+    -- Exeat de l'élève parti en cours d'année
+    select el.id as eleve_id, a1 as annee_id, 'exeat' as type, 'EX' as prefixe, '6e A' as classe, timestamptz '2026-04-13 11:00' as emis_le
+    from _el el where el.cas = 'depart'
+    union all
+    -- Attestations de réussite des bacheliers
+    select i.eleve_id, a1, 'attestation_reussite', 'AR', 'Tle S2', timestamptz '2026-07-27 10:00'
+    from public.decisions d join public.inscriptions i on i.id = d.inscription_id join _cls cl on cl.id = i.classe_id
+    where i.annee_id = a1 and cl.cle = 'TS2' and d.decision_finale = 'admis'
+    union all
+    -- Certificats de scolarité de rentrée
+    (select i.eleve_id, a2, 'certificat_scolarite', 'CS', cl2.nom, timestamptz '2026-09-28 09:30'
+     from public.inscriptions i join _cls cl on cl.id = i.classe_id join public.classes cl2 on cl2.id = i.classe_id
+     where i.annee_id = a2 order by i.eleve_id limit 3)
+  ) x;
+
 end;
 $$;
 
-revoke execute on function public.creer_demo(uuid, uuid) from public, anon, authenticated;
+revoke execute on function public.creer_demo(uuid, uuid, uuid) from public, anon, authenticated;
 revoke execute on function public._demo_creer_eleve(uuid, integer, text, integer, date) from public, anon, authenticated;
