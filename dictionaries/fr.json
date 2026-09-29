@@ -526,7 +526,51 @@
     "retards": "{n} retard(s)",
     "aucuneAbsence": "Aucune absence ni retard.",
     "absentEvaluation": "{n} évaluation(s) manquée(s)",
-    "retour": "Retour aux élèves"
+    "retour": "Retour aux élèves",
+    "form": {
+      "prenom": "Prénom",
+      "nom": "Nom",
+      "sexe": "Sexe",
+      "dateNaissance": "Date de naissance",
+      "lieuNaissance": "Lieu de naissance",
+      "adresse": "Adresse",
+      "tuteurNom": "Parent / tuteur",
+      "tuteurTelephone": "Téléphone du tuteur",
+      "statutEntree": "Type d'entrée",
+      "dateEntree": "Date d'entrée",
+      "origine": "Établissement d'origine",
+      "origineHint": "Pour un transfert : établissement quitté (apparaît dans le cursus)."
+    },
+    "nouveauBouton": "Nouvel élève",
+    "nouveauTitre": "Inscrire un nouvel élève",
+    "modifier": "Modifier",
+    "modifierTitre": "Modifier la fiche de l'élève",
+    "changerClasse": "Changer de classe",
+    "changerClasseTitre": "Changer de classe (même année)",
+    "sortie": "Déclarer une sortie",
+    "sortieTitre": "Sortie de l'établissement",
+    "typeSortie": "Motif de sortie",
+    "dateSortie": "Date de sortie",
+    "motif": "Précisions",
+    "sortieOk": "Sortie enregistrée",
+    "acces": {
+      "bouton": "Accès portail",
+      "titre": "Accès au portail des familles",
+      "desc": "Générez un code à remettre à la famille : avec ce code, elle crée son propre accès (sans email ni SMS).",
+      "pour": "Compte pour",
+      "parent": "Un parent",
+      "eleve": "L'élève",
+      "lien": "Lien avec l'élève",
+      "liens": {
+        "pere": "Père",
+        "mere": "Mère",
+        "tuteur": "Tuteur"
+      },
+      "code": "Code d'activation",
+      "instructions": "La famille se rend sur {url} et saisit ce code.",
+      "expire": "Code valable 60 jours, utilisable une seule fois.",
+      "enAttente": "Code en attente"
+    }
   },
   "classes": {
     "title": "Classes",
@@ -681,5 +725,32 @@
       "paiement": "Votre espace est créé, mais le paiement n'a pas pu démarrer. Réessayez depuis la page Abonnement."
     },
     "retry": "Aller à la page Abonnement"
+  },
+  "admissions": {
+    "title": "Admissions",
+    "subtitle": "Candidatures pour l'année choisie, de la demande à l'inscription.",
+    "nouvelle": "Nouvelle candidature",
+    "niveau": "Niveau demandé",
+    "origine": "Établissement d'origine",
+    "moyenneOrigine": "Moyenne d'origine (/20)",
+    "moyenne": "Moy.",
+    "test": "Test",
+    "statut": "Statut",
+    "dateTest": "Date du test",
+    "noteTest": "Note du test (/20)",
+    "commentaire": "Commentaire",
+    "inscrire": "Inscrire",
+    "inscrireTitre": "Inscrire le candidat admis",
+    "voirFiche": "Voir la fiche",
+    "erreurNonAdmise": "Seul un candidat admis peut être inscrit.",
+    "statuts": {
+      "soumise": "Soumise",
+      "en_etude": "En étude",
+      "test_planifie": "Test planifié",
+      "admise": "Admise",
+      "liste_attente": "Liste d'attente",
+      "refusee": "Refusée",
+      "inscrite": "Inscrite"
+    }
   }
 }

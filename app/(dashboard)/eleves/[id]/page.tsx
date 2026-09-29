@@ -7,6 +7,8 @@ import { createClient } from '@/utils/supabase/server'
 import { getCurrentUserContext } from '@/lib/auth/getCurrentUserContext'
 import { anneesEtSelection, appreciationPour, baremeAppreciations, moyenneLisible, TEINTES_APPRECIATION, TEINTES_DECISION, un } from '@/lib/scolarite'
 import { fmt, intlLocale } from '@/lib/i18n'
+import { peutEcrire } from '@/lib/roles'
+import EleveActions from './EleveActions'
 import { getDictionary, getLocale } from '@/dictionaries'
 
 type Inscription = {
@@ -20,7 +22,7 @@ type Inscription = {
 }
 
 export default async function EleveFichePage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ annee?: string }> }) {
-  await getCurrentUserContext()
+  const context = await getCurrentUserContext()
   const { id } = await params
   const { annee } = await searchParams
   const supabase = await createClient()
@@ -110,6 +112,26 @@ export default async function EleveFichePage({ params, searchParams }: { params:
   }
 
   const annuelle = inscription?.decisions?.moyenne_annuelle ?? null
+
+  // Gestion (secrétariat, direction, censeur) : dernière inscription, classes de
+  // la même année, accès au portail déjà ouverts et codes en attente.
+  const gestion = peutEcrire(context.role, 'eleves')
+  const courante = inscriptions[inscriptions.length - 1] ?? null
+  const [{ data: classesAnnee }, { data: etabNiveau }, { data: niveauCourant }, { data: liens }, { data: codes }] = gestion
+    ? await Promise.all([
+        courante ? supabase.from('classes').select('id, nom').eq('annee_id', courante.annee_id).order('nom') : Promise.resolve({ data: [] }),
+        supabase.from('etablissements').select('niveau_min_compte_eleve').eq('id', context.etablissementId).single(),
+        courante ? supabase.from('classes').select('niveaux(ordre)').eq('id', courante.classe_id).single() : Promise.resolve({ data: null }),
+        supabase.from('liens_famille').select('lien, comptes_famille(prenom, nom, telephone)').eq('eleve_id', id),
+        supabase.from('codes_activation').select('code, type, expire_le').eq('eleve_id', id).is('utilise_le', null).gt('expire_le', new Date().toISOString()),
+      ])
+    : [{ data: [] }, { data: null }, { data: null }, { data: [] }, { data: [] }]
+  const { data: niveauMin } = gestion && etabNiveau
+    ? await supabase.from('niveaux').select('ordre').eq('code', etabNiveau.niveau_min_compte_eleve).maybeSingle()
+    : { data: null }
+  const ordreCourant = un(niveauCourant?.niveaux as unknown as { ordre: number } | null)?.ordre ?? 0
+  const compteEleveDisponible = ordreCourant >= (niveauMin?.ordre ?? 0)
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://scholar.dembasolution.com'
   const periodeLib = (rang: number) => fmt(dict.annees.trimestreN, { n: rang })
   const icones: Record<string, typeof LogIn> = { entree: LogIn, transfert_entrant: LogIn, transfert_sortant: LogOut, abandon: LogOut, exclusion: LogOut, fin_de_cycle: GraduationCap }
 
@@ -139,6 +161,37 @@ export default async function EleveFichePage({ params, searchParams }: { params:
             </div>
           </div>
         </div>
+        {gestion && (
+          <div className="mt-5 space-y-3 border-t border-surface-border pt-4">
+            <EleveActions
+              eleveId={id}
+              identite={eleve}
+              inscriptionCourante={courante ? { id: courante.id, classe_id: courante.classe_id } : null}
+              classesAnnee={classesAnnee ?? []}
+              compteEleveDisponible={compteEleveDisponible}
+              sorti={eleve.statut === 'sorti'}
+              urlActivation={`${siteUrl}/activer`}
+              dict={dict}
+            />
+            {((liens ?? []).length > 0 || (codes ?? []).length > 0) && (
+              <div className="flex flex-wrap gap-2 text-xs">
+                {(liens ?? []).map((l, i) => {
+                  const cpt = un(l.comptes_famille as unknown as { prenom: string | null; nom: string | null })
+                  return (
+                    <span key={i} className="rounded-full bg-success/10 px-2.5 py-1 font-medium text-success">
+                      {t.acces.liens[l.lien as 'pere' | 'mere' | 'tuteur']} · {[cpt?.prenom, cpt?.nom].filter(Boolean).join(' ')}
+                    </span>
+                  )
+                })}
+                {(codes ?? []).map((cd) => (
+                  <span key={cd.code} className="rounded-full bg-warning/10 px-2.5 py-1 font-medium text-warning">
+                    {t.acces.enAttente} · <span className="font-mono" dir="ltr">{cd.code}</span> ({cd.type === 'eleve' ? t.acces.eleve : t.acces.parent})
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </section>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_1.4fr]">

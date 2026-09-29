@@ -54,7 +54,7 @@ function sections(role: Role): Section[] {
     {
       titre: 'sectionScolarite',
       items: [
-        { key: 'admissions', href: '/admissions', icon: UserPlus, bientot: true },
+        { key: 'admissions', href: '/admissions', icon: UserPlus },
         { key: 'eleves', href: '/eleves', icon: GraduationCap },
         { key: 'passages', href: '/passages', icon: TrendingUp },
         { key: 'attestations', href: '/attestations', icon: FileBadge, bientot: true },

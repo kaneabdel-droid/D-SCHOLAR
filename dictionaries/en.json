@@ -526,7 +526,51 @@
     "retards": "{n} late arrival(s)",
     "aucuneAbsence": "No absence or late arrival.",
     "absentEvaluation": "{n} missed assessment(s)",
-    "retour": "Back to students"
+    "retour": "Back to students",
+    "form": {
+      "prenom": "First name",
+      "nom": "Last name",
+      "sexe": "Sex",
+      "dateNaissance": "Date of birth",
+      "lieuNaissance": "Place of birth",
+      "adresse": "Address",
+      "tuteurNom": "Parent / guardian",
+      "tuteurTelephone": "Guardian's phone",
+      "statutEntree": "Type of entry",
+      "dateEntree": "Entry date",
+      "origine": "Previous school",
+      "origineHint": "For a transfer: the school left (shown in the academic record)."
+    },
+    "nouveauBouton": "New student",
+    "nouveauTitre": "Enrol a new student",
+    "modifier": "Edit",
+    "modifierTitre": "Edit the student's record",
+    "changerClasse": "Change class",
+    "changerClasseTitre": "Change class (same year)",
+    "sortie": "Record a departure",
+    "sortieTitre": "Leaving the school",
+    "typeSortie": "Reason for leaving",
+    "dateSortie": "Departure date",
+    "motif": "Details",
+    "sortieOk": "Departure recorded",
+    "acces": {
+      "bouton": "Portal access",
+      "titre": "Family portal access",
+      "desc": "Generate a code for the family: with it, they create their own access (no email or SMS needed).",
+      "pour": "Account for",
+      "parent": "A parent",
+      "eleve": "The student",
+      "lien": "Relationship",
+      "liens": {
+        "pere": "Father",
+        "mere": "Mother",
+        "tuteur": "Guardian"
+      },
+      "code": "Activation code",
+      "instructions": "The family goes to {url} and enters this code.",
+      "expire": "Valid for 60 days, single use.",
+      "enAttente": "Pending code"
+    }
   },
   "classes": {
     "title": "Classes",
@@ -681,5 +725,32 @@
       "paiement": "Your workspace is created, but the payment could not start. Please try again from the Subscription page."
     },
     "retry": "Go to the Subscription page"
+  },
+  "admissions": {
+    "title": "Admissions",
+    "subtitle": "Applications for the selected year, from request to enrolment.",
+    "nouvelle": "New application",
+    "niveau": "Requested level",
+    "origine": "Previous school",
+    "moyenneOrigine": "Previous average (/20)",
+    "moyenne": "Avg.",
+    "test": "Test",
+    "statut": "Status",
+    "dateTest": "Test date",
+    "noteTest": "Test score (/20)",
+    "commentaire": "Comment",
+    "inscrire": "Enrol",
+    "inscrireTitre": "Enrol the admitted applicant",
+    "voirFiche": "View record",
+    "erreurNonAdmise": "Only an admitted applicant can be enrolled.",
+    "statuts": {
+      "soumise": "Submitted",
+      "en_etude": "Under review",
+      "test_planifie": "Test scheduled",
+      "admise": "Admitted",
+      "liste_attente": "Waiting list",
+      "refusee": "Rejected",
+      "inscrite": "Enrolled"
+    }
   }
 }

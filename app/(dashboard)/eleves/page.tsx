@@ -8,6 +8,8 @@ import { getCurrentUserContext } from '@/lib/auth/getCurrentUserContext'
 import { anneesEtSelection, TEINTES_DECISION, un } from '@/lib/scolarite'
 import { fmt } from '@/lib/i18n'
 import { getDictionary, getLocale } from '@/dictionaries'
+import { peutEcrire } from '@/lib/roles'
+import NouvelEleveButton from './NouvelEleveButton'
 
 type Ligne = {
   id: string
@@ -18,7 +20,7 @@ type Ligne = {
 }
 
 export default async function ElevesPage({ searchParams }: { searchParams: Promise<{ annee?: string; q?: string; classe?: string }> }) {
-  await getCurrentUserContext()
+  const context = await getCurrentUserContext()
   const params = await searchParams
   const supabase = await createClient()
   const dict = await getDictionary(await getLocale())
@@ -50,7 +52,12 @@ export default async function ElevesPage({ searchParams }: { searchParams: Promi
       <PageHeader
         title={t.title}
         subtitle={t.subtitle}
-        actions={<SelecteurAnnee annees={annees} selection={selection?.id ?? null} libelles={{ annee: s.annee, active: s.active, cloturee: s.cloturee }} />}
+        actions={
+          <>
+            <SelecteurAnnee annees={annees} selection={selection?.id ?? null} libelles={{ annee: s.annee, active: s.active, cloturee: s.cloturee }} />
+            {peutEcrire(context.role, 'eleves') && <NouvelEleveButton classes={classes ?? []} dict={dict} />}
+          </>
+        }
       />
 
       <form className="mb-4 flex flex-col gap-2 sm:flex-row">

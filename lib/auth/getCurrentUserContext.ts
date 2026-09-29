@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 import type { PalierCode } from '@/lib/abonnements/paliers'
 import type { Acces } from '@/lib/abonnements/plans'
-import { peutGererParametres, type Role } from '@/lib/roles'
+import { peutEcrire, peutGererParametres, type Module, type Role } from '@/lib/roles'
 
 export type UserContext = {
   userId: string
@@ -76,4 +76,14 @@ export async function requireDirection(): Promise<UserContext> {
   const context = await getCurrentUserContext()
   if (context.role !== 'direction') redirect('/dashboard')
   return context
+}
+
+// Garde-fou des actions d'écriture d'un module : rôle autorisé et accès complet
+// (pas de lecture seule pour retard de paiement). Renvoie le contexte, ou le
+// message d'erreur traduit à renvoyer tel quel.
+export async function contexteEcriture(module: Module, dict: { errors: { forbidden: string; lectureSeule: string } }) {
+  const context = await getCurrentUserContext()
+  if (!peutEcrire(context.role, module)) return { erreur: dict.errors.forbidden } as const
+  if (context.acces !== 'complet') return { erreur: dict.errors.lectureSeule } as const
+  return { context } as const
 }
