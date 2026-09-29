@@ -657,7 +657,13 @@
     "totalHeures": "{n} h in total",
     "nonJustifiees": "{n} h unexcused",
     "empty": "No absence recorded.",
-    "derniers": "Latest {n} events"
+    "derniers": "Latest {n} events",
+    "faireAppel": "Take attendance",
+    "present": "Present",
+    "dureeSeance": "Lesson length (h)",
+    "appelOk": "Attendance saved: {n} absence(s) or late arrival(s)",
+    "demandeFamille": "Family's excuse:",
+    "confirmSuppression": "Delete this absence?"
   },
   "passages": {
     "title": "Promotions & resits",
@@ -668,7 +674,18 @@
     "repechage": "Resit",
     "finale": "Final decision",
     "orientation": "Orientation",
-    "aucune": "No decision for this year (decisions are made at the end of the year)."
+    "aucune": "No decision for this year (decisions are made at the end of the year).",
+    "calculer": "Calculate decisions",
+    "calculees": "Decisions calculated",
+    "aucuneClasse": "No decision for this class yet: calculate them at the end of the year.",
+    "rentree": "Prepare the new year",
+    "rentreeDesc": "Re-enrol promoted and repeating students in next year's classes.",
+    "pasAnneeCible": "First create next year (Settings › School years) and its classes.",
+    "classeCible": "Class next year",
+    "dejaInscrit": "Already enrolled",
+    "nePasInscrire": "Do not enrol",
+    "validerRentree": "Confirm the new year",
+    "rentreeOk": "{n} student(s) processed"
   },
   "evaluations": {
     "title": "Assessment types",

@@ -7,6 +7,8 @@ import { getCurrentUserContext } from '@/lib/auth/getCurrentUserContext'
 import { anneesEtSelection, un } from '@/lib/scolarite'
 import { fmt, intlLocale } from '@/lib/i18n'
 import { getDictionary, getLocale } from '@/dictionaries'
+import { peutEcrire } from '@/lib/roles'
+import { AppelButton, JustifierAbsence } from './AssiduiteClient'
 
 type Absence = {
   id: string
@@ -15,6 +17,7 @@ type Absence = {
   duree: number
   justifiee: boolean
   motif: string | null
+  justification_parent: string | null
   eleves: { id: string; prenom: string; nom: string } | null
   enseignements: { matieres: { nom: string } | null; classes: { nom: string } | null } | null
 }
@@ -22,7 +25,7 @@ type Absence = {
 const LIMITE = 300
 
 export default async function AssiduitePage({ searchParams }: { searchParams: Promise<{ annee?: string }> }) {
-  await getCurrentUserContext()
+  const context = await getCurrentUserContext()
   const sp = await searchParams
   const supabase = await createClient()
   const locale = await getLocale()
@@ -35,13 +38,18 @@ export default async function AssiduitePage({ searchParams }: { searchParams: Pr
   const { data } = selection
     ? await supabase
         .from('absences')
-        .select('id, date_absence, type, duree, justifiee, motif, eleves(id, prenom, nom), enseignements(matieres(nom), classes(nom))')
+        .select('id, date_absence, type, duree, justifiee, motif, justification_parent, eleves(id, prenom, nom), enseignements(matieres(nom), classes(nom))')
         .eq('annee_id', selection.id)
         .order('date_absence', { ascending: false })
         .limit(2000)
     : { data: [] }
 
-  const absences = ((data ?? []) as unknown as Absence[]).map((a) => ({ ...a, eleve: un(a.eleves), en: un(a.enseignements) }))
+  // Justifications envoyées par les familles, encore à valider : en tête de liste.
+  const absences = ((data ?? []) as unknown as Absence[])
+    .map((a) => ({ ...a, eleve: un(a.eleves), en: un(a.enseignements) }))
+    .sort((a, b) => Number(Boolean(b.justification_parent && !b.justifiee)) - Number(Boolean(a.justification_parent && !a.justifiee)))
+  const gestion = peutEcrire(context.role, 'assiduite')
+  const { data: classesAnnee } = gestion && selection ? await supabase.from('classes').select('id, nom').eq('annee_id', selection.id).order('nom') : { data: [] }
 
   // Classement des élèves par heures d'absence (les non justifiées d'abord en cas d'égalité).
   const cumul = new Map<string, { id: string; nom: string; classe: string; heures: number; nj: number }>()
@@ -60,7 +68,12 @@ export default async function AssiduitePage({ searchParams }: { searchParams: Pr
       <PageHeader
         title={t.title}
         subtitle={t.subtitle}
-        actions={<SelecteurAnnee annees={annees} selection={selection?.id ?? null} libelles={{ annee: s.annee, active: s.active, cloturee: s.cloturee }} />}
+        actions={
+          <>
+            <SelecteurAnnee annees={annees} selection={selection?.id ?? null} libelles={{ annee: s.annee, active: s.active, cloturee: s.cloturee }} />
+            {gestion && <AppelButton classes={classesAnnee ?? []} dict={dict} />}
+          </>
+        }
       />
       {absences.length === 0 ? (
         <p className={`${cardClass} px-5 py-10 text-center text-sm text-foreground-muted`}>{t.empty}</p>
@@ -93,6 +106,7 @@ export default async function AssiduitePage({ searchParams }: { searchParams: Pr
                     <th className="px-4 py-3 text-start">{t.type}</th>
                     <th className="px-4 py-3 text-start">{t.duree}</th>
                     <th className="px-4 py-3 text-start">{t.justification}</th>
+                    {gestion && <th className="px-4 py-3"><span className="sr-only">{dict.common.actions}</span></th>}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-surface-border">
@@ -108,7 +122,13 @@ export default async function AssiduitePage({ searchParams }: { searchParams: Pr
                       <td className="px-4 py-2.5">
                         <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${a.justifiee ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}>{a.justifiee ? t.justifiee : t.nonJustifiee}</span>
                         {a.motif && <span className="block text-xs text-foreground-muted">{a.motif}</span>}
+                        {a.justification_parent && !a.justifiee && <span className="mt-1 block rounded bg-info/10 px-1.5 py-0.5 text-xs text-info">{t.demandeFamille} {a.justification_parent}</span>}
                       </td>
+                      {gestion && (
+                        <td className="px-4 py-2.5">
+                          <JustifierAbsence absence={{ id: a.id, justifiee: a.justifiee, motif: a.motif, justification_parent: a.justification_parent }} dict={dict} />
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>

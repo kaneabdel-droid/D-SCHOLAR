@@ -657,7 +657,13 @@
     "totalHeures": "{n} h au total",
     "nonJustifiees": "{n} h non justifiées",
     "empty": "Aucune absence enregistrée.",
-    "derniers": "{n} derniers événements"
+    "derniers": "{n} derniers événements",
+    "faireAppel": "Faire l'appel",
+    "present": "Présent",
+    "dureeSeance": "Durée de la séance (h)",
+    "appelOk": "Appel enregistré : {n} absence(s) ou retard(s)",
+    "demandeFamille": "Justification de la famille :",
+    "confirmSuppression": "Supprimer cette absence ?"
   },
   "passages": {
     "title": "Passages & repêchages",
@@ -668,7 +674,18 @@
     "repechage": "Repêchage",
     "finale": "Décision finale",
     "orientation": "Orientation",
-    "aucune": "Aucune décision pour cette année (les décisions sont prises en fin d'année)."
+    "aucune": "Aucune décision pour cette année (les décisions sont prises en fin d'année).",
+    "calculer": "Calculer les décisions",
+    "calculees": "Décisions calculées",
+    "aucuneClasse": "Aucune décision pour cette classe : calculez-les en fin d'année.",
+    "rentree": "Préparer la rentrée",
+    "rentreeDesc": "Réinscription des passants et des redoublants dans les classes de l'année suivante.",
+    "pasAnneeCible": "Créez d'abord l'année suivante (Paramètres › Années scolaires) et ses classes.",
+    "classeCible": "Classe à la rentrée",
+    "dejaInscrit": "Déjà inscrit",
+    "nePasInscrire": "Ne pas inscrire",
+    "validerRentree": "Valider la rentrée",
+    "rentreeOk": "{n} élève(s) traité(s)"
   },
   "evaluations": {
     "title": "Types d'évaluation",
