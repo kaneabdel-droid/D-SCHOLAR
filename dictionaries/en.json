@@ -888,5 +888,98 @@
     "derniersPaiements": "Latest payments",
     "situation": "Financial status {annee}",
     "servicesSouscrits": "Subscribed services"
+  },
+  "documents": {
+    "title": "Certificates",
+    "subtitle": "Numbered official documents, verifiable online via QR code.",
+    "tous": "All",
+    "numero": "No.",
+    "type": "Document type",
+    "emisLe": "Issued on",
+    "annule": "Cancelled",
+    "aucun": "No document issued.",
+    "emettre": "Issue a document",
+    "emettreImprimer": "Issue and print",
+    "emisOk": "Document issued.",
+    "reimprimer": "Reprint",
+    "annuler": "Cancel the document",
+    "confirmAnnulation": "Cancel this document? It will be shown as cancelled when verified.",
+    "confirmImpaye": "This student still owes {montant}. Issue the exeat anyway? The balance will be stated on the document.",
+    "eleveIntrouvable": "Student not found.",
+    "sansInscription": "This student has no enrolment.",
+    "pasAdmis": "A certificate of success is only possible for a promoted student (final decision).",
+    "types": {
+      "certificat_scolarite": "School certificate",
+      "attestation_inscription": "Certificate of enrolment",
+      "certificat_frequentation": "Certificate of attendance",
+      "attestation_reussite": "Certificate of success",
+      "exeat": "Exeat (leaving certificate)",
+      "releve_notes": "Transcript"
+    },
+    "aides": {
+      "certificat_scolarite": "Student enrolled for the year (allowances, administrations).",
+      "attestation_inscription": "Enrolment date and class.",
+      "certificat_frequentation": "Regular attendance since admission.",
+      "attestation_reussite": "Promotion to the next class (final decision).",
+      "exeat": "Leave authorisation (transfer); states any outstanding balance.",
+      "releve_notes": "Certified annual averages for the whole record."
+    },
+    "textes": {
+      "certificat_scolarite": "The head of {etablissement} certifies that the student {eleve}, {ne} on {naissance} in {lieu}, registration number {matricule}, is duly {inscrit} in {classe} for the {annee} school year.",
+      "attestation_inscription": "The head of {etablissement} certifies that the student {eleve}, {ne} on {naissance} in {lieu}, registration number {matricule}, was {inscrit} on {dateInscription} in {classe} for the {annee} school year.",
+      "certificat_frequentation": "The head of {etablissement} certifies that the student {eleve}, {ne} on {naissance} in {lieu}, registration number {matricule}, has regularly attended the school since {dateEntree} and follows the {classe} class for the {annee} school year.",
+      "attestation_reussite": "The head of {etablissement} certifies that the student {eleve}, {ne} on {naissance} in {lieu}, registration number {matricule}, attended {classe} during the {annee} school year, obtained an annual average of {moyenne}/20 and was {declare} to the next class.",
+      "exeat": "The head of {etablissement} authorises the student {eleve}, {ne} on {naissance} in {lieu}, registration number {matricule}, {inscrit} in {classe} for the {annee} school year, to leave the school as of {dateSortie}. Reason: {motif}.",
+      "releve_notes": "Transcript of annual averages of the student {eleve}."
+    },
+    "genre": {
+      "ne": {
+        "M": "born",
+        "F": "born"
+      },
+      "inscrit": {
+        "M": "enrolled",
+        "F": "enrolled"
+      },
+      "declare": {
+        "M": "promoted",
+        "F": "promoted"
+      }
+    },
+    "libreEngagement": "The student has no outstanding financial obligation towards the school.",
+    "resteDu": "An outstanding balance of {montant} remains due to the school.",
+    "foi": "This document is issued to the person concerned for all legal purposes.",
+    "faitA": "Done at {ville}, on {date}",
+    "signatureChef": "Head of school",
+    "verifiable": "Document verifiable online",
+    "code": "Code:",
+    "annuleFiligrane": "CANCELLED",
+    "relevesTitle": "Report cards & transcripts",
+    "relevesSubtitle": "Class report cards by period or for the year, and certified transcripts for each student.",
+    "bulletinsClasse": "Class report cards",
+    "aideBulletins": "One A4 page per student, with averages, rank, appraisal and absences.",
+    "relevesEleves": "Certified transcripts",
+    "releveCourt": "Transcript",
+    "aucuneClasse": "No class for this year.",
+    "documentsEleve": "Issued documents"
+  },
+  "verification": {
+    "title": "Verify a document",
+    "desc": "Enter the code printed under the QR code of the document issued by the school.",
+    "code": "Verification code",
+    "placeholder": "E.g. 4F9A1C0B7E2D",
+    "verifier": "Verify",
+    "valide": "Authentic document",
+    "annule": "Cancelled document",
+    "inconnu": "Document not found",
+    "document": "Document",
+    "numero": "Number",
+    "eleve": "Student",
+    "etablissement": "School",
+    "annee": "School year",
+    "emisLe": "Issued on",
+    "aide": "Compare this information with the paper document: it must be identical.",
+    "aideInconnu": "No document matches this code. Check what you typed or contact the issuing school.",
+    "autre": "Verify another document"
   }
 }

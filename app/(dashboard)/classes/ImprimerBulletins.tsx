@@ -10,7 +10,7 @@ import { libellePeriode } from '@/lib/scolarite'
 import { donneesBulletins } from './bulletins'
 
 // Un bulletin par élève (une page A4 chacun), imprimé par le navigateur.
-export default function ImprimerBulletins({ classeId, periodeId, locale, lang, dict }: { classeId: string; periodeId: string | null; locale: string; lang: string; dict: Dictionary }) {
+export default function ImprimerBulletins({ classeId, periodeId, locale, lang, dict, libelle }: { classeId: string; periodeId: string | null; locale: string; lang: string; dict: Dictionary; libelle?: string }) {
   const t = dict.bulletin
   const [enCours, startTransition] = useTransition()
   const n = (v: number | null) => (v === null ? '—' : v.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
@@ -53,7 +53,7 @@ export default function ImprimerBulletins({ classeId, periodeId, locale, lang, d
 
   return (
     <button type="button" onClick={imprimer} disabled={enCours} className={btnSecondary}>
-      <Printer className="h-4 w-4" /> {enCours ? t.preparation : t.imprimer}
+      <Printer className="h-4 w-4" /> {enCours ? t.preparation : libelle ?? t.imprimer}
     </button>
   )
 }

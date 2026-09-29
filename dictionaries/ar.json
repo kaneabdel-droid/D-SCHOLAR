@@ -888,5 +888,98 @@
     "derniersPaiements": "آخر المدفوعات",
     "situation": "الوضعية المالية {annee}",
     "servicesSouscrits": "الخدمات المشترك فيها"
+  },
+  "documents": {
+    "title": "الشهادات والإفادات",
+    "subtitle": "وثائق رسمية مرقمة يمكن التحقق منها عبر الإنترنت برمز QR.",
+    "tous": "الكل",
+    "numero": "رقم",
+    "type": "نوع الوثيقة",
+    "emisLe": "تاريخ الإصدار",
+    "annule": "ملغاة",
+    "aucun": "لم تصدر أي وثيقة.",
+    "emettre": "إصدار وثيقة",
+    "emettreImprimer": "الإصدار والطباعة",
+    "emisOk": "تم إصدار الوثيقة.",
+    "reimprimer": "إعادة الطباعة",
+    "annuler": "إلغاء الوثيقة",
+    "confirmAnnulation": "إلغاء هذه الوثيقة؟ ستظهر ملغاة عند التحقق منها.",
+    "confirmImpaye": "لا يزال على هذا التلميذ مبلغ {montant}. إصدار شهادة المغادرة رغم ذلك؟ سيُذكر المبلغ المتبقي في الوثيقة.",
+    "eleveIntrouvable": "التلميذ غير موجود.",
+    "sansInscription": "لا يوجد أي تسجيل لهذا التلميذ.",
+    "pasAdmis": "لا تصدر شهادة النجاح إلا لتلميذ ناجح (القرار النهائي).",
+    "types": {
+      "certificat_scolarite": "شهادة مدرسية",
+      "attestation_inscription": "إفادة تسجيل",
+      "certificat_frequentation": "شهادة مواظبة",
+      "attestation_reussite": "شهادة نجاح",
+      "exeat": "شهادة مغادرة",
+      "releve_notes": "كشف النقاط"
+    },
+    "aides": {
+      "certificat_scolarite": "تلميذ مسجل للسنة (المنح، الإدارات).",
+      "attestation_inscription": "تاريخ التسجيل والقسم.",
+      "certificat_frequentation": "مواظبة منتظمة منذ الالتحاق.",
+      "attestation_reussite": "الانتقال إلى القسم الأعلى (القرار النهائي).",
+      "exeat": "إذن بالمغادرة (انتقال)؛ يذكر المبلغ المتبقي إن وجد.",
+      "releve_notes": "المعدلات السنوية المصادق عليها لكامل المسار."
+    },
+    "textes": {
+      "certificat_scolarite": "يشهد مدير {etablissement} بأن التلميذ(ة) {eleve}، {ne} بتاريخ {naissance} في {lieu}، رقم التسجيل {matricule}، {inscrit} بانتظام في قسم {classe} برسم السنة الدراسية {annee}.",
+      "attestation_inscription": "يفيد مدير {etablissement} بأن التلميذ(ة) {eleve}، {ne} بتاريخ {naissance} في {lieu}، رقم التسجيل {matricule}، {inscrit} بتاريخ {dateInscription} في قسم {classe} للسنة الدراسية {annee}.",
+      "certificat_frequentation": "يشهد مدير {etablissement} بأن التلميذ(ة) {eleve}، {ne} بتاريخ {naissance} في {lieu}، رقم التسجيل {matricule}، يواظب بانتظام على الدراسة بالمؤسسة منذ {dateEntree} ويتابع دروس قسم {classe} برسم السنة الدراسية {annee}.",
+      "attestation_reussite": "يشهد مدير {etablissement} بأن التلميذ(ة) {eleve}، {ne} بتاريخ {naissance} في {lieu}، رقم التسجيل {matricule}، تابع الدراسة في قسم {classe} خلال السنة الدراسية {annee}، وحصل على معدل سنوي قدره {moyenne}/20، و{declare} إلى القسم الأعلى.",
+      "exeat": "يأذن مدير {etablissement} للتلميذ(ة) {eleve}، {ne} بتاريخ {naissance} في {lieu}، رقم التسجيل {matricule}، ال{inscrit} في قسم {classe} برسم السنة الدراسية {annee}، بمغادرة المؤسسة ابتداءً من {dateSortie}. السبب: {motif}.",
+      "releve_notes": "كشف المعدلات السنوية للتلميذ(ة) {eleve}."
+    },
+    "genre": {
+      "ne": {
+        "M": "المولود",
+        "F": "المولودة"
+      },
+      "inscrit": {
+        "M": "مسجل",
+        "F": "مسجلة"
+      },
+      "declare": {
+        "M": "أُعلن نجاحه وانتقاله",
+        "F": "أُعلن نجاحها وانتقالها"
+      }
+    },
+    "libreEngagement": "المعني(ة) بريء الذمة من أي التزام مالي تجاه المؤسسة.",
+    "resteDu": "يبقى مبلغ {montant} مستحقًا للمؤسسة.",
+    "foi": "سُلّمت هذه الوثيقة للمعني(ة) بطلب منه للإدلاء بها عند الحاجة.",
+    "faitA": "حرر في {ville}، بتاريخ {date}",
+    "signatureChef": "مدير المؤسسة",
+    "verifiable": "وثيقة يمكن التحقق منها عبر الإنترنت",
+    "code": "الرمز:",
+    "annuleFiligrane": "ملغاة",
+    "relevesTitle": "الكشوف والنتائج",
+    "relevesSubtitle": "كشوف نقاط القسم حسب الفترة أو السنة، وكشوف النقاط المصادق عليها لكل تلميذ.",
+    "bulletinsClasse": "كشوف نقاط القسم",
+    "aideBulletins": "صفحة A4 لكل تلميذ، بالمعدلات والرتبة والتقدير والغيابات.",
+    "relevesEleves": "كشوف النقاط المصادق عليها",
+    "releveCourt": "كشف",
+    "aucuneClasse": "لا توجد أقسام لهذه السنة.",
+    "documentsEleve": "الوثائق الصادرة"
+  },
+  "verification": {
+    "title": "التحقق من وثيقة",
+    "desc": "أدخل الرمز المطبوع تحت رمز QR للوثيقة الصادرة عن المؤسسة.",
+    "code": "رمز التحقق",
+    "placeholder": "مثال: 4F9A1C0B7E2D",
+    "verifier": "تحقق",
+    "valide": "وثيقة أصلية",
+    "annule": "وثيقة ملغاة",
+    "inconnu": "وثيقة غير موجودة",
+    "document": "الوثيقة",
+    "numero": "الرقم",
+    "eleve": "التلميذ",
+    "etablissement": "المؤسسة",
+    "annee": "السنة الدراسية",
+    "emisLe": "تاريخ الإصدار",
+    "aide": "قارن هذه المعلومات بالوثيقة الورقية: يجب أن تكون متطابقة.",
+    "aideInconnu": "لا توجد وثيقة تطابق هذا الرمز. تحقق من الإدخال أو اتصل بالمؤسسة المصدرة.",
+    "autre": "التحقق من وثيقة أخرى"
   }
 }

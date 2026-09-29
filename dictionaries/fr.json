@@ -888,5 +888,98 @@
     "derniersPaiements": "Derniers paiements",
     "situation": "Situation financière {annee}",
     "servicesSouscrits": "Services souscrits"
+  },
+  "documents": {
+    "title": "Attestations & certificats",
+    "subtitle": "Documents officiels numérotés et vérifiables en ligne par QR code.",
+    "tous": "Tous",
+    "numero": "N°",
+    "type": "Type de document",
+    "emisLe": "Émis le",
+    "annule": "Annulé",
+    "aucun": "Aucun document émis.",
+    "emettre": "Émettre un document",
+    "emettreImprimer": "Émettre et imprimer",
+    "emisOk": "Document émis.",
+    "reimprimer": "Réimprimer",
+    "annuler": "Annuler le document",
+    "confirmAnnulation": "Annuler ce document ? Il sera signalé comme annulé lors de sa vérification.",
+    "confirmImpaye": "Cet élève doit encore {montant}. Émettre l'exeat malgré tout ? Le reste dû sera mentionné sur le document.",
+    "eleveIntrouvable": "Élève introuvable.",
+    "sansInscription": "Cet élève n'a aucune inscription.",
+    "pasAdmis": "L'attestation de réussite n'est possible que pour un élève admis (décision finale).",
+    "types": {
+      "certificat_scolarite": "Certificat de scolarité",
+      "attestation_inscription": "Attestation d'inscription",
+      "certificat_frequentation": "Certificat de fréquentation",
+      "attestation_reussite": "Attestation de réussite",
+      "exeat": "Exeat",
+      "releve_notes": "Relevé de notes"
+    },
+    "aides": {
+      "certificat_scolarite": "Élève inscrit pour l'année (allocations, administrations).",
+      "attestation_inscription": "Date et classe d'inscription.",
+      "certificat_frequentation": "Fréquentation régulière depuis l'entrée.",
+      "attestation_reussite": "Admission en classe supérieure (décision finale).",
+      "exeat": "Autorisation de départ (transfert) ; signale un reste à payer.",
+      "releve_notes": "Moyennes annuelles de tout le cursus, certifiées."
+    },
+    "textes": {
+      "certificat_scolarite": "Le chef d'établissement de {etablissement} certifie que l'élève {eleve}, {ne} le {naissance} à {lieu}, matricule {matricule}, est régulièrement {inscrit} en classe de {classe} au titre de l'année scolaire {annee}.",
+      "attestation_inscription": "Le chef d'établissement de {etablissement} atteste que l'élève {eleve}, {ne} le {naissance} à {lieu}, matricule {matricule}, a été {inscrit} le {dateInscription} en classe de {classe} pour l'année scolaire {annee}.",
+      "certificat_frequentation": "Le chef d'établissement de {etablissement} certifie que l'élève {eleve}, {ne} le {naissance} à {lieu}, matricule {matricule}, fréquente régulièrement l'établissement depuis le {dateEntree} et suit les cours de la classe de {classe} au titre de l'année scolaire {annee}.",
+      "attestation_reussite": "Le chef d'établissement de {etablissement} atteste que l'élève {eleve}, {ne} le {naissance} à {lieu}, matricule {matricule}, a suivi la classe de {classe} au cours de l'année scolaire {annee}, a obtenu une moyenne annuelle de {moyenne}/20 et a été {declare} en classe supérieure.",
+      "exeat": "Le chef d'établissement de {etablissement} autorise l'élève {eleve}, {ne} le {naissance} à {lieu}, matricule {matricule}, {inscrit} en classe de {classe} au titre de l'année scolaire {annee}, à quitter l'établissement à compter du {dateSortie}. Motif : {motif}.",
+      "releve_notes": "Relevé des moyennes annuelles de l'élève {eleve}."
+    },
+    "genre": {
+      "ne": {
+        "M": "né",
+        "F": "née"
+      },
+      "inscrit": {
+        "M": "inscrit",
+        "F": "inscrite"
+      },
+      "declare": {
+        "M": "déclaré admis",
+        "F": "déclarée admise"
+      }
+    },
+    "libreEngagement": "L'intéressé(e) est libre de tout engagement financier envers l'établissement.",
+    "resteDu": "Un reste à payer de {montant} demeure dû à l'établissement.",
+    "foi": "En foi de quoi, le présent document est délivré à l'intéressé(e) pour servir et valoir ce que de droit.",
+    "faitA": "Fait à {ville}, le {date}",
+    "signatureChef": "Le chef d'établissement",
+    "verifiable": "Document vérifiable en ligne",
+    "code": "Code :",
+    "annuleFiligrane": "ANNULÉ",
+    "relevesTitle": "Bulletins & relevés",
+    "relevesSubtitle": "Bulletins de la classe par période ou annuels, et relevés de notes certifiés de chaque élève.",
+    "bulletinsClasse": "Bulletins de la classe",
+    "aideBulletins": "Une page A4 par élève, avec moyennes, rang, appréciation et absences.",
+    "relevesEleves": "Relevés de notes certifiés",
+    "releveCourt": "Relevé",
+    "aucuneClasse": "Aucune classe pour cette année.",
+    "documentsEleve": "Documents émis"
+  },
+  "verification": {
+    "title": "Vérifier un document",
+    "desc": "Saisissez le code imprimé sous le QR code du document délivré par l'établissement.",
+    "code": "Code de vérification",
+    "placeholder": "Ex. 4F9A1C0B7E2D",
+    "verifier": "Vérifier",
+    "valide": "Document authentique",
+    "annule": "Document annulé",
+    "inconnu": "Document introuvable",
+    "document": "Document",
+    "numero": "Numéro",
+    "eleve": "Élève",
+    "etablissement": "Établissement",
+    "annee": "Année scolaire",
+    "emisLe": "Émis le",
+    "aide": "Comparez ces informations avec celles du document papier : elles doivent être identiques.",
+    "aideInconnu": "Aucun document ne correspond à ce code. Vérifiez la saisie ou contactez l'établissement émetteur.",
+    "autre": "Vérifier un autre document"
   }
 }

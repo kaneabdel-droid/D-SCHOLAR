@@ -57,7 +57,7 @@ function sections(role: Role): Section[] {
         { key: 'admissions', href: '/admissions', icon: UserPlus },
         { key: 'eleves', href: '/eleves', icon: GraduationCap },
         { key: 'passages', href: '/passages', icon: TrendingUp },
-        { key: 'attestations', href: '/attestations', icon: FileBadge, bientot: true },
+        { key: 'attestations', href: '/attestations', icon: FileBadge },
       ],
     },
     {
@@ -67,7 +67,7 @@ function sections(role: Role): Section[] {
         { key: 'enseignants', href: '/enseignants', icon: Users },
         { key: 'emplois', href: '/emplois-du-temps', icon: CalendarClock },
         { key: 'notes', href: '/notes', icon: PenLine },
-        { key: 'releves', href: '/releves', icon: FileText, bientot: true },
+        { key: 'releves', href: '/releves', icon: FileText },
       ],
     },
     {

@@ -10,6 +10,8 @@ import { fmt, intlLocale } from '@/lib/i18n'
 import { peutEcrire } from '@/lib/roles'
 import EleveActions from './EleveActions'
 import { situationsFinancieres } from '@/lib/finances'
+import type { TypeDocument } from '@/lib/documents'
+import { EmettreDocumentButton, LigneDocumentActions } from '../../attestations/DocumentsClient'
 import { getDictionary, getLocale } from '@/dictionaries'
 
 type Inscription = {
@@ -145,6 +147,12 @@ export default async function EleveFichePage({ params, searchParams }: { params:
       ])
     : [null, { data: [] }, { data: [] }]
   const situation = situations?.get(id) ?? null
+
+  // Documents émis (attestations, certificats, exeat, relevés).
+  const documentsVisibles = peutEcrire(context.role, 'documents')
+  const { data: documents } = documentsVisibles
+    ? await supabase.from('documents_emis').select('id, type, numero, emis_le, annule').eq('eleve_id', id).order('emis_le', { ascending: false })
+    : { data: [] }
   const periodeLib = (p: { rang: number; decoupage: string }) => libellePeriode(dict.annees, p)
   const icones: Record<string, typeof LogIn> = { entree: LogIn, transfert_entrant: LogIn, transfert_sortant: LogOut, abandon: LogOut, exclusion: LogOut, fin_de_cycle: GraduationCap }
 
@@ -412,6 +420,31 @@ export default async function EleveFichePage({ params, searchParams }: { params:
               </ul>
             </div>
           </div>
+        </section>
+      )}
+
+      {documentsVisibles && (
+        <section className={cardClass}>
+          <div className="flex flex-wrap items-center gap-3 border-b border-surface-border px-5 py-4">
+            <h2 className="flex-1 font-heading text-base font-semibold text-foreground">{dict.documents.documentsEleve}</h2>
+            {context.acces === 'complet' && inscription && (
+              <EmettreDocumentButton anneeId={inscription.annee_id} eleveFixe={id} dict={dict} lang={locale} locale={loc} />
+            )}
+          </div>
+          <ul className="divide-y divide-surface-border">
+            {(documents ?? []).map((d) => (
+              <li key={d.id} className={`flex items-center gap-3 px-5 py-2.5 text-sm ${d.annule ? 'opacity-60' : ''}`}>
+                <span className="min-w-0 flex-1">
+                  {dict.documents.types[d.type as TypeDocument]}
+                  <span className="ms-2 font-mono text-xs text-foreground-muted">{d.numero}</span>
+                  {d.annule && <span className="ms-2 rounded-full bg-danger/10 px-2 py-0.5 text-xs font-semibold text-danger">{dict.documents.annule}</span>}
+                </span>
+                <span className="text-xs text-foreground-muted">{new Date(d.emis_le).toLocaleDateString(loc)}</span>
+                <LigneDocumentActions id={d.id} annule={d.annule} ecriture={context.acces === 'complet'} dict={dict} lang={locale} locale={loc} />
+              </li>
+            ))}
+            {(documents ?? []).length === 0 && <li className="px-5 py-8 text-center text-sm text-foreground-muted">{dict.documents.aucun}</li>}
+          </ul>
         </section>
       )}
     </div>
