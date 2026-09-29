@@ -9,7 +9,7 @@ import { anneesEtSelection, libellePeriode, un } from '@/lib/scolarite'
 import { intlLocale } from '@/lib/i18n'
 import { getDictionary, getLocale } from '@/dictionaries'
 import ImprimerBulletins from '../classes/ImprimerBulletins'
-import { EmettreDocumentButton } from '../attestations/DocumentsClient'
+import { CartesClasseButton, EmettreDocumentButton } from '../attestations/DocumentsClient'
 
 // Bulletins (par période ou annuels) d'une classe et relevés de notes certifiés
 // (cursus complet, document numéroté et vérifiable) de chaque élève.
@@ -67,6 +67,12 @@ export default async function RelevesPage({ searchParams }: { searchParams: Prom
               ))}
               <ImprimerBulletins classeId={classe.id} periodeId={null} locale={loc} lang={locale} dict={dict} libelle={s.annuel} />
               <p className="mt-2 text-xs text-foreground-muted">{t.aideBulletins}</p>
+              {emission && (
+                <div className="mt-3 border-t border-surface-border pt-4">
+                  <CartesClasseButton classeId={classe.id} dict={dict} lang={locale} locale={loc} />
+                  <p className="mt-2 text-xs text-foreground-muted">{t.aideCartes}</p>
+                </div>
+              )}
             </div>
           </section>
           <section className={cardClass}>

@@ -583,11 +583,11 @@ begin
   select e, a.id, null, 'Frais d''inscription', 25000, a.date_debut
   from public.annees_scolaires a where a.id in (a1, a2);
   insert into public.frais_scolarite (etablissement_id, annee_id, niveau_id, libelle, montant, date_echeance)
-  select distinct e, c.annee_id, n.id, 'Scolarité annuelle',
+  select distinct e, cla.annee_id, n.id, 'Scolarité annuelle',
     case n.cycle when 'elementaire' then 180000 when 'moyen' then 225000 else 270000 end,
-    (select date_debut + 30 from public.annees_scolaires where id = c.annee_id)
-  from public.classes c join public.niveaux n on n.id = c.niveau_id
-  where c.etablissement_id = e;
+    (select date_debut + 30 from public.annees_scolaires where id = cla.annee_id)
+  from public.classes cla join public.niveaux n on n.id = cla.niveau_id
+  where cla.etablissement_id = e;
 
   -- ─── Souscriptions aux services (rentrée 2026-2027) ─────────────────────
   insert into public.souscriptions_services (etablissement_id, eleve_id, service_id, annee_id, details)
@@ -611,8 +611,8 @@ begin
     (array['especes', 'mobile_money', 'mobile_money', 'virement'])[1 + floor(public._demo_alea(i.eleve_id::text || x.libelle) * 4)::integer],
     x.date_p
   from public.inscriptions i
-  join public.classes c on c.id = i.classe_id
-  join public.niveaux n on n.id = c.niveau_id
+  join public.classes cla on cla.id = i.classe_id
+  join public.niveaux n on n.id = cla.niveau_id
   cross join lateral (values
     ('Frais d''inscription', 25000, date '2025-09-22'),
     ('Scolarité · 1re tranche', (case n.cycle when 'elementaire' then 180000 when 'moyen' then 225000 else 270000 end) / 3, date '2025-10-20'),
@@ -628,8 +628,8 @@ begin
     (array['especes', 'mobile_money', 'mobile_money', 'virement'])[1 + floor(public._demo_alea(i.eleve_id::text || x.libelle || '27') * 4)::integer],
     date '2026-09-14' + floor(public._demo_alea(i.eleve_id::text || 'jour' || x.libelle) * 14)::integer
   from public.inscriptions i
-  join public.classes c on c.id = i.classe_id
-  join public.niveaux n on n.id = c.niveau_id
+  join public.classes cla on cla.id = i.classe_id
+  join public.niveaux n on n.id = cla.niveau_id
   cross join lateral (values
     ('Frais d''inscription', 25000, 0.9),
     ('Scolarité · 1re tranche', (case n.cycle when 'elementaire' then 180000 when 'moyen' then 225000 else 270000 end) / 3, 0.55)
@@ -676,25 +676,85 @@ begin
      'personnel', null, null, '2026-09-24 08:30');
 
   -- ─── Documents émis (numérotés, vérifiables par QR code) ─────────────────
+  -- Le contenu est l'instantané imprimé (identité, classe, année…), comme à
+  -- l'émission depuis l'application (app/(dashboard)/attestations/actions.ts).
   insert into public.documents_emis (etablissement_id, eleve_id, annee_id, type, numero, contenu, emis_le)
   select e, x.eleve_id, x.annee_id, x.type,
     x.prefixe || '-2026-' || lpad(public.prochain_numero(e, 'doc-' || x.prefixe || '-2026')::text, 4, '0'),
-    jsonb_build_object('classe', x.classe), x.emis_le
+    jsonb_build_object(
+      'eleve', jsonb_build_object('prenom', el.prenom, 'nom', el.nom, 'matricule', el.matricule, 'sexe', el.sexe,
+                                  'date_naissance', el.date_naissance, 'lieu_naissance', el.lieu_naissance),
+      'classe', cl.nom, 'annee', an.libelle, 'date_inscription', i.date_inscription, 'date_entree', el.date_entree,
+      'moyenne', d.moyenne_annuelle, 'decision', d.decision_finale,
+      'sortie', case when x.type = 'exeat' then (select jsonb_build_object('date', m.date_mouvement, 'type', m.type, 'motif', m.motif)
+                                                 from public.mouvements m where m.eleve_id = el.id and m.type not in ('entree', 'transfert_entrant')
+                                                 order by m.date_mouvement desc limit 1) end,
+      'reste_du', case when x.type = 'exeat' then 0 end,
+      'tuteur', case when x.type = 'carte_scolaire' then jsonb_build_object('nom', el.tuteur_nom, 'telephone', el.tuteur_telephone) end),
+    x.emis_le
   from (
     -- Exeat de l'élève parti en cours d'année
-    select el.id as eleve_id, a1 as annee_id, 'exeat' as type, 'EX' as prefixe, '6e A' as classe, timestamptz '2026-04-13 11:00' as emis_le
+    select el.id as eleve_id, a1 as annee_id, 'exeat' as type, 'EX' as prefixe, timestamptz '2026-04-13 11:00' as emis_le
     from _el el where el.cas = 'depart'
     union all
     -- Attestations de réussite des bacheliers
-    select i.eleve_id, a1, 'attestation_reussite', 'AR', 'Tle S2', timestamptz '2026-07-27 10:00'
+    select i.eleve_id, a1, 'attestation_reussite', 'AR', timestamptz '2026-07-27 10:00'
     from public.decisions d join public.inscriptions i on i.id = d.inscription_id join _cls cl on cl.id = i.classe_id
     where i.annee_id = a1 and cl.cle = 'TS2' and d.decision_finale = 'admis'
     union all
     -- Certificats de scolarité de rentrée
-    (select i.eleve_id, a2, 'certificat_scolarite', 'CS', cl2.nom, timestamptz '2026-09-28 09:30'
-     from public.inscriptions i join _cls cl on cl.id = i.classe_id join public.classes cl2 on cl2.id = i.classe_id
-     where i.annee_id = a2 order by i.eleve_id limit 3)
+    (select i.eleve_id, a2, 'certificat_scolarite', 'CS', timestamptz '2026-09-28 09:30'
+     from public.inscriptions i where i.annee_id = a2 order by i.eleve_id limit 3)
+    union all
+    -- Cartes d'identité scolaires de la 3e A
+    select i.eleve_id, a2, 'carte_scolaire', 'CI', timestamptz '2026-09-28 11:00'
+    from public.inscriptions i join _cls cl on cl.id = i.classe_id
+    where i.annee_id = a2 and cl.cle = '3A'
+  ) x
+  join public.eleves el on el.id = x.eleve_id
+  join public.inscriptions i on i.eleve_id = x.eleve_id and i.annee_id = x.annee_id
+  join public.classes cl on cl.id = i.classe_id
+  join public.annees_scolaires an on an.id = x.annee_id
+  left join public.decisions d on d.inscription_id = i.id;
+
+  -- ─── Billets de la surveillance (numéro attribué par trigger) ────────────
+  -- Année écoulée : quelques billets datés ; année en cours : la main courante
+  -- du jour, pour que la page Billets ne soit pas vide à l'ouverture.
+  insert into public.billets (etablissement_id, eleve_id, annee_id, type, emis_le, motif, details, minutes_retard, heure_retour)
+  select e, x.eleve_id, x.annee_id, x.type, x.emis_le, x.motif, x.details, x.minutes, x.retour
+  from (
+    select i.eleve_id, a1 as annee_id, (array['retard', 'sortie', 'visite_medicale', 'entree'])[1 + (row_number() over (order by i.eleve_id))::int % 4] as type,
+      timestamptz '2026-03-10 08:20' + (row_number() over (order by i.eleve_id)) * interval '3 days' as emis_le,
+      null::text as motif, null::text as details, null::smallint as minutes, null::time as retour
+    from public.inscriptions i where i.annee_id = a1 order by i.eleve_id limit 12
   ) x;
+  update public.billets set
+    motif = case type when 'retard' then 'Transport en commun en retard' when 'sortie' then 'Rendez-vous médical en ville'
+                      when 'visite_medicale' then 'Maux de tête' else 'Retour après absence justifiée' end,
+    details = case type when 'sortie' then 'Mère de l''élève' when 'visite_medicale' then 'Infirmerie' end,
+    minutes_retard = case when type = 'retard' then 15 end,
+    heure_retour = case when type in ('sortie', 'visite_medicale') then time '11:00' end
+  where etablissement_id = e and motif is null;
+
+  insert into public.billets (etablissement_id, eleve_id, annee_id, type, emis_le, motif, details, minutes_retard, heure_retour)
+  select e, x.eleve_id, a2, x.type, date_trunc('day', now()) + x.decalage, x.motif, x.details, x.minutes, x.retour
+  from (
+    select (select i.eleve_id from public.inscriptions i join _cls cl on cl.id = i.classe_id where i.annee_id = a2 and cl.cle = '3A' order by i.eleve_id limit 1 offset 0) as eleve_id,
+      'retard' as type, interval '8 hours 12 minutes' as decalage, 'Embouteillages' as motif, null as details, 12::smallint as minutes, null::time as retour
+    union all
+    select (select i.eleve_id from public.inscriptions i join _cls cl on cl.id = i.classe_id where i.annee_id = a2 and cl.cle = '3A' order by i.eleve_id limit 1 offset 1),
+      'retard', interval '8 hours 25 minutes', 'Réveil tardif', null, 25, null
+    union all
+    select coalesce(v_enfant1, (select i.eleve_id from public.inscriptions i where i.annee_id = a2 order by i.eleve_id limit 1 offset 2)),
+      'visite_medicale', interval '10 hours 5 minutes', 'Fièvre en cours de mathématiques', 'Infirmerie', null, time '11:00'
+    union all
+    select (select i.eleve_id from public.inscriptions i where i.annee_id = a2 order by i.eleve_id limit 1 offset 3),
+      'sortie', interval '11 hours 40 minutes', 'Rendez-vous chez le dentiste', 'Père de l''élève', null, time '15:00'
+    union all
+    select (select i.eleve_id from public.inscriptions i where i.annee_id = a2 order by i.eleve_id limit 1 offset 4),
+      'entree', interval '8 hours', 'Retour après deux jours d''absence (certificat médical)', null, null, null
+  ) x
+  where x.eleve_id is not null;
 
 end;
 $$;

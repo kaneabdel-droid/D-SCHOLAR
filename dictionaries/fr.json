@@ -120,7 +120,8 @@
     "abonnement": "Abonnement",
     "anneeActive": "Année",
     "aucuneAnnee": "Aucune année active",
-    "passages": "Passages & repêchages"
+    "passages": "Passages & repêchages",
+    "billets": "Billets"
   },
   "roles": {
     "direction": "Direction",
@@ -914,7 +915,8 @@
       "certificat_frequentation": "Certificat de fréquentation",
       "attestation_reussite": "Attestation de réussite",
       "exeat": "Exeat",
-      "releve_notes": "Relevé de notes"
+      "releve_notes": "Relevé de notes",
+      "carte_scolaire": "Carte d'identité scolaire"
     },
     "aides": {
       "certificat_scolarite": "Élève inscrit pour l'année (allocations, administrations).",
@@ -922,7 +924,8 @@
       "certificat_frequentation": "Fréquentation régulière depuis l'entrée.",
       "attestation_reussite": "Admission en classe supérieure (décision finale).",
       "exeat": "Autorisation de départ (transfert) ; signale un reste à payer.",
-      "releve_notes": "Moyennes annuelles de tout le cursus, certifiées."
+      "releve_notes": "Moyennes annuelles de tout le cursus, certifiées.",
+      "carte_scolaire": "Carte au format bancaire avec QR de vérification."
     },
     "textes": {
       "certificat_scolarite": "Le chef d'établissement de {etablissement} certifie que l'élève {eleve}, {ne} le {naissance} à {lieu}, matricule {matricule}, est régulièrement {inscrit} en classe de {classe} au titre de l'année scolaire {annee}.",
@@ -930,7 +933,8 @@
       "certificat_frequentation": "Le chef d'établissement de {etablissement} certifie que l'élève {eleve}, {ne} le {naissance} à {lieu}, matricule {matricule}, fréquente régulièrement l'établissement depuis le {dateEntree} et suit les cours de la classe de {classe} au titre de l'année scolaire {annee}.",
       "attestation_reussite": "Le chef d'établissement de {etablissement} atteste que l'élève {eleve}, {ne} le {naissance} à {lieu}, matricule {matricule}, a suivi la classe de {classe} au cours de l'année scolaire {annee}, a obtenu une moyenne annuelle de {moyenne}/20 et a été {declare} en classe supérieure.",
       "exeat": "Le chef d'établissement de {etablissement} autorise l'élève {eleve}, {ne} le {naissance} à {lieu}, matricule {matricule}, {inscrit} en classe de {classe} au titre de l'année scolaire {annee}, à quitter l'établissement à compter du {dateSortie}. Motif : {motif}.",
-      "releve_notes": "Relevé des moyennes annuelles de l'élève {eleve}."
+      "releve_notes": "Relevé des moyennes annuelles de l'élève {eleve}.",
+      "carte_scolaire": "Carte d'identité scolaire de l'élève {eleve}."
     },
     "genre": {
       "ne": {
@@ -961,7 +965,14 @@
     "relevesEleves": "Relevés de notes certifiés",
     "releveCourt": "Relevé",
     "aucuneClasse": "Aucune classe pour cette année.",
-    "documentsEleve": "Documents émis"
+    "documentsEleve": "Documents émis",
+    "carteTitre": "Carte d'identité scolaire",
+    "photo": "Photo",
+    "neLe": "Né(e) le",
+    "urgence": "Urgence",
+    "cartesClasse": "Cartes scolaires de la classe",
+    "aideCartes": "10 cartes par page A4, à découper et plastifier. Les cartes déjà émises cette année sont réimprimées à l'identique.",
+    "aucunEleve": "Aucun élève actif dans cette classe."
   },
   "verification": {
     "title": "Vérifier un document",
@@ -989,7 +1000,8 @@
     "retard": "{eleve} : retard le {date} ({duree} min)",
     "note": "{eleve} : nouvelle note en {matiere} ({evaluation})",
     "annonce": "Annonce : {titre}",
-    "autre": "Nouvelle notification"
+    "autre": "Nouvelle notification",
+    "billet": "{eleve} : {billet} à {heure}"
   },
   "communication": {
     "title": "Communication",
@@ -1072,5 +1084,55 @@
     "compteExistant": "Un accès existe déjà avec cet identifiant : saisissez son mot de passe actuel.",
     "comptePersonnel": "Cet identifiant appartient à un compte du personnel.",
     "compteIncompatible": "Cet accès ne peut pas être relié à cet élève. Contactez le secrétariat."
+  },
+  "billets": {
+    "title": "Billets de la surveillance",
+    "subtitle": "Billets d'entrée, de sortie, de visite médicale et de retard, numérotés et imprimés en deux volets.",
+    "jour": "Jour",
+    "afficher": "Afficher",
+    "nouveau": "Nouveau billet",
+    "emettreImprimer": "Délivrer et imprimer",
+    "emisOk": "Billet délivré.",
+    "type": "Type de billet",
+    "heure": "Heure",
+    "numero": "N°",
+    "aucun": "Aucun billet délivré ce jour.",
+    "types": {
+      "entree": "Billet d'entrée",
+      "sortie": "Billet de sortie",
+      "visite_medicale": "Billet de visite médicale",
+      "retard": "Billet de retard"
+    },
+    "minutes": "Minutes de retard",
+    "enregistrerRetard": "Inscrire le retard dans l'assiduité (la famille est prévenue)",
+    "accompagnant": "Accompagné(e) par",
+    "accompagnantPlaceholder": "Nom et lien (père, mère, tuteur…)",
+    "lieu": "Lieu de consultation",
+    "lieuPlaceholder": "Infirmerie, centre de santé…",
+    "heureRetour": "Heure de retour prévue",
+    "precisions": "Précisions",
+    "precisionsPlaceholder": "Après absence, exclusion, rendez-vous…",
+    "motif": "Motif",
+    "aides": {
+      "entree": "Autorise l'élève à regagner les cours (après une absence, un retard important ou une exclusion).",
+      "sortie": "Autorise l'élève à quitter l'établissement pendant les heures de cours.",
+      "visite_medicale": "Envoie l'élève à l'infirmerie ou en consultation.",
+      "retard": "Autorise l'élève en retard à entrer en classe."
+    },
+    "phrases": {
+      "entree": "L'élève est autorisé(e) à regagner les cours sur présentation de ce billet au professeur.",
+      "sortie": "L'élève est autorisé(e) à quitter l'établissement. L'établissement décline toute responsabilité hors de son enceinte.",
+      "visite_medicale": "L'élève est autorisé(e) à se rendre en consultation. Le billet est à faire viser par le service de santé et à rapporter à la surveillance.",
+      "retard": "L'élève est autorisé(e) à entrer en classe sur présentation de ce billet au professeur."
+    },
+    "dateHeure": "Date et heure",
+    "voletEleve": "Volet élève",
+    "voletSouche": "Souche · surveillance",
+    "visaSurveillance": "La surveillance",
+    "visaProfesseur": "Visa du professeur",
+    "visaAccompagnant": "Signature de l'accompagnant",
+    "visaInfirmerie": "Visa du service de santé",
+    "reimprimer": "Réimprimer",
+    "confirmSuppression": "Supprimer ce billet ? Un retard inscrit dans l'assiduité reste enregistré."
   }
 }

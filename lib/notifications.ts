@@ -15,6 +15,8 @@ export function texteNotification(n: NotificationBrute, dict: Dictionary, locale
       return fmt(s('type') === 'retard' ? t.retard : t.absence, { eleve: s('eleve'), date: date(s('date')), duree: s('duree') })
     case 'note':
       return fmt(t.note, { eleve: s('eleve'), matiere: s('matiere'), evaluation: s('evaluation') })
+    case 'billet':
+      return fmt(t.billet, { eleve: s('eleve'), billet: dict.billets.types[s('billet') as keyof typeof dict.billets.types] ?? '', heure: s('heure') ? new Date(s('heure')).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }) : '' })
     case 'annonce':
       return fmt(t.annonce, { titre: s('titre') })
     default:

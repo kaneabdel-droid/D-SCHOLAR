@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { Bell, ClipboardCheck, Megaphone, PenLine } from 'lucide-react'
+import { Bell, ClipboardCheck, Megaphone, PenLine, Ticket } from 'lucide-react'
 import { marquerNotificationsLues } from '@/app/actions/notifications'
 
 type Item = { id: string; texte: string; type: string; lien: string | null; lu: boolean; quand: string }
-const ICONES = { absence: ClipboardCheck, note: PenLine, annonce: Megaphone } as const
+const ICONES = { absence: ClipboardCheck, note: PenLine, annonce: Megaphone, billet: Ticket } as const
 
 export default function NotificationsMenu({ items, libelles }: { items: Item[]; libelles: { titre: string; vide: string } }) {
   const [ouvert, setOuvert] = useState(false)

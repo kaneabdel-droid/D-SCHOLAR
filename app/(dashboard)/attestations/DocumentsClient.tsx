@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState, useTransition } from 'react'
-import { Ban, FileBadge, Printer } from 'lucide-react'
+import { Ban, FileBadge, IdCard, Printer } from 'lucide-react'
 import { toast } from 'sonner'
 import Modal from '@/components/ui/Modal'
 import { btnIcon, btnPrimary, btnSecondary, inputClass, labelClass } from '@/components/ui/styles'
@@ -9,7 +9,7 @@ import type { Dictionary } from '@/dictionaries'
 import { echapper, enteteHtml, imprimerPages, tableauHtml } from '@/lib/impression'
 import { fmt } from '@/lib/i18n'
 import { TYPES_DOCUMENT, type TypeDocument } from '@/lib/documents'
-import { annulerDocument, donneesDocument, emettreDocument } from './actions'
+import { annulerDocument, donneesDocument, donneesDocuments, emettreCartesClasse, emettreDocument } from './actions'
 
 export type EleveAnnee = { id: string; nom: string; classe: string }
 
@@ -21,6 +21,10 @@ export async function imprimerDocument(id: string, lang: string, locale: string,
   const d = await donneesDocument(id)
   if (!d || !d.etablissement) {
     toast.error(dict.errors.generic)
+    return
+  }
+  if (d.type === 'carte_scolaire') {
+    imprimerPlancheCartes([d], lang, locale, dict)
     return
   }
   const c = d.contenu
@@ -222,5 +226,78 @@ export function LigneDocumentActions({ id, annule, ecriture, dict, lang, locale 
         </button>
       )}
     </div>
+  )
+}
+
+type DonneesImpression = NonNullable<Awaited<ReturnType<typeof donneesDocument>>>
+
+// Cartes d'identité scolaires au format carte bancaire (85,6 × 54 mm), 10 par
+// page A4, à découper et plastifier ; photo à coller dans le cadre prévu.
+function imprimerPlancheCartes(docs: DonneesImpression[], lang: string, locale: string, dict: Dictionary) {
+  const t = dict.documents
+  const style = `<style>
+    .planche { padding: 10mm 12mm; display: grid; grid-template-columns: 85.6mm 85.6mm; grid-auto-rows: 54mm; gap: 4mm 8mm; justify-content: center; page-break-after: always; }
+    .planche:last-child { page-break-after: auto; }
+    .carte { border: 1px solid #cbd5e1; border-radius: 3mm; overflow: hidden; display: flex; flex-direction: column; font-size: 7.4pt; position: relative; background: #fff; }
+    .carte .bandeau { background: #0f1b3d; color: #fff; padding: 1.6mm 3mm; display: flex; justify-content: space-between; gap: 2mm; align-items: center; }
+    .carte .bandeau b { font-size: 7.8pt; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 56mm; }
+    .carte .bandeau span { font-size: 6pt; letter-spacing: .06em; text-transform: uppercase; opacity: .85; }
+    .carte .annee { font-size: 6.6pt; font-weight: 700; background: #f5b82e; color: #0f1b3d; border-radius: 1mm; padding: .4mm 1.4mm; white-space: nowrap; }
+    .carte .corps { flex: 1; display: flex; gap: 2.6mm; padding: 2.4mm 3mm 2mm; }
+    .carte .photo { width: 20mm; height: 25mm; border: 1px dashed #94a3b8; border-radius: 1.5mm; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 6pt; flex-shrink: 0; }
+    .carte .infos { flex: 1; min-width: 0; line-height: 1.45; }
+    .carte .infos .nom { font-size: 9pt; font-weight: 700; color: #0f1b3d; line-height: 1.2; margin-bottom: .8mm; }
+    .carte .infos p { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .carte .infos i { font-style: normal; color: #64748b; }
+    .carte .qr { width: 15mm; flex-shrink: 0; text-align: center; font-size: 5pt; color: #64748b; align-self: flex-end; }
+    .carte .qr svg { width: 15mm; height: 15mm; display: block; }
+    .carte .annule { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 20pt; font-weight: 800; color: rgba(220,38,38,.35); transform: rotate(-14deg); }
+  </style>`
+  const date = (iso: string | null) => (iso ? new Date(iso + 'T00:00:00').toLocaleDateString(locale) : '—')
+  const carte = (d: DonneesImpression) => {
+    const c = d.contenu
+    const e = c.eleve
+    return `<div class="carte">
+      <div class="bandeau"><div><b>${echapper(d.etablissement?.nom ?? '')}</b><span>${echapper(t.carteTitre)}</span></div><span class="annee num">${echapper(c.annee ?? '')}</span></div>
+      <div class="corps">
+        <div class="photo">${echapper(t.photo)}</div>
+        <div class="infos">
+          <div class="nom">${echapper(e.nom.toUpperCase())}<br>${echapper(e.prenom)}</div>
+          <p><i>${echapper(dict.eleves.matricule)} :</i> <b class="num">${echapper(e.matricule)}</b></p>
+          <p><i>${echapper(dict.eleves.classe)} :</i> <b>${echapper(c.classe ?? '—')}</b></p>
+          <p><i>${echapper(t.neLe)} :</i> ${echapper(date(e.date_naissance))}${e.lieu_naissance ? ` · ${echapper(e.lieu_naissance)}` : ''}</p>
+          ${c.tuteur?.telephone ? `<p><i>${echapper(t.urgence)} :</i> <span class="num">${echapper(c.tuteur.telephone)}</span></p>` : ''}
+        </div>
+        <div class="qr">${d.qr}<span class="num">${echapper(d.numero)}</span></div>
+      </div>
+      ${d.annule ? `<div class="annule">${echapper(t.annuleFiligrane)}</div>` : ''}
+    </div>`
+  }
+  const pages: string[] = []
+  for (let i = 0; i < docs.length; i += 10) pages.push(`<div class="planche">${docs.slice(i, i + 10).map(carte).join('')}</div>`)
+  if (!imprimerPages(t.types.carte_scolaire, [style + pages.join('')], lang)) toast.error(dict.bulletin.popup)
+}
+
+// Cartes scolaires de toute une classe (émission des cartes manquantes puis impression).
+export function CartesClasseButton({ classeId, dict, lang, locale }: { classeId: string; dict: Dictionary; lang: string; locale: string }) {
+  const [enCours, startTransition] = useTransition()
+  return (
+    <button
+      type="button"
+      disabled={enCours}
+      onClick={() =>
+        startTransition(async () => {
+          const r = await emettreCartesClasse(classeId)
+          if (r.error || !r.ids) {
+            toast.error(r.error ?? dict.errors.generic)
+            return
+          }
+          imprimerPlancheCartes(await donneesDocuments(r.ids), lang, locale, dict)
+        })
+      }
+      className={btnSecondary}
+    >
+      <IdCard className="h-4 w-4" /> {enCours ? dict.bulletin.preparation : dict.documents.cartesClasse}
+    </button>
   )
 }

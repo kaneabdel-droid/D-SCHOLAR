@@ -120,7 +120,8 @@
     "abonnement": "Subscription",
     "anneeActive": "Year",
     "aucuneAnnee": "No active year",
-    "passages": "Promotions & resits"
+    "passages": "Promotions & resits",
+    "billets": "Slips"
   },
   "roles": {
     "direction": "Management",
@@ -914,7 +915,8 @@
       "certificat_frequentation": "Certificate of attendance",
       "attestation_reussite": "Certificate of success",
       "exeat": "Exeat (leaving certificate)",
-      "releve_notes": "Transcript"
+      "releve_notes": "Transcript",
+      "carte_scolaire": "Student ID card"
     },
     "aides": {
       "certificat_scolarite": "Student enrolled for the year (allowances, administrations).",
@@ -922,7 +924,8 @@
       "certificat_frequentation": "Regular attendance since admission.",
       "attestation_reussite": "Promotion to the next class (final decision).",
       "exeat": "Leave authorisation (transfer); states any outstanding balance.",
-      "releve_notes": "Certified annual averages for the whole record."
+      "releve_notes": "Certified annual averages for the whole record.",
+      "carte_scolaire": "Credit-card-size card with a verification QR code."
     },
     "textes": {
       "certificat_scolarite": "The head of {etablissement} certifies that the student {eleve}, {ne} on {naissance} in {lieu}, registration number {matricule}, is duly {inscrit} in {classe} for the {annee} school year.",
@@ -930,7 +933,8 @@
       "certificat_frequentation": "The head of {etablissement} certifies that the student {eleve}, {ne} on {naissance} in {lieu}, registration number {matricule}, has regularly attended the school since {dateEntree} and follows the {classe} class for the {annee} school year.",
       "attestation_reussite": "The head of {etablissement} certifies that the student {eleve}, {ne} on {naissance} in {lieu}, registration number {matricule}, attended {classe} during the {annee} school year, obtained an annual average of {moyenne}/20 and was {declare} to the next class.",
       "exeat": "The head of {etablissement} authorises the student {eleve}, {ne} on {naissance} in {lieu}, registration number {matricule}, {inscrit} in {classe} for the {annee} school year, to leave the school as of {dateSortie}. Reason: {motif}.",
-      "releve_notes": "Transcript of annual averages of the student {eleve}."
+      "releve_notes": "Transcript of annual averages of the student {eleve}.",
+      "carte_scolaire": "Student ID card of {eleve}."
     },
     "genre": {
       "ne": {
@@ -961,7 +965,14 @@
     "relevesEleves": "Certified transcripts",
     "releveCourt": "Transcript",
     "aucuneClasse": "No class for this year.",
-    "documentsEleve": "Issued documents"
+    "documentsEleve": "Issued documents",
+    "carteTitre": "Student ID card",
+    "photo": "Photo",
+    "neLe": "Born",
+    "urgence": "Emergency",
+    "cartesClasse": "Class ID cards",
+    "aideCartes": "10 cards per A4 page, to cut out and laminate. Cards already issued this year are reprinted identically.",
+    "aucunEleve": "No active student in this class."
   },
   "verification": {
     "title": "Verify a document",
@@ -989,7 +1000,8 @@
     "retard": "{eleve}: late on {date} ({duree} min)",
     "note": "{eleve}: new grade in {matiere} ({evaluation})",
     "annonce": "Announcement: {titre}",
-    "autre": "New notification"
+    "autre": "New notification",
+    "billet": "{eleve}: {billet} at {heure}"
   },
   "communication": {
     "title": "Communication",
@@ -1072,5 +1084,55 @@
     "compteExistant": "An access already exists with this identifier: enter its current password.",
     "comptePersonnel": "This identifier belongs to a staff account.",
     "compteIncompatible": "This access cannot be linked to this student. Please contact the office."
+  },
+  "billets": {
+    "title": "Supervision slips",
+    "subtitle": "Entry, exit, medical visit and late slips, numbered and printed in two parts.",
+    "jour": "Day",
+    "afficher": "Show",
+    "nouveau": "New slip",
+    "emettreImprimer": "Issue and print",
+    "emisOk": "Slip issued.",
+    "type": "Slip type",
+    "heure": "Time",
+    "numero": "No.",
+    "aucun": "No slip issued on this day.",
+    "types": {
+      "entree": "Entry slip",
+      "sortie": "Exit slip",
+      "visite_medicale": "Medical visit slip",
+      "retard": "Late slip"
+    },
+    "minutes": "Minutes late",
+    "enregistrerRetard": "Record the lateness in attendance (the family is notified)",
+    "accompagnant": "Accompanied by",
+    "accompagnantPlaceholder": "Name and relationship (father, mother, guardian…)",
+    "lieu": "Place of consultation",
+    "lieuPlaceholder": "Infirmary, health centre…",
+    "heureRetour": "Expected return time",
+    "precisions": "Details",
+    "precisionsPlaceholder": "After absence, exclusion, appointment…",
+    "motif": "Reason",
+    "aides": {
+      "entree": "Allows the student to return to class (after an absence, significant lateness or exclusion).",
+      "sortie": "Allows the student to leave the school during class hours.",
+      "visite_medicale": "Sends the student to the infirmary or for a consultation.",
+      "retard": "Allows a late student to enter class."
+    },
+    "phrases": {
+      "entree": "The student is allowed to return to class upon presenting this slip to the teacher.",
+      "sortie": "The student is allowed to leave the school. The school accepts no liability outside its premises.",
+      "visite_medicale": "The student is allowed to attend a consultation. This slip must be signed by the health service and returned to the supervision office.",
+      "retard": "The student is allowed to enter class upon presenting this slip to the teacher."
+    },
+    "dateHeure": "Date and time",
+    "voletEleve": "Student copy",
+    "voletSouche": "Stub · supervision",
+    "visaSurveillance": "Supervision office",
+    "visaProfesseur": "Teacher's signature",
+    "visaAccompagnant": "Accompanying person's signature",
+    "visaInfirmerie": "Health service stamp",
+    "reimprimer": "Reprint",
+    "confirmSuppression": "Delete this slip? Lateness recorded in attendance remains recorded."
   }
 }

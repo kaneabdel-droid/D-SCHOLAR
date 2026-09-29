@@ -25,6 +25,7 @@ export const ECRITURE = {
   services: ['direction', 'intendant', 'secretariat'],
   documents: ['direction', 'censeur', 'secretariat'],
   annonces: ['direction', 'censeur', 'secretariat', 'surveillant'],
+  billets: ['direction', 'censeur', 'surveillant'],
 } as const satisfies Record<string, readonly Role[]>
 
 export type Module = keyof typeof ECRITURE

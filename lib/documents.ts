@@ -7,6 +7,7 @@ export const TYPES_DOCUMENT = [
   'attestation_reussite',
   'exeat',
   'releve_notes',
+  'carte_scolaire',
 ] as const
 export type TypeDocument = (typeof TYPES_DOCUMENT)[number]
 
@@ -32,5 +33,6 @@ export type ContenuDocument = {
   decision?: string | null
   sortie?: { date: string; type: string; motif: string | null } | null
   reste_du?: number
+  tuteur?: { nom: string | null; telephone: string | null }
   cursus?: AnneeReleve[]
 }

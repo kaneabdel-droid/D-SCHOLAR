@@ -82,7 +82,7 @@ export async function emettreDocument(
 
   const supabase = await createClient()
   const [{ data: eleve }, { data: inscBrutes }, { data: mouvements }] = await Promise.all([
-    supabase.from('eleves').select('prenom, nom, matricule, sexe, date_naissance, lieu_naissance, date_entree').eq('id', eleveId).maybeSingle(),
+    supabase.from('eleves').select('prenom, nom, matricule, sexe, date_naissance, lieu_naissance, date_entree, tuteur_nom, tuteur_telephone').eq('id', eleveId).maybeSingle(),
     supabase
       .from('inscriptions')
       .select('id, annee_id, classe_id, date_inscription, annees_scolaires(libelle, date_debut), classes(nom), decisions(moyenne_annuelle, rang, decision, decision_finale)')
@@ -118,6 +118,7 @@ export async function emettreDocument(
     decision: decision?.decision_finale ?? null,
     sortie: t === 'exeat' ? (sortie ? { date: sortie.date_mouvement, type: sortie.type, motif: sortie.motif } : { date: new Date().toISOString().slice(0, 10), type: 'transfert_sortant', motif: null }) : null,
     reste_du: t === 'exeat' ? reste : undefined,
+    tuteur: t === 'carte_scolaire' ? { nom: eleve.tuteur_nom, telephone: eleve.tuteur_telephone } : undefined,
     cursus: t === 'releve_notes' ? await cursus(supabase, eleveId, inscriptions.filter((i) => (un(i.annees_scolaires)?.date_debut ?? '') <= (un(inscription.annees_scolaires)?.date_debut ?? ''))) : undefined,
   }
 
@@ -162,4 +163,48 @@ export async function donneesDocument(id: string) {
     annule: data.annule as boolean,
     etablissement: un(data.etablissements as unknown as { nom: string; sigle: string | null; adresse: string | null; ville: string | null; telephone: string | null; email: string | null } | null),
   }
+}
+
+// Cartes scolaires d'une classe : réutilise la carte valide déjà émise pour
+// l'année, sinon en émet une (même numérotation et vérification que les attestations).
+export async function emettreCartesClasse(classeId: string): Promise<ActionResult & { ids?: string[] }> {
+  const dict = await getDictionary()
+  const garde = await contexteEcriture('documents', dict)
+  if ('erreur' in garde) return { error: garde.erreur }
+  const supabase = await createClient()
+  const { data: classe } = await supabase.from('classes').select('annee_id').eq('id', classeId).maybeSingle()
+  if (!classe) return { error: dict.errors.generic }
+  const { data: inscrits } = await supabase.from('inscriptions').select('eleve_id, eleves(nom, prenom, statut)').eq('classe_id', classeId)
+  const eleves = ((inscrits ?? []) as unknown as { eleve_id: string; eleves: { nom: string; prenom: string; statut: string } | null }[])
+    .filter((i) => un(i.eleves)?.statut === 'actif')
+    .sort((a, b) => (un(a.eleves)?.nom ?? '').localeCompare(un(b.eleves)?.nom ?? '') || (un(a.eleves)?.prenom ?? '').localeCompare(un(b.eleves)?.prenom ?? ''))
+  if (eleves.length === 0) return { error: dict.documents.aucunEleve }
+
+  const { data: existantes } = await supabase
+    .from('documents_emis')
+    .select('id, eleve_id')
+    .eq('type', 'carte_scolaire')
+    .eq('annee_id', classe.annee_id)
+    .eq('annule', false)
+    .in('eleve_id', eleves.map((e) => e.eleve_id))
+  const parEleve = new Map((existantes ?? []).map((d) => [d.eleve_id, d.id]))
+
+  const ids: string[] = []
+  for (const e of eleves) {
+    const deja = parEleve.get(e.eleve_id)
+    if (deja) {
+      ids.push(deja)
+      continue
+    }
+    const r = await emettreDocument(e.eleve_id, 'carte_scolaire', classe.annee_id)
+    if (r.error) return { error: r.error }
+    if (r.id) ids.push(r.id)
+  }
+  return { success: true, ids }
+}
+
+// Données d'impression de plusieurs documents (planche de cartes scolaires).
+export async function donneesDocuments(ids: string[]) {
+  const liste = await Promise.all(ids.slice(0, 200).map((id) => donneesDocument(id)))
+  return liste.filter((d) => d !== null)
 }

@@ -8,6 +8,7 @@ import { chargerCreneaux } from '@/lib/emploi'
 import { situationsFinancieres } from '@/lib/finances'
 import { appreciationPour, baremeAppreciations, libellePeriode, moyenneLisible, TEINTES_APPRECIATION, un } from '@/lib/scolarite'
 import type { TypeDocument } from '@/lib/documents'
+import { TEINTES_BILLET, type TypeBillet } from '@/lib/billets'
 import { fmt, intlLocale } from '@/lib/i18n'
 import { getDictionary, getLocale } from '@/dictionaries'
 import { LigneDocumentActions } from '@/app/(dashboard)/attestations/DocumentsClient'
@@ -146,11 +147,15 @@ export default async function PortailEleve({ params, searchParams }: { params: P
   }
 
   if (vue === 'assiduite') {
+    const { data: billets } = enfant.anneeId
+      ? await supabase.from('billets').select('id, type, numero, emis_le, motif, minutes_retard, heure_retour').eq('eleve_id', eleveId).eq('annee_id', enfant.anneeId).order('emis_le', { ascending: false }).limit(50)
+      : { data: [] }
     const { data } = enfant.anneeId
       ? await supabase.from('absences').select('id, date_absence, type, duree, justifiee, motif, justification_parent').eq('eleve_id', eleveId).eq('annee_id', enfant.anneeId).order('date_absence', { ascending: false })
       : { data: [] }
     const libelles = { justifier: t.justifier, motif: t.motif, envoyer: t.envoyer, annuler: dict.common.cancel, envoye: t.justificationEnvoyee }
     contenu = (
+      <>
       <section className={cardClass}>
         <ul className="divide-y divide-surface-border">
           {(data ?? []).map((a) => (
@@ -170,6 +175,25 @@ export default async function PortailEleve({ params, searchParams }: { params: P
           {(data ?? []).length === 0 && <li className="px-4 py-12 text-center text-sm text-foreground-muted">{t.aucuneAbsence}</li>}
         </ul>
       </section>
+      {(billets ?? []).length > 0 && (
+        <section className={`${cardClass} mt-4`}>
+          <h2 className="border-b border-surface-border px-4 py-3 text-sm font-semibold text-foreground">{dict.billets.title}</h2>
+          <ul className="divide-y divide-surface-border">
+            {(billets ?? []).map((b) => (
+              <li key={b.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 text-sm">
+                <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${TEINTES_BILLET[b.type as TypeBillet]}`}>{dict.billets.types[b.type as TypeBillet]}</span>
+                <span className="flex-1 text-foreground">
+                  {new Date(b.emis_le).toLocaleString(loc, { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                  {b.minutes_retard ? ` · ${fmt(t.minutes, { n: b.minutes_retard })}` : ''}
+                </span>
+                <span className="font-mono text-xs text-foreground-muted">{b.numero}</span>
+                {b.motif && <p className="w-full text-xs text-foreground-muted">{b.motif}</p>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      </>
     )
   }
 

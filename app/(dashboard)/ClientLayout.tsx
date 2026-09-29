@@ -19,6 +19,7 @@ import {
   PenLine,
   School,
   TrendingUp,
+  Ticket,
   Settings,
   Shirt,
   UserPlus,
@@ -74,6 +75,7 @@ function sections(role: Role): Section[] {
       titre: 'sectionVieScolaire',
       items: [
         { key: 'assiduite', href: '/assiduite', icon: ClipboardCheck },
+        { key: 'billets', href: '/billets', icon: Ticket },
         { key: 'services', href: '/services', icon: Shirt },
         { key: 'communication', href: '/communication', icon: Megaphone },
       ],
