@@ -161,7 +161,9 @@
     "poids": "Poids",
     "nombre_par_periode": "Nombre par période",
     "moyenne_min": "À partir de (/20)",
-    "categorie": "Catégorie"
+    "categorie": "Catégorie",
+    "tarif": "Tarif (FCFA)",
+    "periodicite": "Périodicité"
   },
   "dashboard": {
     "greeting": "Bonjour {prenom}",
@@ -821,5 +823,70 @@
     "imprimer": "Imprimer les bulletins",
     "preparation": "Préparation…",
     "popup": "Autorisez l'ouverture de fenêtres pour imprimer."
+  },
+  "services": {
+    "title": "Catalogue des services",
+    "desc": "Tenue, transport, restauration, fournitures, activités : tarif et périodicité.",
+    "newButton": "Nouveau service",
+    "newTitle": "Nouveau service",
+    "editTitle": "Modifier le service",
+    "empty": "Aucun service.",
+    "types": {
+      "tenue": "Tenue",
+      "transport": "Transport",
+      "restauration": "Restauration",
+      "fournitures": "Fournitures",
+      "activite": "Activité",
+      "autre": "Autre"
+    },
+    "periodicites": {
+      "unique": "Paiement unique",
+      "mensuel": "Mensuel",
+      "trimestriel": "Trimestriel",
+      "annuel": "Annuel"
+    }
+  },
+  "finances": {
+    "title": "Services & paiements",
+    "subtitle": "Frais de scolarité, services souscrits, encaissements et impayés de l'année.",
+    "onglets": {
+      "paiements": "Paiements",
+      "souscriptions": "Souscriptions",
+      "frais": "Frais de scolarité",
+      "catalogue": "Catalogue"
+    },
+    "montant": "Montant",
+    "tousNiveaux": "Tous les niveaux",
+    "aucunFrais": "Aucun frais pour cette année.",
+    "libelleFraisPlaceholder": "Scolarité annuelle",
+    "nouvelleSouscription": "Nouvelle souscription",
+    "service": "Service",
+    "details": "Précisions",
+    "detailsPlaceholder": "Arrêt, taille, régime…",
+    "encaisser": "Encaisser un paiement",
+    "encaisserImprimer": "Encaisser et imprimer le reçu",
+    "encaisseOk": "Paiement enregistré · reçu {numero}",
+    "mode": "Mode de paiement",
+    "reference": "Référence (transaction, chèque…)",
+    "modes": {
+      "especes": "Espèces",
+      "mobile_money": "Mobile Money",
+      "virement": "Virement",
+      "cheque": "Chèque",
+      "autre": "Autre"
+    },
+    "recu": "Reçu",
+    "recuTitre": "Reçu de paiement",
+    "signatureCaisse": "La caisse",
+    "signatureParent": "Le parent",
+    "confirmAnnulation": "Annuler ce paiement ? Le reçu ne sera plus valable.",
+    "totalDu": "Dû",
+    "totalPaye": "Payé",
+    "totalReste": "Reste à payer",
+    "impayes": "Plus gros restes à payer",
+    "aucunImpaye": "Aucun impayé.",
+    "derniersPaiements": "Derniers paiements",
+    "situation": "Situation financière {annee}",
+    "servicesSouscrits": "Services souscrits"
   }
 }

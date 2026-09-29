@@ -2,7 +2,8 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/utils/supabase/server'
-import { requireParametrage } from '@/lib/auth/getCurrentUserContext'
+import { contexteEcriture, requireParametrage } from '@/lib/auth/getCurrentUserContext'
+import { PERIODICITES, TYPES_SERVICE } from '@/lib/finances'
 import { cycleAutorise, CYCLES, type Cycle } from '@/lib/abonnements/paliers'
 import { CATEGORIES_APPRECIATION, ENTITES, TYPES_SALLE, type EntiteCle } from '@/lib/parametres/entites'
 import { messageErreur } from '@/lib/erreurs'
@@ -15,15 +16,30 @@ const VALEURS_SELECT: Record<string, readonly string[]> = {
   cycles: CYCLES,
   typesSalle: TYPES_SALLE,
   categories: CATEGORIES_APPRECIATION,
+  typesService: TYPES_SERVICE,
+  periodicites: PERIODICITES,
+}
+
+// Garde d'écriture : paramétrage (direction / censeur) par défaut, ou le module
+// propre à l'entité (ex. services : direction / intendance).
+async function garde(cle: EntiteCle, dict: Awaited<ReturnType<typeof getDictionary>>) {
+  const module = ENTITES[cle]?.module
+  if (module) {
+    const g = await contexteEcriture(module, dict)
+    return 'erreur' in g ? { erreur: g.erreur } : { context: g.context }
+  }
+  const context = await requireParametrage()
+  if (context.acces !== 'complet') return { erreur: dict.errors.lectureSeule }
+  return { context }
 }
 
 // Action générique des tables simples du référentiel : seules les colonnes
 // déclarées dans ENTITES sont lues du formulaire et écrites (liste blanche).
 export async function enregistrerEntite(cle: EntiteCle, id: string | null, formData: FormData): Promise<ActionResult> {
-  const context = await requireParametrage()
   const dict = await getDictionary()
-  // Lecture seule (retard de paiement) : écriture refusée, le RLS la bloquerait aussi.
-  if (context.acces !== 'complet') return { error: dict.errors.lectureSeule }
+  const g = await garde(cle, dict)
+  if ('erreur' in g) return { error: g.erreur }
+  const context = g.context!
   const entite = ENTITES[cle]
   if (!entite) return { error: dict.errors.generic }
 
@@ -78,14 +94,14 @@ export async function enregistrerEntite(cle: EntiteCle, id: string | null, formD
   if (error) return { error: messageErreur(error, dict, `enregistrerEntite(${cle})`) }
 
   revalidatePath('/parametres', 'layout')
+  revalidatePath('/services')
   return { success: true }
 }
 
 export async function supprimerEntite(cle: EntiteCle, id: string): Promise<ActionResult> {
-  const context = await requireParametrage()
   const dict = await getDictionary()
-  // Lecture seule (retard de paiement) : écriture refusée, le RLS la bloquerait aussi.
-  if (context.acces !== 'complet') return { error: dict.errors.lectureSeule }
+  const g = await garde(cle, dict)
+  if ('erreur' in g) return { error: g.erreur }
   const entite = ENTITES[cle]
   if (!entite) return { error: dict.errors.generic }
 
@@ -94,5 +110,6 @@ export async function supprimerEntite(cle: EntiteCle, id: string): Promise<Actio
   if (error) return { error: messageErreur(error, dict, `supprimerEntite(${cle})`) }
 
   revalidatePath('/parametres', 'layout')
+  revalidatePath('/services')
   return { success: true }
 }

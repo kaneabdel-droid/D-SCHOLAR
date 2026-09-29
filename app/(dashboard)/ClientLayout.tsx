@@ -74,7 +74,7 @@ function sections(role: Role): Section[] {
       titre: 'sectionVieScolaire',
       items: [
         { key: 'assiduite', href: '/assiduite', icon: ClipboardCheck },
-        { key: 'services', href: '/services', icon: Shirt, bientot: true },
+        { key: 'services', href: '/services', icon: Shirt },
         { key: 'communication', href: '/communication', icon: Megaphone, bientot: true },
       ],
     },

@@ -161,7 +161,9 @@
     "poids": "Weight",
     "nombre_par_periode": "Number per period",
     "moyenne_min": "From (/20)",
-    "categorie": "Category"
+    "categorie": "Category",
+    "tarif": "Price (FCFA)",
+    "periodicite": "Frequency"
   },
   "dashboard": {
     "greeting": "Hello {prenom}",
@@ -821,5 +823,70 @@
     "imprimer": "Print report cards",
     "preparation": "Preparing…",
     "popup": "Allow pop-up windows to print."
+  },
+  "services": {
+    "title": "Service catalogue",
+    "desc": "Uniform, transport, meals, supplies, activities: price and frequency.",
+    "newButton": "New service",
+    "newTitle": "New service",
+    "editTitle": "Edit service",
+    "empty": "No service.",
+    "types": {
+      "tenue": "Uniform",
+      "transport": "Transport",
+      "restauration": "Meals",
+      "fournitures": "Supplies",
+      "activite": "Activity",
+      "autre": "Other"
+    },
+    "periodicites": {
+      "unique": "One-off",
+      "mensuel": "Monthly",
+      "trimestriel": "Per term",
+      "annuel": "Yearly"
+    }
+  },
+  "finances": {
+    "title": "Services & payments",
+    "subtitle": "Tuition fees, subscribed services, payments and outstanding balances for the year.",
+    "onglets": {
+      "paiements": "Payments",
+      "souscriptions": "Subscriptions",
+      "frais": "Tuition fees",
+      "catalogue": "Catalogue"
+    },
+    "montant": "Amount",
+    "tousNiveaux": "All levels",
+    "aucunFrais": "No fee for this year.",
+    "libelleFraisPlaceholder": "Annual tuition",
+    "nouvelleSouscription": "New subscription",
+    "service": "Service",
+    "details": "Details",
+    "detailsPlaceholder": "Stop, size, diet…",
+    "encaisser": "Record a payment",
+    "encaisserImprimer": "Record and print the receipt",
+    "encaisseOk": "Payment recorded · receipt {numero}",
+    "mode": "Payment method",
+    "reference": "Reference (transaction, cheque…)",
+    "modes": {
+      "especes": "Cash",
+      "mobile_money": "Mobile Money",
+      "virement": "Bank transfer",
+      "cheque": "Cheque",
+      "autre": "Other"
+    },
+    "recu": "Receipt",
+    "recuTitre": "Payment receipt",
+    "signatureCaisse": "Cashier",
+    "signatureParent": "Parent",
+    "confirmAnnulation": "Cancel this payment? The receipt will no longer be valid.",
+    "totalDu": "Due",
+    "totalPaye": "Paid",
+    "totalReste": "Balance",
+    "impayes": "Largest outstanding balances",
+    "aucunImpaye": "No outstanding balance.",
+    "derniersPaiements": "Latest payments",
+    "situation": "Financial status {annee}",
+    "servicesSouscrits": "Subscribed services"
   }
 }

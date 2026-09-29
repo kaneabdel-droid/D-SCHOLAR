@@ -9,6 +9,7 @@ import type { Dictionary } from '@/dictionaries'
 import { CYCLES } from '@/lib/abonnements/paliers'
 import { CATEGORIES_APPRECIATION, ENTITES, TYPES_SALLE, type Champ, type EntiteCle, type Ligne } from '@/lib/parametres/entites'
 import { fmt } from '@/lib/i18n'
+import { PERIODICITES, TYPES_SERVICE } from '@/lib/finances'
 import { enregistrerEntite, supprimerEntite } from './actions'
 
 // Tableau + formulaire générique d'une table du référentiel (cf. lib/parametres/entites.ts).
@@ -40,6 +41,8 @@ export default function EntiteTable({
     }
     if (champ.options === 'typesSalle') return TYPES_SALLE.map((v) => ({ valeur: v, libelle: dict.salles.types[v] }))
     if (champ.options === 'categories') return CATEGORIES_APPRECIATION.map((v) => ({ valeur: v, libelle: dict.scolarite.categoriesAppreciation[v] }))
+    if (champ.options === 'typesService') return TYPES_SERVICE.map((v) => ({ valeur: v, libelle: dict.services.types[v] }))
+    if (champ.options === 'periodicites') return PERIODICITES.map((v) => ({ valeur: v, libelle: dict.services.periodicites[v] }))
     return []
   }
 

@@ -9,6 +9,7 @@ import { anneesEtSelection, appreciationPour, baremeAppreciations, libellePeriod
 import { fmt, intlLocale } from '@/lib/i18n'
 import { peutEcrire } from '@/lib/roles'
 import EleveActions from './EleveActions'
+import { situationsFinancieres } from '@/lib/finances'
 import { getDictionary, getLocale } from '@/dictionaries'
 
 type Inscription = {
@@ -133,6 +134,17 @@ export default async function EleveFichePage({ params, searchParams }: { params:
   const ordreCourant = un(niveauCourant?.niveaux as unknown as { ordre: number } | null)?.ordre ?? 0
   const compteEleveDisponible = ordreCourant >= (niveauMin?.ordre ?? 0)
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://scholar.dembasolution.com'
+
+  // Situation financière de l'année affichée (direction, censeur, intendance, secrétariat).
+  const finance = ['direction', 'censeur', 'intendant', 'secretariat'].includes(context.role)
+  const [situations, { data: servicesEleve }, { data: paiementsEleve }] = finance && inscription
+    ? await Promise.all([
+        situationsFinancieres(supabase, inscription.annee_id, [id]),
+        supabase.from('souscriptions_services').select('details, services(nom, tarif, periodicite)').eq('eleve_id', id).eq('annee_id', inscription.annee_id),
+        supabase.from('paiements_eleves').select('libelle, montant, numero_recu, date_paiement').eq('eleve_id', id).eq('annee_id', inscription.annee_id).order('date_paiement', { ascending: false }).limit(6),
+      ])
+    : [null, { data: [] }, { data: [] }]
+  const situation = situations?.get(id) ?? null
   const periodeLib = (p: { rang: number; decoupage: string }) => libellePeriode(dict.annees, p)
   const icones: Record<string, typeof LogIn> = { entree: LogIn, transfert_entrant: LogIn, transfert_sortant: LogOut, abandon: LogOut, exclusion: LogOut, fin_de_cycle: GraduationCap }
 
@@ -363,6 +375,45 @@ export default async function EleveFichePage({ params, searchParams }: { params:
           </div>
         </section>
       </div>
+
+      {finance && inscription && (
+        <section className={cardClass}>
+          <div className="flex flex-wrap items-center gap-3 border-b border-surface-border px-5 py-4">
+            <h2 className="flex-1 font-heading text-base font-semibold text-foreground">{fmt(dict.finances.situation, { annee: inscription.annees_scolaires?.libelle ?? '' })}</h2>
+            {situation && (
+              <div className="flex flex-wrap gap-2 text-xs font-semibold">
+                <span className="rounded-full bg-background px-2.5 py-1">{dict.finances.totalDu} · {situation.du.toLocaleString(loc)}</span>
+                <span className="rounded-full bg-success/10 px-2.5 py-1 text-success">{dict.finances.totalPaye} · {situation.paye.toLocaleString(loc)}</span>
+                <span className={`rounded-full px-2.5 py-1 ${situation.reste > 0 ? 'bg-danger/10 text-danger' : 'bg-success/10 text-success'}`}>{dict.finances.totalReste} · {situation.reste.toLocaleString(loc)}</span>
+              </div>
+            )}
+          </div>
+          <div className="grid gap-4 p-5 md:grid-cols-2">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">{dict.finances.servicesSouscrits}</p>
+              <ul className="mt-2 space-y-1 text-sm">
+                {(servicesEleve ?? []).map((sv, i) => {
+                  const x = un(sv.services as unknown as { nom: string; tarif: number; periodicite: string } | null)
+                  return <li key={i}>{x?.nom}{sv.details ? <span className="text-foreground-muted"> · {sv.details}</span> : null}</li>
+                })}
+                {(servicesEleve ?? []).length === 0 && <li className="text-foreground-muted">—</li>}
+              </ul>
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">{dict.finances.derniersPaiements}</p>
+              <ul className="mt-2 space-y-1 text-sm">
+                {(paiementsEleve ?? []).map((p) => (
+                  <li key={p.numero_recu} className="flex justify-between gap-3">
+                    <span>{p.libelle} <span className="font-mono text-xs text-foreground-muted">{p.numero_recu}</span></span>
+                    <span className="tabular-nums">{Number(p.montant).toLocaleString(loc)}</span>
+                  </li>
+                ))}
+                {(paiementsEleve ?? []).length === 0 && <li className="text-foreground-muted">—</li>}
+              </ul>
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   )
 }

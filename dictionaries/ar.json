@@ -161,7 +161,9 @@
     "poids": "الوزن",
     "nombre_par_periode": "العدد في كل فترة",
     "moyenne_min": "ابتداءً من (/20)",
-    "categorie": "الفئة"
+    "categorie": "الفئة",
+    "tarif": "السعر (فرنك CFA)",
+    "periodicite": "الدورية"
   },
   "dashboard": {
     "greeting": "مرحبًا {prenom}",
@@ -821,5 +823,70 @@
     "imprimer": "طباعة الكشوف",
     "preparation": "جارٍ التحضير…",
     "popup": "اسمح بفتح النوافذ للطباعة."
+  },
+  "services": {
+    "title": "دليل الخدمات",
+    "desc": "الزي، النقل، الإطعام، اللوازم، الأنشطة: السعر والدورية.",
+    "newButton": "خدمة جديدة",
+    "newTitle": "خدمة جديدة",
+    "editTitle": "تعديل الخدمة",
+    "empty": "لا توجد أي خدمة.",
+    "types": {
+      "tenue": "الزي المدرسي",
+      "transport": "النقل",
+      "restauration": "الإطعام",
+      "fournitures": "اللوازم",
+      "activite": "نشاط",
+      "autre": "أخرى"
+    },
+    "periodicites": {
+      "unique": "دفعة واحدة",
+      "mensuel": "شهري",
+      "trimestriel": "فصلي",
+      "annuel": "سنوي"
+    }
+  },
+  "finances": {
+    "title": "الخدمات والمدفوعات",
+    "subtitle": "رسوم التمدرس والخدمات المشترك فيها والمدفوعات والمبالغ غير المسددة للسنة.",
+    "onglets": {
+      "paiements": "المدفوعات",
+      "souscriptions": "الاشتراكات",
+      "frais": "رسوم التمدرس",
+      "catalogue": "الدليل"
+    },
+    "montant": "المبلغ",
+    "tousNiveaux": "كل المستويات",
+    "aucunFrais": "لا توجد رسوم لهذه السنة.",
+    "libelleFraisPlaceholder": "الرسوم السنوية",
+    "nouvelleSouscription": "اشتراك جديد",
+    "service": "الخدمة",
+    "details": "تفاصيل",
+    "detailsPlaceholder": "المحطة، المقاس، النظام الغذائي…",
+    "encaisser": "تسجيل دفعة",
+    "encaisserImprimer": "التسجيل وطباعة الوصل",
+    "encaisseOk": "تم تسجيل الدفعة · الوصل {numero}",
+    "mode": "طريقة الدفع",
+    "reference": "المرجع (العملية، الشيك…)",
+    "modes": {
+      "especes": "نقدًا",
+      "mobile_money": "الدفع بالهاتف",
+      "virement": "تحويل بنكي",
+      "cheque": "شيك",
+      "autre": "أخرى"
+    },
+    "recu": "وصل",
+    "recuTitre": "وصل دفع",
+    "signatureCaisse": "الصندوق",
+    "signatureParent": "الولي",
+    "confirmAnnulation": "إلغاء هذه الدفعة؟ لن يبقى الوصل صالحًا.",
+    "totalDu": "المستحق",
+    "totalPaye": "المدفوع",
+    "totalReste": "الباقي",
+    "impayes": "أكبر المبالغ غير المسددة",
+    "aucunImpaye": "لا توجد مبالغ غير مسددة.",
+    "derniersPaiements": "آخر المدفوعات",
+    "situation": "الوضعية المالية {annee}",
+    "servicesSouscrits": "الخدمات المشترك فيها"
   }
 }

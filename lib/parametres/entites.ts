@@ -6,12 +6,12 @@
 export type TypeChamp = 'text' | 'number' | 'color' | 'checkbox' | 'select'
 
 // Source des libellés d'un champ select : section du dictionnaire.
-export type SourceOptions = 'cycles' | 'typesSalle' | 'categories'
+export type SourceOptions = 'cycles' | 'typesSalle' | 'categories' | 'typesService' | 'periodicites'
 
 export type Champ = {
   nom:
     | 'code' | 'nom' | 'cycle' | 'ordre' | 'a_series' | 'actif' | 'couleur' | 'capacite' | 'type'
-    | 'libelle' | 'poids' | 'nombre_par_periode' | 'moyenne_min' | 'categorie'
+    | 'libelle' | 'poids' | 'nombre_par_periode' | 'moyenne_min' | 'categorie' | 'tarif' | 'periodicite'
   type: TypeChamp
   requis?: boolean
   max?: number
@@ -23,13 +23,15 @@ export type Champ = {
   colonne?: boolean
 }
 
-export type EntiteCle = 'niveaux' | 'series' | 'options' | 'matieres' | 'salles' | 'evaluations' | 'appreciations'
+export type EntiteCle = 'niveaux' | 'series' | 'options' | 'matieres' | 'salles' | 'evaluations' | 'appreciations' | 'services'
 
 export type Entite = {
   // Table Supabase (peut différer de la clé, qui sert aussi de section du dictionnaire).
   table: string
   tri: string
   champs: Champ[]
+  // Module d'écriture (lib/roles.ts) quand ce n'est pas le paramétrage (direction / censeur).
+  module?: 'finances'
 }
 
 export const TYPES_SALLE = ['classe', 'laboratoire', 'informatique', 'polyvalente', 'autre'] as const
@@ -96,6 +98,19 @@ export const ENTITES: Record<EntiteCle, Entite> = {
       { nom: 'libelle', type: 'text', requis: true, max: 60, colonne: true },
       { nom: 'nombre_par_periode', type: 'number', requis: true, entier: true, defaut: 1, colonne: true },
       { nom: 'poids', type: 'number', requis: true, defaut: 1, colonne: true },
+      { nom: 'actif', type: 'checkbox', defaut: true, colonne: true },
+    ],
+  },
+  // Services proposés aux élèves (08_modules.sql) : gérés par la direction et l'intendance.
+  services: {
+    table: 'services',
+    tri: 'nom',
+    module: 'finances',
+    champs: [
+      { nom: 'type', type: 'select', requis: true, options: 'typesService', defaut: 'restauration', colonne: true },
+      { nom: 'nom', type: 'text', requis: true, max: 100, colonne: true },
+      { nom: 'tarif', type: 'number', requis: true, entier: true, colonne: true },
+      { nom: 'periodicite', type: 'select', requis: true, options: 'periodicites', defaut: 'mensuel', colonne: true },
       { nom: 'actif', type: 'checkbox', defaut: true, colonne: true },
     ],
   },
