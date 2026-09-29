@@ -8,6 +8,14 @@ import { getCurrentUserContext } from '@/lib/auth/getCurrentUserContext'
 import { anneesEtSelection, un } from '@/lib/scolarite'
 import { fmt } from '@/lib/i18n'
 import { getDictionary, getLocale } from '@/dictionaries'
+import { peutEcrire } from '@/lib/roles'
+import EnseignantForm from './EnseignantForm'
+
+// Comptes utilisateurs de rôle enseignant, pour lier une fiche enseignant à un accès.
+async function comptesEnseignants(supabase: Awaited<ReturnType<typeof createClient>>) {
+  const { data } = await supabase.from('utilisateurs').select('id, prenom, nom, email').eq('role', 'enseignant').eq('actif', true)
+  return (data ?? []).map((u) => ({ id: u.id, nom: [u.prenom, u.nom].filter(Boolean).join(' ') || u.email || u.id }))
+}
 
 type Enseignement = {
   classe_id: string
@@ -17,7 +25,7 @@ type Enseignement = {
 }
 
 export default async function EnseignantsPage({ searchParams }: { searchParams: Promise<{ annee?: string }> }) {
-  await getCurrentUserContext()
+  const context = await getCurrentUserContext()
   const params = await searchParams
   const supabase = await createClient()
   const dict = await getDictionary(await getLocale())
@@ -62,7 +70,12 @@ export default async function EnseignantsPage({ searchParams }: { searchParams: 
       <PageHeader
         title={t.title}
         subtitle={t.subtitle}
-        actions={<SelecteurAnnee annees={annees} selection={selection?.id ?? null} libelles={{ annee: s.annee, active: s.active, cloturee: s.cloturee }} />}
+        actions={
+          <>
+            <SelecteurAnnee annees={annees} selection={selection?.id ?? null} libelles={{ annee: s.annee, active: s.active, cloturee: s.cloturee }} />
+            {peutEcrire(context.role, 'organisation') && <EnseignantForm comptes={await comptesEnseignants(supabase)} dict={dict} />}
+          </>
+        }
       />
       {cartes.length === 0 ? (
         <p className={`${cardClass} px-5 py-10 text-center text-sm text-foreground-muted`}>{t.empty}</p>

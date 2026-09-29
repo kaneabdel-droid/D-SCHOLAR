@@ -5,7 +5,7 @@ import SelecteurAnnee from '@/components/SelecteurAnnee'
 import { cardClass } from '@/components/ui/styles'
 import { createClient } from '@/utils/supabase/server'
 import { getCurrentUserContext } from '@/lib/auth/getCurrentUserContext'
-import { anneesEtSelection, appreciationPour, baremeAppreciations, moyenneLisible, TEINTES_APPRECIATION, TEINTES_DECISION, un } from '@/lib/scolarite'
+import { anneesEtSelection, appreciationPour, baremeAppreciations, libellePeriode, moyenneLisible, TEINTES_APPRECIATION, TEINTES_DECISION, un } from '@/lib/scolarite'
 import { fmt, intlLocale } from '@/lib/i18n'
 import { peutEcrire } from '@/lib/roles'
 import EleveActions from './EleveActions'
@@ -59,7 +59,7 @@ export default async function EleveFichePage({ params, searchParams }: { params:
   let lignesMatieres: { matiere: string; couleur: string; coef: number; moyennes: (number | null)[] }[] = []
   let generales: (number | null)[] = []
   let rangs: (number | null)[] = []
-  let periodes: { id: string; rang: number }[] = []
+  let periodes: { id: string; rang: number; decoupage: string }[] = []
   let heures = 0
   let heuresNJ = 0
   let retards = 0
@@ -67,7 +67,8 @@ export default async function EleveFichePage({ params, searchParams }: { params:
 
   if (inscription) {
     const [{ data: per }, { data: matieres }, { data: absences }, { count: manquees }] = await Promise.all([
-      supabase.from('periodes').select('id, rang').eq('annee_id', inscription.annee_id).order('rang'),
+      // Périodes du découpage du cycle de la classe (trimestres ou semestres).
+      supabase.rpc('periodes_classe', { p_classe_id: inscription.classe_id }),
       supabase.from('matieres').select('id, nom, couleur'),
       supabase.from('absences').select('type, duree, justifiee').eq('eleve_id', id).eq('annee_id', inscription.annee_id),
       supabase.from('notes').select('id, evaluations!inner(periodes!inner(annee_id))', { count: 'exact', head: true })
@@ -132,7 +133,7 @@ export default async function EleveFichePage({ params, searchParams }: { params:
   const ordreCourant = un(niveauCourant?.niveaux as unknown as { ordre: number } | null)?.ordre ?? 0
   const compteEleveDisponible = ordreCourant >= (niveauMin?.ordre ?? 0)
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://scholar.dembasolution.com'
-  const periodeLib = (rang: number) => fmt(dict.annees.trimestreN, { n: rang })
+  const periodeLib = (p: { rang: number; decoupage: string }) => libellePeriode(dict.annees, p)
   const icones: Record<string, typeof LogIn> = { entree: LogIn, transfert_entrant: LogIn, transfert_sortant: LogOut, abandon: LogOut, exclusion: LogOut, fin_de_cycle: GraduationCap }
 
   return (
@@ -289,7 +290,7 @@ export default async function EleveFichePage({ params, searchParams }: { params:
                     <th className="px-5 py-3 text-start">{t.matiere}</th>
                     <th className="px-3 py-3 text-center">{t.coef}</th>
                     {periodes.map((p) => (
-                      <th key={p.id} className="px-3 py-3 text-center">{periodeLib(p.rang)}</th>
+                      <th key={p.id} className="px-3 py-3 text-center">{periodeLib(p)}</th>
                     ))}
                   </tr>
                 </thead>

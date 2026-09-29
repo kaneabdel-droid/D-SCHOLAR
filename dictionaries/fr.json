@@ -597,7 +597,11 @@
     "volume": "Volume",
     "heuresSemaine": "{h} h / sem.",
     "nonAffecte": "Non affecté",
-    "retour": "Retour aux classes"
+    "retour": "Retour aux classes",
+    "nouvelle": "Nouvelle classe",
+    "nouvelleTitre": "Créer une classe",
+    "modifierTitre": "Modifier la classe",
+    "genererEnseignements": "Compléter depuis les coefficients"
   },
   "enseignants": {
     "title": "Enseignants",
@@ -613,7 +617,11 @@
     "compte": "Compte utilisateur",
     "empty": "Aucun enseignant.",
     "coursTitle": "Cours dispensés",
-    "retour": "Retour aux enseignants"
+    "retour": "Retour aux enseignants",
+    "nouveau": "Nouvel enseignant",
+    "modifierTitre": "Modifier l'enseignant",
+    "civilite": "Civilité",
+    "compteHint": "Le compte utilisateur (rôle Enseignant, créé dans Paramètres › Utilisateurs) permet à l'enseignant de saisir les notes de ses cours."
   },
   "emplois": {
     "title": "Emplois du temps",
@@ -623,7 +631,11 @@
     "choisir": "Choisir…",
     "vide": "Aucun créneau.",
     "invite": "Choisissez une classe ou un enseignant.",
-    "afficher": "Afficher"
+    "afficher": "Afficher",
+    "jour": "Jour",
+    "debut": "Début",
+    "fin": "Fin",
+    "ajouter": "Ajouter"
   },
   "assiduite": {
     "title": "Assiduité",

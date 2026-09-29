@@ -597,7 +597,11 @@
     "volume": "Hours",
     "heuresSemaine": "{h} h / week",
     "nonAffecte": "Not assigned",
-    "retour": "Back to classes"
+    "retour": "Back to classes",
+    "nouvelle": "New class",
+    "nouvelleTitre": "Create a class",
+    "modifierTitre": "Edit class",
+    "genererEnseignements": "Fill in from coefficients"
   },
   "enseignants": {
     "title": "Teachers",
@@ -613,7 +617,11 @@
     "compte": "User account",
     "empty": "No teacher.",
     "coursTitle": "Courses taught",
-    "retour": "Back to teachers"
+    "retour": "Back to teachers",
+    "nouveau": "New teacher",
+    "modifierTitre": "Edit teacher",
+    "civilite": "Title",
+    "compteHint": "The user account (Teacher role, created in Settings › Users) lets the teacher enter grades for their own courses."
   },
   "emplois": {
     "title": "Timetables",
@@ -623,7 +631,11 @@
     "choisir": "Choose…",
     "vide": "No time slot.",
     "invite": "Choose a class or a teacher.",
-    "afficher": "Show"
+    "afficher": "Show",
+    "jour": "Day",
+    "debut": "Start",
+    "fin": "End",
+    "ajouter": "Add"
   },
   "assiduite": {
     "title": "Attendance",

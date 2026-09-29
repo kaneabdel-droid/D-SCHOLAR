@@ -9,9 +9,11 @@ import { getCurrentUserContext } from '@/lib/auth/getCurrentUserContext'
 import { chargerCreneaux } from '@/lib/emploi'
 import { anneesEtSelection, un } from '@/lib/scolarite'
 import { getDictionary, getLocale } from '@/dictionaries'
+import { peutEcrire } from '@/lib/roles'
+import EnseignantForm from '../EnseignantForm'
 
 export default async function EnseignantPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ annee?: string }> }) {
-  await getCurrentUserContext()
+  const context = await getCurrentUserContext()
   const { id } = await params
   const sp = await searchParams
   const supabase = await createClient()
@@ -22,7 +24,7 @@ export default async function EnseignantPage({ params, searchParams }: { params:
   const [{ data: ens }, { annees, selection }] = await Promise.all([
     supabase
       .from('enseignants')
-      .select('id, civilite, prenom, nom, telephone, email, adresse, statut, enseignements(id, classe_id, matieres(nom, couleur), classes(id, nom, annee_id))')
+      .select('id, civilite, prenom, nom, telephone, email, adresse, statut, actif, utilisateur_id, enseignements(id, classe_id, matieres(nom, couleur), classes(id, nom, annee_id))')
       .eq('id', id)
       .maybeSingle(),
     anneesEtSelection(supabase, sp.annee),
@@ -58,7 +60,16 @@ export default async function EnseignantPage({ params, searchParams }: { params:
             {ens.adresse && <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {ens.adresse}</span>}
           </div>
         </div>
-        <SelecteurAnnee annees={annees} selection={selection?.id ?? null} libelles={{ annee: s.annee, active: s.active, cloturee: s.cloturee }} />
+        <div className="flex flex-wrap gap-2">
+          <SelecteurAnnee annees={annees} selection={selection?.id ?? null} libelles={{ annee: s.annee, active: s.active, cloturee: s.cloturee }} />
+          {peutEcrire(context.role, 'organisation') && (
+            <EnseignantForm
+              valeurs={ens}
+              comptes={((await supabase.from('utilisateurs').select('id, prenom, nom, email').eq('role', 'enseignant').eq('actif', true)).data ?? []).map((u) => ({ id: u.id, nom: [u.prenom, u.nom].filter(Boolean).join(' ') || u.email || u.id }))}
+              dict={dict}
+            />
+          )}
+        </div>
       </section>
 
       <section className={cardClass}>

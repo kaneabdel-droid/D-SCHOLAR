@@ -8,6 +8,9 @@ import { getCurrentUserContext } from '@/lib/auth/getCurrentUserContext'
 import { anneesEtSelection, un } from '@/lib/scolarite'
 import { fmt } from '@/lib/i18n'
 import { getDictionary, getLocale } from '@/dictionaries'
+import { peutEcrire } from '@/lib/roles'
+import { referentielClasse } from '@/lib/referentiel'
+import { ClasseFormButton } from './ClasseOutils'
 
 type Classe = {
   id: string
@@ -19,7 +22,7 @@ type Classe = {
 }
 
 export default async function ClassesPage({ searchParams }: { searchParams: Promise<{ annee?: string }> }) {
-  await getCurrentUserContext()
+  const context = await getCurrentUserContext()
   const params = await searchParams
   const supabase = await createClient()
   const dict = await getDictionary(await getLocale())
@@ -43,7 +46,14 @@ export default async function ClassesPage({ searchParams }: { searchParams: Prom
       <PageHeader
         title={t.title}
         subtitle={t.subtitle}
-        actions={<SelecteurAnnee annees={annees} selection={selection?.id ?? null} libelles={{ annee: s.annee, active: s.active, cloturee: s.cloturee }} />}
+        actions={
+          <>
+            <SelecteurAnnee annees={annees} selection={selection?.id ?? null} libelles={{ annee: s.annee, active: s.active, cloturee: s.cloturee }} />
+            {selection && peutEcrire(context.role, 'organisation') && (
+              <ClasseFormButton anneeId={selection.id} referentiel={await referentielClasse(supabase)} dict={dict} />
+            )}
+          </>
+        }
       />
       {classes.length === 0 ? (
         <p className={`${cardClass} px-5 py-10 text-center text-sm text-foreground-muted`}>{t.empty}</p>

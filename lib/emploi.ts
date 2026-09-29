@@ -46,3 +46,16 @@ export async function chargerCreneaux(
     }
   })
 }
+
+// Enseignements d'une classe (matière et enseignant), pour le formulaire d'ajout de créneau.
+export async function enseignementsDeLaClasse(supabase: SupabaseClient, classeId: string) {
+  const { data } = await supabase.from('enseignements').select('id, matieres(nom), enseignants(civilite, nom)').eq('classe_id', classeId)
+  type L = { id: string; matieres: { nom: string } | null; enseignants: { civilite: string | null; nom: string } | null }
+  return ((data ?? []) as unknown as L[])
+    .map((e) => {
+      const m = un(e.matieres)
+      const p = un(e.enseignants)
+      return { id: e.id, nom: [m?.nom ?? '—', p ? `${p.civilite ?? ''} ${p.nom}`.trim() : null].filter(Boolean).join(' · ') }
+    })
+    .sort((a, b) => a.nom.localeCompare(b.nom))
+}

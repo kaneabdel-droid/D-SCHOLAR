@@ -44,3 +44,8 @@ export function moyenneLisible(n: number | string | null | undefined, locale: st
   if (n === null || n === undefined || n === '') return '—'
   return Number(n).toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
+
+// Libellé d'une période selon son découpage (Trimestre n / Semestre n), traduit.
+export function libellePeriode(annees: { trimestreN: string; semestreN: string }, p: { rang: number; decoupage?: string | null }) {
+  return (p.decoupage === 'semestre' ? annees.semestreN : annees.trimestreN).replace('{n}', String(p.rang))
+}

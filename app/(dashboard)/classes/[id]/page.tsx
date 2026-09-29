@@ -6,9 +6,13 @@ import { cardClass } from '@/components/ui/styles'
 import { createClient } from '@/utils/supabase/server'
 import { getCurrentUserContext } from '@/lib/auth/getCurrentUserContext'
 import { chargerCreneaux } from '@/lib/emploi'
-import { appreciationPour, baremeAppreciations, moyenneLisible, TEINTES_APPRECIATION, TEINTES_DECISION, un } from '@/lib/scolarite'
+import { appreciationPour, baremeAppreciations, libellePeriode, moyenneLisible, TEINTES_APPRECIATION, TEINTES_DECISION, un } from '@/lib/scolarite'
 import { fmt, intlLocale } from '@/lib/i18n'
 import { getDictionary, getLocale } from '@/dictionaries'
+import { peutEcrire } from '@/lib/roles'
+import { referentielClasse } from '@/lib/referentiel'
+import { enseignementsDeLaClasse } from '@/lib/emploi'
+import { ClasseFormButton, EmploiEditor, EnseignementsEditor, SupprimerClasseButton } from '../ClasseOutils'
 
 const VUES = ['eleves', 'bulletin', 'enseignements', 'emploi'] as const
 type Vue = (typeof VUES)[number]
@@ -27,16 +31,20 @@ export default async function ClassePage({ params, searchParams }: { params: Pro
 
   const { data: classe } = await supabase
     .from('classes')
-    .select('id, nom, annee_id, niveau_id, serie_id, annees_scolaires(libelle), salles(nom), enseignants(civilite, prenom, nom)')
+    .select('id, nom, annee_id, niveau_id, serie_id, capacite, salle_id, professeur_principal_id, annees_scolaires(libelle), salles(nom), enseignants(civilite, prenom, nom)')
     .eq('id', id)
     .maybeSingle()
   if (!classe) notFound()
   const pp = un(classe.enseignants)
+  const gestion = peutEcrire(context.role, 'organisation')
+  const referentiel = gestion ? await referentielClasse(supabase) : null
 
-  const [{ data: inscriptions }, { data: periodes }] = await Promise.all([
+  const [{ data: inscriptions }, { data: periodesBrutes }] = await Promise.all([
     supabase.from('inscriptions').select('id, statut, eleves(id, prenom, nom, matricule, sexe, statut), decisions(decision_finale)').eq('classe_id', id),
-    supabase.from('periodes').select('id, rang').eq('annee_id', classe.annee_id).order('rang'),
+    // Périodes du découpage du cycle de la classe (trimestres ou semestres).
+    supabase.rpc('periodes_classe', { p_classe_id: id }),
   ])
+  const periodes = (periodesBrutes ?? []) as { id: string; rang: number; decoupage: 'trimestre' | 'semestre'; verrouillee: boolean }[]
   const eleves = (inscriptions ?? [])
     .map((i) => ({ ...i, eleve: un(i.eleves as unknown as { id: string; prenom: string; nom: string; matricule: string; sexe: 'M' | 'F'; statut: string }), decision: un(i.decisions as unknown as { decision_finale: string | null }) }))
     .filter((i) => i.eleve)
@@ -114,7 +122,7 @@ export default async function ClassePage({ params, searchParams }: { params: Pro
         <div className="flex gap-1 overflow-x-auto border-b border-surface-border px-5 py-3">
           {(periodes ?? []).map((p) => (
             <Link key={p.id} href={`/classes/${id}?vue=bulletin&periode=${p.id}`} className={`whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold ${periode?.id === p.id ? 'bg-primary text-primary-foreground' : 'bg-background text-foreground-muted hover:text-foreground'}`}>
-              {fmt(dict.annees.trimestreN, { n: p.rang })}
+              {libellePeriode(dict.annees, p)}
             </Link>
           ))}
           <Link href={`/classes/${id}?vue=bulletin`} className={`whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold ${annuel ? 'bg-primary text-primary-foreground' : 'bg-background text-foreground-muted hover:text-foreground'}`}>
@@ -187,7 +195,21 @@ export default async function ClassePage({ params, searchParams }: { params: Pro
     const lignes = (ens ?? [])
       .map((e) => ({ ...e, matiere: un(e.matieres as unknown as { nom: string; couleur: string }), prof: un(e.enseignants as unknown as { id: string; civilite: string | null; prenom: string; nom: string }), coef: coefDe(e.matiere_id) }))
       .sort((a, b) => Number(b.coef?.coefficient ?? 0) - Number(a.coef?.coefficient ?? 0))
-    contenu = (
+    contenu = gestion ? (
+      <EnseignementsEditor
+        classeId={id}
+        lignes={lignes.map((l) => ({
+          id: l.id,
+          matiere: l.matiere?.nom ?? '—',
+          couleur: l.matiere?.couleur ?? '#94A3B8',
+          coef: String(l.coef?.coefficient ?? '—'),
+          volume: String(l.coef?.volume_horaire ?? '—'),
+          enseignantId: l.prof?.id ?? null,
+        }))}
+        enseignants={referentiel!.enseignants}
+        dict={dict}
+      />
+    ) : (
       <ul className="divide-y divide-surface-border">
         {lignes.map((l) => (
           <li key={l.id} className="flex flex-wrap items-center gap-3 px-5 py-3">
@@ -206,7 +228,20 @@ export default async function ClassePage({ params, searchParams }: { params: Pro
   }
 
   if (vue === 'emploi') {
-    contenu = <EmploiGrid creneaux={await chargerCreneaux(supabase, { classeId: id })} jours={s.jours} vide={dict.emplois.vide} />
+    const creneaux = await chargerCreneaux(supabase, { classeId: id })
+    contenu = (
+      <>
+        <EmploiGrid creneaux={creneaux} jours={s.jours} vide={dict.emplois.vide} />
+        {gestion && (
+          <EmploiEditor
+            enseignements={await enseignementsDeLaClasse(supabase, id)}
+            salles={referentiel!.salles}
+            creneaux={creneaux}
+            dict={dict}
+          />
+        )}
+      </>
+    )
   }
 
   return (
@@ -214,11 +249,24 @@ export default async function ClassePage({ params, searchParams }: { params: Pro
       <Link href={`/classes?annee=${classe.annee_id}`} className="inline-flex items-center gap-1 text-sm font-medium text-foreground-muted hover:text-primary">
         <ArrowLeft className="h-4 w-4 rtl:-scale-x-100" /> {t.retour}
       </Link>
-      <div>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
         <h1 className="font-heading text-3xl font-bold tracking-tight text-foreground">{classe.nom}</h1>
         <p className="mt-1 text-sm text-foreground-muted">
           {un(classe.annees_scolaires as unknown as { libelle: string })?.libelle} · {fmt(t.effectif, { n: eleves.length })} · {t.pp} {pp ? `${pp.civilite ?? ''} ${pp.prenom} ${pp.nom}`.trim() : '—'} · {t.salle} {un(classe.salles as unknown as { nom: string })?.nom ?? '—'}
         </p>
+        </div>
+        {gestion && (
+          <div className="flex gap-2">
+            <ClasseFormButton
+              classeId={id}
+              valeurs={{ nom: classe.nom, niveau_id: classe.niveau_id, serie_id: classe.serie_id, capacite: classe.capacite, salle_id: classe.salle_id, professeur_principal_id: classe.professeur_principal_id }}
+              referentiel={referentiel!}
+              dict={dict}
+            />
+            {eleves.length === 0 && <SupprimerClasseButton classeId={id} nom={classe.nom} dict={dict} />}
+          </div>
+        )}
       </div>
       <nav className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
         <div className="flex min-w-max gap-1 rounded-xl border border-surface-border bg-surface p-1 shadow-xs">{VUES.map(onglet)}</div>
