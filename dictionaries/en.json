@@ -981,5 +981,96 @@
     "aide": "Compare this information with the paper document: it must be identical.",
     "aideInconnu": "No document matches this code. Check what you typed or contact the issuing school.",
     "autre": "Verify another document"
+  },
+  "notifications": {
+    "titre": "Notifications",
+    "vide": "No notification.",
+    "absence": "{eleve}: absent on {date} ({duree} h)",
+    "retard": "{eleve}: late on {date} ({duree} min)",
+    "note": "{eleve}: new grade in {matiere} ({evaluation})",
+    "annonce": "Announcement: {titre}",
+    "autre": "New notification"
+  },
+  "communication": {
+    "title": "Communication",
+    "subtitle": "Announcements to staff and families, delivered in the app and on the portal, without SMS.",
+    "nouvelle": "New announcement",
+    "publier": "Publish",
+    "publieeOk": "Announcement published.",
+    "titre": "Title",
+    "contenu": "Message",
+    "cible": "Recipients",
+    "cibles": {
+      "tous": "Everyone",
+      "personnel": "Staff",
+      "familles": "All families",
+      "classe": "Families of a class"
+    },
+    "aideNotification": "Each recipient receives an in-app notification.",
+    "confirmSuppression": "Delete this announcement?",
+    "aucune": "No announcement published.",
+    "comptesFamille": "{n} active family accounts on the portal."
+  },
+  "portail": {
+    "espace": {
+      "parent": "Parent area",
+      "eleve": "Student area"
+    },
+    "accueil": "Home",
+    "bonjour": "Hello {nom}",
+    "intro": "Follow schooling in real time: grades, report cards, timetable, absences and payments.",
+    "notesRecentes": "grades (30 d)",
+    "nonJustifiees": "unexcused",
+    "resteAPayer": "balance due",
+    "aucunEnfant": "No student is linked to this account yet. Please contact the office.",
+    "annonces": "School announcements",
+    "aucuneAnnonce": "No announcement for now.",
+    "vues": {
+      "notes": "Grades",
+      "bulletins": "Report cards",
+      "emploi": "Timetable",
+      "assiduite": "Attendance",
+      "documents": "Documents",
+      "paiements": "Payments"
+    },
+    "absentEval": "Absent",
+    "aucuneNote": "No grade published yet.",
+    "periodeOuverte": "The report card will be available once the period is closed.",
+    "justifier": "Justify",
+    "motif": "Reason for absence",
+    "envoyer": "Send",
+    "justificationEnvoyee": "Justification sent to the school.",
+    "justifiee": "Excused",
+    "enAttente": "Justification under review",
+    "aucuneAbsence": "No absence or lateness.",
+    "minutes": "{n} min",
+    "heures": "{n} h",
+    "aucunPaiement": "No payment recorded.",
+    "pasDeClasse": "No current enrolment."
+  },
+  "activation": {
+    "title": "Activate my access",
+    "desc": "Parents and students: create your portal access with the code given by the school.",
+    "code": "Activation code",
+    "aideCode": "8 characters, printed on the slip given by the office.",
+    "modes": {
+      "telephone": "Phone",
+      "email": "Email"
+    },
+    "aideTelephone": "You will sign in with this number.",
+    "aideEmail": "You will sign in with this email.",
+    "motDePasse": "Password",
+    "aideMotDePasse": "At least 8 characters. If you already have access (another child), enter your current password.",
+    "activer": "Activate my access",
+    "activation": "Activating…",
+    "dejaCompte": "Already have access?",
+    "codeRequis": "Enter the activation code.",
+    "identifiantRequis": "Enter a valid phone number or an email.",
+    "emailInvalide": "Invalid email.",
+    "motDePasseCourt": "The password must be at least 8 characters long.",
+    "codeInvalide": "Invalid, used or expired code. Ask the office for a new one.",
+    "compteExistant": "An access already exists with this identifier: enter its current password.",
+    "comptePersonnel": "This identifier belongs to a staff account.",
+    "compteIncompatible": "This access cannot be linked to this student. Please contact the office."
   }
 }

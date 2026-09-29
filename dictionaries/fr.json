@@ -981,5 +981,96 @@
     "aide": "Comparez ces informations avec celles du document papier : elles doivent être identiques.",
     "aideInconnu": "Aucun document ne correspond à ce code. Vérifiez la saisie ou contactez l'établissement émetteur.",
     "autre": "Vérifier un autre document"
+  },
+  "notifications": {
+    "titre": "Notifications",
+    "vide": "Aucune notification.",
+    "absence": "{eleve} : absence le {date} ({duree} h)",
+    "retard": "{eleve} : retard le {date} ({duree} min)",
+    "note": "{eleve} : nouvelle note en {matiere} ({evaluation})",
+    "annonce": "Annonce : {titre}",
+    "autre": "Nouvelle notification"
+  },
+  "communication": {
+    "title": "Communication",
+    "subtitle": "Annonces au personnel et aux familles, diffusées dans l'application et sur le portail, sans SMS.",
+    "nouvelle": "Nouvelle annonce",
+    "publier": "Publier",
+    "publieeOk": "Annonce publiée.",
+    "titre": "Titre",
+    "contenu": "Message",
+    "cible": "Destinataires",
+    "cibles": {
+      "tous": "Tout le monde",
+      "personnel": "Personnel",
+      "familles": "Toutes les familles",
+      "classe": "Familles d'une classe"
+    },
+    "aideNotification": "Chaque destinataire reçoit une notification dans l'application.",
+    "confirmSuppression": "Supprimer cette annonce ?",
+    "aucune": "Aucune annonce publiée.",
+    "comptesFamille": "{n} comptes famille actifs sur le portail."
+  },
+  "portail": {
+    "espace": {
+      "parent": "Espace parent",
+      "eleve": "Espace élève"
+    },
+    "accueil": "Accueil",
+    "bonjour": "Bonjour {nom}",
+    "intro": "Suivez la scolarité en temps réel : notes, bulletins, emploi du temps, absences et paiements.",
+    "notesRecentes": "notes (30 j)",
+    "nonJustifiees": "non justifiées",
+    "resteAPayer": "reste à payer",
+    "aucunEnfant": "Aucun élève n'est encore relié à ce compte. Contactez le secrétariat.",
+    "annonces": "Annonces de l'établissement",
+    "aucuneAnnonce": "Aucune annonce pour le moment.",
+    "vues": {
+      "notes": "Notes",
+      "bulletins": "Bulletins",
+      "emploi": "Emploi du temps",
+      "assiduite": "Assiduité",
+      "documents": "Documents",
+      "paiements": "Paiements"
+    },
+    "absentEval": "Absent",
+    "aucuneNote": "Aucune note publiée pour le moment.",
+    "periodeOuverte": "Le bulletin sera disponible à la clôture de la période.",
+    "justifier": "Justifier",
+    "motif": "Motif de l'absence",
+    "envoyer": "Envoyer",
+    "justificationEnvoyee": "Justification envoyée à l'établissement.",
+    "justifiee": "Justifiée",
+    "enAttente": "Justification en cours d'examen",
+    "aucuneAbsence": "Aucune absence ni retard.",
+    "minutes": "{n} min",
+    "heures": "{n} h",
+    "aucunPaiement": "Aucun paiement enregistré.",
+    "pasDeClasse": "Aucune inscription en cours."
+  },
+  "activation": {
+    "title": "Activer mon accès",
+    "desc": "Parents et élèves : créez votre accès au portail avec le code remis par l'établissement.",
+    "code": "Code d'activation",
+    "aideCode": "8 caractères, figurant sur la fiche remise par le secrétariat.",
+    "modes": {
+      "telephone": "Téléphone",
+      "email": "Email"
+    },
+    "aideTelephone": "Vous vous connecterez avec ce numéro.",
+    "aideEmail": "Vous vous connecterez avec cet email.",
+    "motDePasse": "Mot de passe",
+    "aideMotDePasse": "8 caractères minimum. Si vous avez déjà un accès (autre enfant), saisissez votre mot de passe actuel.",
+    "activer": "Activer mon accès",
+    "activation": "Activation…",
+    "dejaCompte": "Déjà un accès ?",
+    "codeRequis": "Saisissez le code d'activation.",
+    "identifiantRequis": "Saisissez un numéro de téléphone valide ou un email.",
+    "emailInvalide": "Email invalide.",
+    "motDePasseCourt": "Le mot de passe doit contenir au moins 8 caractères.",
+    "codeInvalide": "Code invalide, déjà utilisé ou expiré. Demandez un nouveau code au secrétariat.",
+    "compteExistant": "Un accès existe déjà avec cet identifiant : saisissez son mot de passe actuel.",
+    "comptePersonnel": "Cet identifiant appartient à un compte du personnel.",
+    "compteIncompatible": "Cet accès ne peut pas être relié à cet élève. Contactez le secrétariat."
   }
 }

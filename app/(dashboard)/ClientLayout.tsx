@@ -75,7 +75,7 @@ function sections(role: Role): Section[] {
       items: [
         { key: 'assiduite', href: '/assiduite', icon: ClipboardCheck },
         { key: 'services', href: '/services', icon: Shirt },
-        { key: 'communication', href: '/communication', icon: Megaphone, bientot: true },
+        { key: 'communication', href: '/communication', icon: Megaphone },
       ],
     },
     ...(parametrage
@@ -108,6 +108,7 @@ export default function ClientLayout({
   anneeLibelle,
   utilisateurNom,
   bandeau,
+  notifications,
   locale,
   dict,
 }: {
@@ -117,6 +118,7 @@ export default function ClientLayout({
   anneeLibelle: string | null
   utilisateurNom: string
   bandeau: Bandeau | null
+  notifications?: React.ReactNode
   locale: string
   dict: Dictionary
 }) {
@@ -233,6 +235,7 @@ export default function ClientLayout({
           <p className="min-w-0 flex-1 truncate text-sm font-semibold text-foreground lg:hidden">{etablissementNom}</p>
           <div className="hidden flex-1 lg:block" />
           <div className="flex shrink-0 items-center gap-1">
+            {notifications}
             <LanguageSelector currentLang={locale} />
             <ThemeSwitcher libelles={dict.theme} />
           </div>

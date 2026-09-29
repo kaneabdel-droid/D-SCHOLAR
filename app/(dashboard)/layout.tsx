@@ -4,6 +4,7 @@ import { etatAbonnement } from '@/lib/abonnements/etat'
 import { SEUIL_LECTURE_SEULE_JOURS } from '@/lib/abonnements/plans'
 import { fmt, intlLocale } from '@/lib/i18n'
 import { getLocale, getDictionary } from '@/dictionaries'
+import Notifications from '@/components/Notifications'
 import ClientLayout, { type Bandeau } from './ClientLayout'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -45,6 +46,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       anneeLibelle={context.anneeActive?.libelle ?? null}
       utilisateurNom={[context.prenom, context.nom].filter(Boolean).join(' ') || context.email || ''}
       bandeau={bandeau}
+      notifications={<Notifications dict={dict} locale={locale} />}
       locale={locale}
       dict={dict}
     >
