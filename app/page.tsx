@@ -90,6 +90,9 @@ export default async function LandingPage() {
                 <p className={`mt-4 flex items-start gap-2 text-sm ${vedette ? 'text-white/80' : 'text-foreground-muted'}`}>
                   <Check className={`mt-0.5 h-4 w-4 shrink-0 ${vedette ? 'text-secondary' : 'text-primary'}`} /> {descriptions[code]}
                 </p>
+                <Link href={`/tarifs?palier=${code}`} className={`mt-6 inline-flex w-full items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold ${vedette ? 'bg-secondary text-white hover:brightness-105' : 'bg-primary text-primary-foreground hover:bg-primary-hover'}`}>
+                  {dict.tarifs.choisir}
+                </Link>
               </div>
             )
           })}

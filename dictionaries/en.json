@@ -640,5 +640,32 @@
     "erreur": "The demo is temporarily unavailable. Please try again in a moment.",
     "lien": "Try the demo without an account",
     "astuce": "Tip: choose the 2025-2026 year to see grades, report cards and end-of-year decisions."
+  },
+  "tarifs": {
+    "title": "Subscribe your school",
+    "subtitle": "Create your workspace in a few minutes and pay the first instalment online (Mobile Money or card). Full access opens as soon as the payment is confirmed.",
+    "etablissementTitle": "Your school",
+    "nomEtablissement": "School name",
+    "ville": "City",
+    "telephone": "School phone",
+    "directionTitle": "Management account",
+    "prenom": "First name",
+    "nom": "Last name",
+    "email": "Sign-in email",
+    "motDePasse": "Password",
+    "motDePasseHint": "At least 8 characters. You will use it to sign in.",
+    "paiementTitle": "Plan and payment",
+    "submit": "Create my workspace and pay",
+    "enCours": "Creating your workspace…",
+    "dejaCompte": "Already subscribed?",
+    "connexion": "Sign in",
+    "choisir": "Choose",
+    "erreurs": {
+      "nom": "The school name is required.",
+      "direction": "The principal's name is required.",
+      "emailPris": "An account already exists with this email. Sign in to manage your subscription.",
+      "paiement": "Your workspace is created, but the payment could not start. Please try again from the Subscription page."
+    },
+    "retry": "Go to the Subscription page"
   }
 }

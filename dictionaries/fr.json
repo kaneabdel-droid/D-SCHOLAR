@@ -640,5 +640,32 @@
     "erreur": "La démonstration est momentanément indisponible. Réessayez dans un instant.",
     "lien": "Essayer la démo sans compte",
     "astuce": "Astuce : choisissez l’année 2025-2026 pour voir les notes, les bulletins et les décisions de fin d’année."
+  },
+  "tarifs": {
+    "title": "Abonnez votre établissement",
+    "subtitle": "Créez votre espace en quelques minutes et réglez la première tranche en ligne (Mobile Money ou carte). L'accès complet s'ouvre dès le paiement confirmé.",
+    "etablissementTitle": "Votre établissement",
+    "nomEtablissement": "Nom de l'établissement",
+    "ville": "Ville",
+    "telephone": "Téléphone de l'établissement",
+    "directionTitle": "Compte de la direction",
+    "prenom": "Prénom",
+    "nom": "Nom",
+    "email": "Email de connexion",
+    "motDePasse": "Mot de passe",
+    "motDePasseHint": "Au moins 8 caractères. Vous l'utiliserez pour vous connecter.",
+    "paiementTitle": "Formule et paiement",
+    "submit": "Créer mon espace et payer",
+    "enCours": "Création de votre espace…",
+    "dejaCompte": "Déjà abonné ?",
+    "connexion": "Se connecter",
+    "choisir": "Choisir",
+    "erreurs": {
+      "nom": "Le nom de l'établissement est requis.",
+      "direction": "Le nom du directeur est requis.",
+      "emailPris": "Un compte existe déjà avec cet email. Connectez-vous pour gérer votre abonnement.",
+      "paiement": "Votre espace est créé, mais le paiement n'a pas pu démarrer. Réessayez depuis la page Abonnement."
+    },
+    "retry": "Aller à la page Abonnement"
   }
 }

@@ -5,8 +5,8 @@ import { createAdminIdentityMiddlewareClient } from '@/utils/supabase/admin-iden
 import { withRetry } from '@/utils/supabase/retry'
 
 // Routes accessibles sans session : connexion / récupération de mot de passe,
-// landing, démo publique (/decouvrir-dscholar), et /api (webhooks et cron, authentifiés par leur propre secret).
-const ROUTES_PUBLIQUES = ['/login', '/forgot-password', '/update-password', '/auth', '/api', '/decouvrir-dscholar']
+// landing, démo publique (/decouvrir-dscholar), inscription (/tarifs), et /api (webhooks et cron, authentifiés par leur propre secret).
+const ROUTES_PUBLIQUES = ['/login', '/forgot-password', '/update-password', '/auth', '/api', '/decouvrir-dscholar', '/tarifs']
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
