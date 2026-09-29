@@ -66,7 +66,7 @@ function sections(role: Role): Section[] {
         { key: 'classes', href: '/classes', icon: School },
         { key: 'enseignants', href: '/enseignants', icon: Users },
         { key: 'emplois', href: '/emplois-du-temps', icon: CalendarClock },
-        { key: 'notes', href: '/notes', icon: PenLine, bientot: true },
+        { key: 'notes', href: '/notes', icon: PenLine },
         { key: 'releves', href: '/releves', icon: FileText, bientot: true },
       ],
     },

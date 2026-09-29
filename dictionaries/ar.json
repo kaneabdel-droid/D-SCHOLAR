@@ -764,5 +764,45 @@
       "refusee": "مرفوض",
       "inscrite": "مسجَّل"
     }
+  },
+  "notes": {
+    "title": "النقاط والتقييمات",
+    "subtitle": "التقييمات وإدخال النقاط حسب القسم والمادة والفترة.",
+    "aucunCours": "لا توجد دروس مسندة إليك لهذه السنة.",
+    "evaluations": "تقييمات الفترة",
+    "nouvelle": "تقييم جديد",
+    "aucune": "لا يوجد تقييم لهذه المادة وهذه الفترة.",
+    "notesSaisies": "{n}/{total} نقطة",
+    "publiee": "منشور",
+    "nonPubliee": "غير منشور",
+    "libellePlaceholder": "الفرض رقم 1",
+    "bareme": "من",
+    "note": "النقطة",
+    "absent": "غائب",
+    "stats": "المعدل {moy} · الأدنى {min} · الأعلى {max} (/20)",
+    "enregistrees": "تم حفظ النقاط",
+    "publier": "النشر للأسر",
+    "depublier": "سحب النشر",
+    "publieeOk": "تم نشر النقاط",
+    "depubliee": "تم سحب النشر",
+    "erreurBareme": "يجب أن تكون كل نقطة بين 0 و{bareme}.",
+    "poidsNul": "لا يُحتسب في المعدل",
+    "poids": "الوزن {p}"
+  },
+  "bulletin": {
+    "titre": "كشف النقاط",
+    "anneeScolaire": "السنة الدراسية",
+    "effectif": "عدد التلاميذ",
+    "moyenne": "المعدل /20",
+    "points": "النقاط",
+    "total": "المجموع",
+    "absences": "الغيابات",
+    "nonJustifiees": "منها غير مبررة",
+    "signaturePP": "الأستاذ الرئيسي",
+    "signatureDirection": "الإدارة",
+    "signatureParent": "الولي",
+    "imprimer": "طباعة الكشوف",
+    "preparation": "جارٍ التحضير…",
+    "popup": "اسمح بفتح النوافذ للطباعة."
   }
 }

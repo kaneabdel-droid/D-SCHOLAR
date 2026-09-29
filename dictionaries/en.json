@@ -764,5 +764,45 @@
       "refusee": "Rejected",
       "inscrite": "Enrolled"
     }
+  },
+  "notes": {
+    "title": "Grades & assessments",
+    "subtitle": "Assessments and grade entry by class, subject and period.",
+    "aucunCours": "No course is assigned to you for this year.",
+    "evaluations": "Assessments for the period",
+    "nouvelle": "New assessment",
+    "aucune": "No assessment for this subject and period.",
+    "notesSaisies": "{n}/{total} grades",
+    "publiee": "Published",
+    "nonPubliee": "Not published",
+    "libellePlaceholder": "Homework no. 1",
+    "bareme": "Out of",
+    "note": "Grade",
+    "absent": "Absent",
+    "stats": "average {moy} · min {min} · max {max} (/20)",
+    "enregistrees": "Grades saved",
+    "publier": "Publish to families",
+    "depublier": "Unpublish",
+    "publieeOk": "Grades published",
+    "depubliee": "Unpublished",
+    "erreurBareme": "Each grade must be between 0 and {bareme}.",
+    "poidsNul": "does not count in the average",
+    "poids": "weight {p}"
+  },
+  "bulletin": {
+    "titre": "Report card",
+    "anneeScolaire": "School year",
+    "effectif": "Class size",
+    "moyenne": "Average /20",
+    "points": "Points",
+    "total": "Total",
+    "absences": "Absences",
+    "nonJustifiees": "of which unexcused",
+    "signaturePP": "Form teacher",
+    "signatureDirection": "Management",
+    "signatureParent": "Parent",
+    "imprimer": "Print report cards",
+    "preparation": "Preparing…",
+    "popup": "Allow pop-up windows to print."
   }
 }

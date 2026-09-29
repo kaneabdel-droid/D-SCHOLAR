@@ -13,6 +13,7 @@ import { peutEcrire } from '@/lib/roles'
 import { referentielClasse } from '@/lib/referentiel'
 import { enseignementsDeLaClasse } from '@/lib/emploi'
 import { ClasseFormButton, EmploiEditor, EnseignementsEditor, SupprimerClasseButton } from '../ClasseOutils'
+import ImprimerBulletins from '../ImprimerBulletins'
 
 const VUES = ['eleves', 'bulletin', 'enseignements', 'emploi'] as const
 type Vue = (typeof VUES)[number]
@@ -128,6 +129,9 @@ export default async function ClassePage({ params, searchParams }: { params: Pro
           <Link href={`/classes/${id}?vue=bulletin`} className={`whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold ${annuel ? 'bg-primary text-primary-foreground' : 'bg-background text-foreground-muted hover:text-foreground'}`}>
             {s.annuel}
           </Link>
+          <div className="ms-auto">
+            <ImprimerBulletins classeId={id} periodeId={periode?.id ?? null} locale={loc} lang={locale} dict={dict} />
+          </div>
         </div>
         {lignes.length === 0 ? (
           <p className="px-5 py-10 text-center text-sm text-foreground-muted">{t.aucuneNote}</p>

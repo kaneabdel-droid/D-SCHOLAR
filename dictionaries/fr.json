@@ -764,5 +764,45 @@
       "refusee": "Refusée",
       "inscrite": "Inscrite"
     }
+  },
+  "notes": {
+    "title": "Notes & évaluations",
+    "subtitle": "Évaluations et saisie des notes par classe, matière et période.",
+    "aucunCours": "Aucun cours ne vous est affecté pour cette année.",
+    "evaluations": "Évaluations de la période",
+    "nouvelle": "Nouvelle évaluation",
+    "aucune": "Aucune évaluation pour cette matière et cette période.",
+    "notesSaisies": "{n}/{total} notes",
+    "publiee": "Publiée",
+    "nonPubliee": "Non publiée",
+    "libellePlaceholder": "Devoir n°1",
+    "bareme": "Barème (sur)",
+    "note": "Note",
+    "absent": "Absent",
+    "stats": "moyenne {moy} · min {min} · max {max} (/20)",
+    "enregistrees": "Notes enregistrées",
+    "publier": "Publier aux familles",
+    "depublier": "Retirer la publication",
+    "publieeOk": "Notes publiées",
+    "depubliee": "Publication retirée",
+    "erreurBareme": "Chaque note doit être comprise entre 0 et {bareme}.",
+    "poidsNul": "ne compte pas dans la moyenne",
+    "poids": "poids {p}"
+  },
+  "bulletin": {
+    "titre": "Bulletin de notes",
+    "anneeScolaire": "Année scolaire",
+    "effectif": "Effectif",
+    "moyenne": "Moyenne /20",
+    "points": "Points",
+    "total": "Total",
+    "absences": "Absences",
+    "nonJustifiees": "dont non justifiées",
+    "signaturePP": "Le professeur principal",
+    "signatureDirection": "La direction",
+    "signatureParent": "Le parent",
+    "imprimer": "Imprimer les bulletins",
+    "preparation": "Préparation…",
+    "popup": "Autorisez l'ouverture de fenêtres pour imprimer."
   }
 }
