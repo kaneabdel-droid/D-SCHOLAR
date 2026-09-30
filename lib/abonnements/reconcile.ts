@@ -7,6 +7,7 @@ import { addMonths } from 'date-fns'
 import { createAdminClient } from '@/utils/supabase/admin'
 import { adaptateurPour } from './registry'
 import { PLANS, type PlanCode } from './plans'
+import { prochainePeriode, type PeriodePayee } from './cycle'
 import type { ProviderId, StatutProvider } from './types'
 
 type LignePaiement = {
@@ -51,22 +52,33 @@ async function crediterEcheance(paiement: LignePaiement, dateSucces: Date): Prom
   if (!souscription) return
 
   if (echeance.rang === 1 && souscription.statut === 'en_attente') {
-    // Paiement anticipé : la nouvelle période démarre à la fin de la dernière
-    // période payée, pas au jour du paiement (aucun jour perdu).
-    const { data: precedente } = await supabase
+    // Périodes déjà payées (les 24 dernières suffisent pour une année de 10 mois).
+    const { data: precedentes } = await supabase
       .from('souscriptions')
-      .select('fin')
+      .select('plan, debut, fin, mois_offerts')
       .eq('etablissement_id', souscription.etablissement_id)
       .in('statut', ['active', 'soldee'])
+      .not('fin', 'is', null)
       .order('fin', { ascending: false })
-      .limit(1)
-      .maybeSingle()
-    const finPrecedente = precedente?.fin ? new Date(precedente.fin) : null
-    const debut = finPrecedente && finPrecedente > dateSucces ? finPrecedente : dateSucces
-    // Mensuel : un mois ; anciens plans annuels : douze.
-    const fin = addMonths(debut, PLANS[souscription.plan as PlanCode]?.dureeMois ?? 12)
+      .limit(24)
+    let debut: Date
+    let fin: Date
+    let moisOfferts = 0
+    if (souscription.plan === 'mensuel') {
+      // Un mois, enchaîné sur la période précédente ; le 10e mois consécutif
+      // ajoute 2 mois de vacances offerts (cf. cycle.ts).
+      const p = prochainePeriode((precedentes ?? []) as PeriodePayee[], dateSucces)
+      debut = p.debut
+      fin = p.fin
+      moisOfferts = p.moisOfferts
+    } else {
+      // Ancien plan annuel.
+      const finPrecedente = precedentes?.[0]?.fin ? new Date(precedentes[0].fin) : null
+      debut = finPrecedente && finPrecedente > dateSucces ? finPrecedente : dateSucces
+      fin = addMonths(debut, PLANS[souscription.plan as PlanCode]?.dureeMois ?? 12)
+    }
 
-    await supabase.from('souscriptions').update({ statut: 'active', debut: debut.toISOString(), fin: fin.toISOString() }).eq('id', souscription.id)
+    await supabase.from('souscriptions').update({ statut: 'active', debut: debut.toISOString(), fin: fin.toISOString(), mois_offerts: moisOfferts }).eq('id', souscription.id)
 
     // Les tranches suivantes sont recalées sur le début réel de la période.
     const decalages = PLANS[souscription.plan as PlanCode]?.decalagesMois ?? []

@@ -2,6 +2,7 @@ import { cache } from 'react'
 import { createAdminClient } from '@/utils/supabase/admin'
 import { FENETRE_RENOUVELLEMENT_JOURS, MOIS_AVANCE_MAX, type PlanCode, type Pourcentage } from './plans'
 import type { PalierCode } from './paliers'
+import { prochainePeriode } from './cycle'
 
 export type Echeance = {
   id: string
@@ -21,6 +22,8 @@ export type Souscription = {
   statut: 'en_attente' | 'active' | 'soldee' | 'annulee'
   debut: string | null
   fin: string | null
+  /** Mois de vacances offerts ajoutés à cette période (10e mois payé). */
+  mois_offerts: number
   echeances: Echeance[]
 }
 
@@ -38,6 +41,8 @@ export type EtatAbonnement = {
   historique: Souscription[]
   /** Jours avant la fin de la dernière période payée (négatif : terminée). */
   joursAvantFin: number | null
+  /** Prochain paiement mensuel : rang dans l'année (1 à 10) et période couverte. */
+  prochainMois: { rang: number; moisOfferts: number; debut: string; fin: string }
   /** Souscription créée dont la tranche 1 n'est pas encore payée. */
   enAttente: Souscription | null
   /** Plus petite tranche non payée de la souscription courante. */
@@ -59,7 +64,7 @@ export const etatAbonnement = cache(async (etablissementId: string): Promise<Eta
     supabase.from('etablissements').select('acces_manuel_jusqu_au').eq('id', etablissementId).single(),
     supabase
       .from('souscriptions')
-      .select('id, palier, plan, montant_total, statut, debut, fin, echeances_abonnement(id, rang, pourcentage, montant, date_echeance, statut, payee_le)')
+      .select('id, palier, plan, montant_total, statut, debut, fin, mois_offerts, echeances_abonnement(id, rang, pourcentage, montant, date_echeance, statut, payee_le)')
       .eq('etablissement_id', etablissementId)
       .neq('statut', 'annulee')
       .order('created_at', { ascending: false }),
@@ -104,6 +109,10 @@ export const etatAbonnement = cache(async (etablissementId: string): Promise<Eta
     futures,
     payeJusquau,
     historique,
+    prochainMois: (() => {
+      const p = prochainePeriode(payees.map((s) => ({ plan: s.plan, debut: s.debut!, fin: s.fin!, mois_offerts: s.mois_offerts ?? 0 })), maintenant)
+      return { rang: p.rang, moisOfferts: p.moisOfferts, debut: p.debut.toISOString(), fin: p.fin.toISOString() }
+    })(),
     joursAvantFin: payeJusquau ? Math.ceil((new Date(payeJusquau).getTime() - maintenant.getTime()) / JOUR_MS) : null,
     enAttente,
     prochaine,

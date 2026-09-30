@@ -1,6 +1,6 @@
--- D-Scholar : installation complète (migrations 00 à 11), à exécuter en une fois
--- dans l'éditeur SQL de Supabase, sur un projet vide. Ordre : 00-06, 08, 09, 10,
--- 11 puis 07 (la démo utilise les tables des modules 08 à 10).
+-- D-Scholar : installation complète (migrations 00 à 12), à exécuter en une fois
+-- dans l'éditeur SQL de Supabase, sur un projet vide. Ordre : 00-06, 08 à 12
+-- puis 07 (la démo utilise les tables des modules 08 à 10).
 
 -- ============================================================
 -- 00_schema.sql
@@ -2160,6 +2160,22 @@ alter table public.souscriptions add constraint souscriptions_plan_check
 -- mensuels viennent des variables CHARIOW_PRODUCT_Scholar_Elem / _MS / _FULL,
 -- ou de /admin/config (un produit par palier, part 100 %).
 delete from public.chariow_produits;
+
+-- ============================================================
+-- 12_mois_offerts.sql
+-- ============================================================
+
+-- ═════════════════════════════════════════════════════════════════════════════
+-- 12 · Deux mois de vacances offerts
+-- L'abonnement se paie sur 10 mois : au 10e mois payé consécutif, la période
+-- est prolongée de 2 mois offerts (lib/abonnements/reconcile.ts). Le compteur
+-- repart après chaque période offerte, ou après une interruption de plus de
+-- 30 jours (établissement suspendu).
+-- À exécuter après 11_abonnement_mensuel.sql.
+-- ═════════════════════════════════════════════════════════════════════════════
+
+alter table public.souscriptions add column if not exists mois_offerts smallint not null default 0
+  check (mois_offerts between 0 and 2);
 
 -- ============================================================
 -- 07_demo.sql

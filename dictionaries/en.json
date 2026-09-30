@@ -369,7 +369,7 @@
       "famillesText": "Grades, absences and timetables available to parents and students."
     },
     "pricingTitle": "A monthly subscription, no commitment",
-    "pricingSubtitle": "Pay month by month with Mobile Money or card, or several months in advance. No minimum term.",
+    "pricingSubtitle": "Pay 10 months, the 2 holiday months are free. Pay month by month with Mobile Money or card, or several months in advance.",
     "perYear": "FCFA / year",
     "pricingElementaire": "Pre-school and primary",
     "pricingSecondaire": "Middle and high school",
@@ -407,7 +407,7 @@
     "payer": "Pay",
     "souscrireTitle": "Subscribe",
     "renouvelerTitle": "Renew for next year",
-    "souscrireDesc": "Each payment covers one month. You can pay several months in advance: each month paid is added after the period already covered.",
+    "souscrireDesc": "Each payment covers one month; you can pay several months in advance. After the 10th month paid, the 2 holiday months are free.",
     "choisirPalier": "Plan",
     "choisirPlan": "Payment method",
     "plans": {
@@ -419,7 +419,7 @@
     "planDetail": {
       "comptant": "100% when subscribing",
       "deux_tranches": "50% now, 50% after 3 months",
-      "mensuel": "One month of full access per payment, renewable at any time."
+      "mensuel": "One month of full access per payment. 10 months paid: the 2 holiday months are free."
     },
     "aPayerMaintenant": "Due now",
     "total": "Annual total",
@@ -464,7 +464,12 @@
     "payerMoisSuivant": "Pay the next month",
     "avanceMax": "You have already paid 12 months in advance, the maximum.",
     "bannerFinProche": "Your subscription ends on {date} (in {jours} day(s)): pay the next month to avoid any interruption.",
-    "bannerExpire": "Your paid period ended on {date}. The school becomes read-only {seuil} days later: pay a month to restore access."
+    "bannerExpire": "Your paid period ended on {date}. The school becomes read-only {seuil} days later: pay a month to restore access.",
+    "dontOfferts": "including {n} free holiday months",
+    "moisOffertsBadge": "+{n} free months",
+    "anneeAbonnement": "Subscription year",
+    "moisPayesSur": "{n} of {total} months paid",
+    "regleVacances": "The subscription is paid over {payants} months: after the {payants}th month paid, the {offerts} holiday months are free and access stays complete. A delay of more than 30 days resets the count."
   },
   "scolarite": {
     "annee": "School year",

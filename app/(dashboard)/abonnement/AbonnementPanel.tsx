@@ -3,8 +3,7 @@ import { cardClass } from '@/components/ui/styles'
 import type { UserContext } from '@/lib/auth/getCurrentUserContext'
 import { etatAbonnement, type Souscription } from '@/lib/abonnements/etat'
 import { PALIER_CODES, PALIERS } from '@/lib/abonnements/paliers'
-import { addMonths } from 'date-fns'
-import { montantsTranches, PLAN_CODES, RAPPEL_RENOUVELLEMENT_JOURS, SEUIL_LECTURE_SEULE_JOURS } from '@/lib/abonnements/plans'
+import { MOIS_OFFERTS, MOIS_PAYANTS_PAR_AN, montantsTranches, PLAN_CODES, RAPPEL_RENOUVELLEMENT_JOURS, SEUIL_LECTURE_SEULE_JOURS } from '@/lib/abonnements/plans'
 import { PAYS_TELEPHONE_SUPPORTES } from '@/lib/abonnements/telephone'
 import { fmt, intlLocale } from '@/lib/i18n'
 import type { Dictionary } from '@/dictionaries'
@@ -53,8 +52,9 @@ export default async function AbonnementPanel({ context, dict, locale }: { conte
   // dernière période payée (ou d'aujourd'hui si elle est terminée).
   const maintenant = new Date()
   const finPayee = etat.payeJusquau ? new Date(etat.payeJusquau) : null
-  const debutSuivant = finPayee && finPayee > maintenant ? finPayee : maintenant
-  const periodeSuivante = fmt(t.periodeCouverte, { debut: date(debutSuivant.toISOString()), fin: date(addMonths(debutSuivant, 1).toISOString()) })
+  // Période du prochain paiement (cycle.ts) : 3 mois pour le 10e, dont 2 offerts.
+  const pm = etat.prochainMois
+  const periodeSuivante = fmt(t.periodeCouverte, { debut: date(pm.debut), fin: date(pm.fin) }) + (pm.moisOfferts ? ` · ${fmt(t.dontOfferts, { n: pm.moisOfferts })}` : '')
   const joursRestants = finPayee ? Math.ceil((finPayee.getTime() - maintenant.getTime()) / 86_400_000) : null
   const mensuel = !etat.courante || etat.courante.plan === 'mensuel'
 
@@ -122,6 +122,21 @@ export default async function AbonnementPanel({ context, dict, locale }: { conte
         </section>
       )}
 
+      {mensuel && (
+        <section className={`${cardClass} p-5 sm:p-6`}>
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <h2 className="font-heading text-base font-semibold text-foreground">{t.anneeAbonnement}</h2>
+            <span className="text-sm tabular-nums text-foreground-muted">{fmt(t.moisPayesSur, { n: pm.rang - 1, total: MOIS_PAYANTS_PAR_AN })}</span>
+          </div>
+          <div className="mt-3 flex gap-1" role="img" aria-label={fmt(t.moisPayesSur, { n: pm.rang - 1, total: MOIS_PAYANTS_PAR_AN })}>
+            {Array.from({ length: MOIS_PAYANTS_PAR_AN + MOIS_OFFERTS }, (_, k) => (
+              <span key={k} className={`h-2.5 flex-1 rounded-full ${k < pm.rang - 1 ? 'bg-primary' : k >= MOIS_PAYANTS_PAR_AN ? 'bg-secondary/40' : 'bg-background'}`} />
+            ))}
+          </div>
+          <p className="mt-3 text-sm text-foreground-muted">{fmt(t.regleVacances, { payants: MOIS_PAYANTS_PAR_AN, offerts: MOIS_OFFERTS })}</p>
+        </section>
+      )}
+
       {mensuel && etat.historique.length > 0 && (
         <section className={cardClass}>
           <h2 className="border-b border-surface-border px-5 py-4 font-heading text-base font-semibold text-foreground">{t.periodesPayees}</h2>
@@ -138,6 +153,7 @@ export default async function AbonnementPanel({ context, dict, locale }: { conte
                     <span className="text-xs text-foreground-muted">{dict.paliers[s.palier]} · {t.plans[s.plan]}{payee ? ` · ${fmt(t.payeeLe, { date: date(payee) })}` : ''}</span>
                   </span>
                   <span className="tabular-nums text-foreground">{nombre(s.montant_total)} {t.fcfa}</span>
+                  {s.mois_offerts > 0 && <span className="rounded-full bg-secondary/15 px-2 py-0.5 text-xs font-semibold text-foreground">{fmt(t.moisOffertsBadge, { n: s.mois_offerts })}</span>}
                   {(aVenir || enCours) && <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${enCours ? 'bg-success/10 text-success' : 'bg-primary-soft text-primary'}`}>{enCours ? t.enCoursPeriode : t.aVenir}</span>}
                 </li>
               )

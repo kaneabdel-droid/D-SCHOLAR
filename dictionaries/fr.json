@@ -369,7 +369,7 @@
       "famillesText": "Notes, absences et emplois du temps consultables par les parents et les élèves."
     },
     "pricingTitle": "Un abonnement mensuel, sans engagement",
-    "pricingSubtitle": "Payez mois par mois en Mobile Money ou par carte, ou plusieurs mois d'avance. Sans engagement de durée.",
+    "pricingSubtitle": "10 mois payés, les 2 mois de vacances offerts. Réglez mois par mois en Mobile Money ou par carte, ou plusieurs mois d'avance.",
     "perYear": "FCFA / an",
     "pricingElementaire": "Préscolaire et élémentaire",
     "pricingSecondaire": "Moyen et secondaire : collège et lycée",
@@ -407,7 +407,7 @@
     "payer": "Payer",
     "souscrireTitle": "Souscrire",
     "renouvelerTitle": "Renouveler pour l'année suivante",
-    "souscrireDesc": "Chaque paiement couvre un mois. Vous pouvez payer plusieurs mois d'avance : chaque mois payé s'ajoute à la fin de la période déjà couverte.",
+    "souscrireDesc": "Chaque paiement couvre un mois ; vous pouvez payer plusieurs mois d'avance. Au 10e mois payé, les 2 mois de vacances sont offerts.",
     "choisirPalier": "Formule",
     "choisirPlan": "Mode de paiement",
     "plans": {
@@ -419,7 +419,7 @@
     "planDetail": {
       "comptant": "100 % à la souscription",
       "deux_tranches": "50 % maintenant, 50 % à 3 mois",
-      "mensuel": "Un mois d'accès complet par paiement, renouvelable à tout moment."
+      "mensuel": "Un mois d'accès complet par paiement. 10 mois payés : les 2 mois de vacances sont offerts."
     },
     "aPayerMaintenant": "À payer maintenant",
     "total": "Total annuel",
@@ -464,7 +464,12 @@
     "payerMoisSuivant": "Payer le mois suivant",
     "avanceMax": "Vous avez déjà payé 12 mois d'avance, le maximum.",
     "bannerFinProche": "Votre abonnement se termine le {date} (dans {jours} jour(s)) : payez le mois suivant pour éviter toute interruption.",
-    "bannerExpire": "Votre période payée s'est terminée le {date}. L'établissement passe en lecture seule {seuil} jours après : payez un mois pour rétablir l'accès."
+    "bannerExpire": "Votre période payée s'est terminée le {date}. L'établissement passe en lecture seule {seuil} jours après : payez un mois pour rétablir l'accès.",
+    "dontOfferts": "dont {n} mois de vacances offerts",
+    "moisOffertsBadge": "+{n} mois offerts",
+    "anneeAbonnement": "Année d'abonnement",
+    "moisPayesSur": "{n} mois payés sur {total}",
+    "regleVacances": "L'abonnement se paie sur {payants} mois : au {payants}e mois payé, les {offerts} mois de vacances sont offerts et l'accès reste complet. Un retard de plus de 30 jours remet le compteur à zéro."
   },
   "scolarite": {
     "annee": "Année scolaire",
