@@ -1,6 +1,6 @@
 import { createAdminClient } from '@/utils/supabase/admin'
-import { PALIERS, type PalierCode } from './paliers'
-import { PLANS, type PlanCode, type Pourcentage } from './plans'
+import type { PalierCode } from './paliers'
+import { montantSouscription, PLANS, type PlanCode, type Pourcentage } from './plans'
 import { adaptateurActif, providerActif } from './registry'
 import { PAYS_TELEPHONE_SUPPORTES } from './telephone'
 
@@ -26,7 +26,7 @@ export async function creerSouscriptionEtTranche1(etablissementId: string, palie
     p_etablissement_id: etablissementId,
     p_palier: palier,
     p_plan: plan,
-    p_montant_total: PALIERS[palier].prixAnnuelFcfa,
+    p_montant_total: montantSouscription(palier, plan),
     p_repartition: PLANS[plan].repartition,
     p_decalages: PLANS[plan].decalagesMois,
   })

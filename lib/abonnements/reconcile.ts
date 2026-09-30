@@ -6,7 +6,7 @@
 import { addMonths } from 'date-fns'
 import { createAdminClient } from '@/utils/supabase/admin'
 import { adaptateurPour } from './registry'
-import { DUREE_SOUSCRIPTION_MOIS, PLANS, type PlanCode } from './plans'
+import { PLANS, type PlanCode } from './plans'
 import type { ProviderId, StatutProvider } from './types'
 
 type LignePaiement = {
@@ -51,8 +51,8 @@ async function crediterEcheance(paiement: LignePaiement, dateSucces: Date): Prom
   if (!souscription) return
 
   if (echeance.rang === 1 && souscription.statut === 'en_attente') {
-    // Renouvellement anticipé : la nouvelle année démarre à la fin de la
-    // période encore en cours, pas au jour du paiement (aucun mois perdu).
+    // Paiement anticipé : la nouvelle période démarre à la fin de la dernière
+    // période payée, pas au jour du paiement (aucun jour perdu).
     const { data: precedente } = await supabase
       .from('souscriptions')
       .select('fin')
@@ -63,7 +63,8 @@ async function crediterEcheance(paiement: LignePaiement, dateSucces: Date): Prom
       .maybeSingle()
     const finPrecedente = precedente?.fin ? new Date(precedente.fin) : null
     const debut = finPrecedente && finPrecedente > dateSucces ? finPrecedente : dateSucces
-    const fin = addMonths(debut, DUREE_SOUSCRIPTION_MOIS)
+    // Mensuel : un mois ; anciens plans annuels : douze.
+    const fin = addMonths(debut, PLANS[souscription.plan as PlanCode]?.dureeMois ?? 12)
 
     await supabase.from('souscriptions').update({ statut: 'active', debut: debut.toISOString(), fin: fin.toISOString() }).eq('id', souscription.id)
 

@@ -195,6 +195,7 @@ export function SouscrireForm({
   offres,
   palierInitial,
   planInitial,
+  periode,
   pays,
   locale,
   libelles,
@@ -202,9 +203,12 @@ export function SouscrireForm({
   offres: Offre[]
   palierInitial: PalierCode
   planInitial: PlanCode
+  /** Mensuel : période que couvrira le paiement. */
+  periode?: string
   pays: string[]
   locale: string
   libelles: LibellesTelephone & {
+    parMois: string
     choisirPalier: string
     choisirPlan: string
     paliers: Record<PalierCode, string>
@@ -255,12 +259,13 @@ export function SouscrireForm({
             >
               <input type="radio" name="palier" value={o.palier} checked={palier === o.palier} onChange={() => setPalier(o.palier)} className="sr-only" />
               <p className="font-heading font-semibold text-foreground">{libelles.paliers[o.palier]}</p>
-              <p className="mt-1 text-sm tabular-nums text-foreground-muted">{nombre(o.prix)} {libelles.fcfa}</p>
+              <p className="mt-1 text-sm tabular-nums text-foreground-muted">{nombre(o.prix)} {libelles.fcfa} {libelles.parMois}</p>
             </label>
           ))}
         </div>
       </fieldset>
 
+      {offre.plans.length > 1 && (
       <fieldset>
         <legend className={labelClass}>{libelles.choisirPlan}</legend>
         <div className="mt-2 grid gap-3 sm:grid-cols-3">
@@ -276,6 +281,7 @@ export function SouscrireForm({
           ))}
         </div>
       </fieldset>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-2">
         <ChampsTelephone
@@ -288,6 +294,10 @@ export function SouscrireForm({
         />
 
         <div className="rounded-xl bg-background p-4">
+          {plan === 'mensuel' ? (
+            <p className="text-sm text-foreground-muted">{libelles.planDetail.mensuel}{periode && <span className="mt-1 block font-medium text-foreground">{periode}</span>}</p>
+          ) : (
+          <>
           <ul className="space-y-1.5 text-sm">
             {tranches.map((montant, i) => (
               <li key={i} className={`flex justify-between gap-4 ${i === 0 ? 'font-semibold text-foreground' : 'text-foreground-muted'}`}>
@@ -300,6 +310,8 @@ export function SouscrireForm({
             <span>{libelles.total}</span>
             <span className="tabular-nums">{nombre(offre.prix)} {libelles.fcfa}</span>
           </div>
+          </>
+          )}
           <div className="mt-2 flex items-baseline justify-between gap-4">
             <span className="text-sm font-medium text-foreground">{libelles.aPayerMaintenant}</span>
             <span className="font-heading text-2xl font-semibold tabular-nums text-primary">{nombre(tranches[0])} {libelles.fcfa}</span>

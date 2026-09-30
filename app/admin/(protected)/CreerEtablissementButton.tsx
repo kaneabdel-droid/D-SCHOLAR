@@ -85,7 +85,7 @@ export default function CreerEtablissementButton() {
               <label className={labelClass} htmlFor="e-palier">Palier</label>
               <select id="e-palier" name="palier" defaultValue="complet" className={inputClass}>
                 {PALIER_CODES.map((p) => (
-                  <option key={p} value={p}>{NOMS_PALIERS[p]} — {PALIERS[p].prixAnnuelFcfa.toLocaleString('fr-FR')} FCFA / an</option>
+                  <option key={p} value={p}>{NOMS_PALIERS[p]} — {PALIERS[p].prixMensuelFcfa.toLocaleString('fr-FR')} FCFA / mois</option>
                 ))}
               </select>
               <p className={hintClass}>Le référentiel sénégalais (niveaux, séries, matières) du palier est créé automatiquement.</p>

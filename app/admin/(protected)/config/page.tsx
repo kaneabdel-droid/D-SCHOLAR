@@ -3,7 +3,7 @@ import ChariowProduitsEditor from './ChariowProduitsEditor'
 
 export default async function AdminConfigPage() {
   const supabase = createAdminClient()
-  const { data } = await supabase.from('chariow_produits').select('palier, pourcentage, product_id')
+  const { data } = await supabase.from('chariow_produits').select('palier, pourcentage, product_id').eq('pourcentage', 100)
 
   return (
     <div>
@@ -14,7 +14,7 @@ export default async function AdminConfigPage() {
       <section className="rounded-2xl border border-surface-border bg-surface p-5">
         <h2 className="font-heading text-lg font-semibold">Produits Chariow</h2>
         <p className="mt-1 text-sm text-foreground-muted">
-          Chariow débite le prix d&apos;un produit préconfiguré dans sa boutique : un produit par palier et par part de tranche, au prix exact indiqué. Un champ vidé puis validé retombe sur la variable d&apos;environnement CHARIOW_PRODUCT_&lt;PALIER&gt;_&lt;PART&gt;.
+          Abonnement mensuel : chaque paiement couvre un mois, au prix du produit Chariow du palier (prix exact indiqué). Un champ vide utilise la variable d&apos;environnement indiquée (CHARIOW_PRODUCT_Scholar_Elem / _MS / _FULL, dans .env.local et sur Vercel).
         </p>
         <ChariowProduitsEditor produits={data ?? []} />
       </section>

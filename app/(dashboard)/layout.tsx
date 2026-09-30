@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { getCurrentUserContext } from '@/lib/auth/getCurrentUserContext'
 import { etatAbonnement } from '@/lib/abonnements/etat'
-import { SEUIL_LECTURE_SEULE_JOURS } from '@/lib/abonnements/plans'
+import { RAPPEL_RENOUVELLEMENT_JOURS, SEUIL_LECTURE_SEULE_JOURS } from '@/lib/abonnements/plans'
 import { fmt, intlLocale } from '@/lib/i18n'
 import { getLocale, getDictionary } from '@/dictionaries'
 import Notifications from '@/components/Notifications'
@@ -32,6 +32,19 @@ export default async function DashboardLayout({ children }: { children: React.Re
         jours: etat.retardJours,
         seuil: SEUIL_LECTURE_SEULE_JOURS,
       }),
+    }
+  }
+  // Abonnement mensuel : rappel avant la fin de la période payée, puis pendant
+  // le délai de grâce (sauf accès offert par la plateforme, ex. démo).
+  const offert = etat.accesManuelJusquAu && new Date(etat.accesManuelJusquAu) > new Date()
+  if (!bandeau && !offert && etat.payeJusquau) {
+    const fin = new Date(etat.payeJusquau)
+    const jours = etat.joursAvantFin ?? 0
+    const dateFin = fin.toLocaleDateString(intlLocale(locale), { day: 'numeric', month: 'long' })
+    if (etat.courante?.plan === 'mensuel' && etat.futures.length === 0 && jours <= RAPPEL_RENOUVELLEMENT_JOURS) {
+      bandeau = { niveau: 'avertissement', texte: fmt(t.bannerFinProche, { date: dateFin, jours }) }
+    } else if (!etat.courante && !etat.future && jours <= 0) {
+      bandeau = { niveau: 'avertissement', texte: fmt(t.bannerExpire, { date: dateFin, seuil: SEUIL_LECTURE_SEULE_JOURS }) }
     }
   }
   if (bandeau) {

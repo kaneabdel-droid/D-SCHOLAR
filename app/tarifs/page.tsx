@@ -16,7 +16,7 @@ export default async function TarifsPage({ searchParams }: { searchParams: Promi
 
   const offres = PALIER_CODES.map((p) => ({
     palier: p,
-    prix: PALIERS[p].prixAnnuelFcfa,
+    prix: PALIERS[p].prixMensuelFcfa,
     plans: PLAN_CODES.map((plan) => ({ plan, tranches: montantsTranches(p, plan) })),
   }))
   const descriptions = { elementaire: dict.landing.pricingElementaire, secondaire: dict.landing.pricingSecondaire, complet: dict.landing.pricingComplet }

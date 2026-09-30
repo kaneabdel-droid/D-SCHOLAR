@@ -139,7 +139,7 @@
   },
   "paliers": {
     "elementaire": "Élémentaire",
-    "secondaire": "Secondaire",
+    "secondaire": "Moyen-secondaire",
     "complet": "Cycle complet"
   },
   "theme": {
@@ -368,17 +368,18 @@
       "famillesTitle": "Familles connectées",
       "famillesText": "Notes, absences et emplois du temps consultables par les parents et les élèves."
     },
-    "pricingTitle": "Un abonnement par année scolaire",
-    "pricingSubtitle": "Payable en une fois ou par tranches, avec au moins 50 % à la première tranche.",
+    "pricingTitle": "Un abonnement mensuel, sans engagement",
+    "pricingSubtitle": "Payez mois par mois en Mobile Money ou par carte, ou plusieurs mois d'avance. Sans engagement de durée.",
     "perYear": "FCFA / an",
     "pricingElementaire": "Préscolaire et élémentaire",
-    "pricingSecondaire": "Collège et lycée",
+    "pricingSecondaire": "Moyen et secondaire : collège et lycée",
     "pricingComplet": "Tous les cycles, du préscolaire à la terminale",
-    "footer": "D-Scholar, une solution DembaSolution."
+    "footer": "D-Scholar, une solution DembaSolution.",
+    "perMonth": "FCFA / mois"
   },
   "abonnement": {
     "title": "Abonnement",
-    "subtitle": "Abonnement annuel de l'établissement, payable en une fois ou par tranches.",
+    "subtitle": "Abonnement mensuel de l'établissement, payable mois par mois ou d'avance.",
     "directionOnly": "Seule la direction peut gérer l'abonnement.",
     "etatTitle": "État de l'accès",
     "acces": {
@@ -406,17 +407,19 @@
     "payer": "Payer",
     "souscrireTitle": "Souscrire",
     "renouvelerTitle": "Renouveler pour l'année suivante",
-    "souscrireDesc": "Au moins 50 % à la première tranche : paiement comptant, ou deux tranches de 50 % (la seconde 3 mois après le premier paiement).",
+    "souscrireDesc": "Chaque paiement couvre un mois. Vous pouvez payer plusieurs mois d'avance : chaque mois payé s'ajoute à la fin de la période déjà couverte.",
     "choisirPalier": "Formule",
     "choisirPlan": "Mode de paiement",
     "plans": {
       "comptant": "Comptant",
       "deux_tranches": "2 tranches",
-      "trois_tranches": "3 tranches"
+      "trois_tranches": "3 tranches",
+      "mensuel": "Mensuel"
     },
     "planDetail": {
       "comptant": "100 % à la souscription",
-      "deux_tranches": "50 % maintenant, 50 % à 3 mois"
+      "deux_tranches": "50 % maintenant, 50 % à 3 mois",
+      "mensuel": "Un mois d'accès complet par paiement, renouvelable à tout moment."
     },
     "aPayerMaintenant": "À payer maintenant",
     "total": "Total annuel",
@@ -426,9 +429,9 @@
     "telephoneHint": "Numéro utilisé sur la page de paiement sécurisée (Orange Money, Wave, Free Money, carte…).",
     "continuer": "Continuer vers le paiement",
     "redirection": "Redirection vers le paiement…",
-    "enAttente": "Souscription en attente de la première tranche.",
+    "enAttente": "Paiement du mois en attente de confirmation.",
     "renouvellementLe": "Le renouvellement sera possible à partir du {date}.",
-    "bannerNonPaye": "Réglez la première tranche de l’abonnement pour activer toutes les fonctionnalités.",
+    "bannerNonPaye": "Réglez le premier mois de l'abonnement pour activer toutes les fonctionnalités.",
     "bannerRetard": "La tranche {n} ({montant} FCFA) est en retard de {jours} jour(s). Lecture seule au-delà de {seuil} jours de retard.",
     "bannerLectureSeule": "Établissement en lecture seule : un paiement est en retard.",
     "bannerAction": "Régulariser",
@@ -451,7 +454,17 @@
       "ordre": "Réglez d’abord la tranche précédente.",
       "provider": "Le service de paiement est momentanément indisponible. Réessayez dans quelques minutes.",
       "enCours": "Un paiement est déjà en cours. Patientez quelques secondes puis réessayez."
-    }
+    },
+    "parMois": "/ mois",
+    "payeJusquau": "Payé jusqu'au {date}",
+    "periodeCouverte": "Période couverte : du {debut} au {fin}",
+    "periodesPayees": "Mois payés",
+    "enCoursPeriode": "En cours",
+    "aVenir": "À venir",
+    "payerMoisSuivant": "Payer le mois suivant",
+    "avanceMax": "Vous avez déjà payé 12 mois d'avance, le maximum.",
+    "bannerFinProche": "Votre abonnement se termine le {date} (dans {jours} jour(s)) : payez le mois suivant pour éviter toute interruption.",
+    "bannerExpire": "Votre période payée s'est terminée le {date}. L'établissement passe en lecture seule {seuil} jours après : payez un mois pour rétablir l'accès."
   },
   "scolarite": {
     "annee": "Année scolaire",
@@ -744,7 +757,7 @@
   },
   "tarifs": {
     "title": "Abonnez votre établissement",
-    "subtitle": "Créez votre espace en quelques minutes et réglez la première tranche en ligne (Mobile Money ou carte). L'accès complet s'ouvre dès le paiement confirmé.",
+    "subtitle": "Créez votre espace en quelques minutes et réglez le premier mois en ligne (Mobile Money ou carte). L'accès complet s'ouvre dès le paiement confirmé.",
     "etablissementTitle": "Votre établissement",
     "nomEtablissement": "Nom de l'établissement",
     "ville": "Ville",

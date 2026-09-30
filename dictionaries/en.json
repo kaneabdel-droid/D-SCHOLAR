@@ -139,7 +139,7 @@
   },
   "paliers": {
     "elementaire": "Primary",
-    "secondaire": "Secondary",
+    "secondaire": "Middle & high school",
     "complet": "Full cycle"
   },
   "theme": {
@@ -368,17 +368,18 @@
       "famillesTitle": "Connected families",
       "famillesText": "Grades, absences and timetables available to parents and students."
     },
-    "pricingTitle": "One subscription per school year",
-    "pricingSubtitle": "Pay at once or in instalments, with at least 50% on the first instalment.",
+    "pricingTitle": "A monthly subscription, no commitment",
+    "pricingSubtitle": "Pay month by month with Mobile Money or card, or several months in advance. No minimum term.",
     "perYear": "FCFA / year",
     "pricingElementaire": "Pre-school and primary",
-    "pricingSecondaire": "Lower and upper secondary",
+    "pricingSecondaire": "Middle and high school",
     "pricingComplet": "Every cycle, from pre-school to final year",
-    "footer": "D-Scholar, a DembaSolution product."
+    "footer": "D-Scholar, a DembaSolution product.",
+    "perMonth": "FCFA / month"
   },
   "abonnement": {
     "title": "Subscription",
-    "subtitle": "The school's annual subscription, paid at once or in instalments.",
+    "subtitle": "The school's monthly subscription, paid month by month or in advance.",
     "directionOnly": "Only the management can manage the subscription.",
     "etatTitle": "Access status",
     "acces": {
@@ -406,17 +407,19 @@
     "payer": "Pay",
     "souscrireTitle": "Subscribe",
     "renouvelerTitle": "Renew for next year",
-    "souscrireDesc": "At least 50% on the first instalment: pay in full, or in two 50% instalments (the second one 3 months after the first payment).",
+    "souscrireDesc": "Each payment covers one month. You can pay several months in advance: each month paid is added after the period already covered.",
     "choisirPalier": "Plan",
     "choisirPlan": "Payment method",
     "plans": {
       "comptant": "Single payment",
       "deux_tranches": "2 instalments",
-      "trois_tranches": "3 instalments"
+      "trois_tranches": "3 instalments",
+      "mensuel": "Monthly"
     },
     "planDetail": {
       "comptant": "100% when subscribing",
-      "deux_tranches": "50% now, 50% after 3 months"
+      "deux_tranches": "50% now, 50% after 3 months",
+      "mensuel": "One month of full access per payment, renewable at any time."
     },
     "aPayerMaintenant": "Due now",
     "total": "Annual total",
@@ -426,9 +429,9 @@
     "telephoneHint": "Number used on the secure payment page (Orange Money, Wave, Free Money, card…).",
     "continuer": "Continue to payment",
     "redirection": "Redirecting to payment…",
-    "enAttente": "Subscription awaiting its first instalment.",
+    "enAttente": "Monthly payment awaiting confirmation.",
     "renouvellementLe": "Renewal will be possible from {date}.",
-    "bannerNonPaye": "Pay the first subscription instalment to unlock every feature.",
+    "bannerNonPaye": "Pay the first month of the subscription to activate all features.",
     "bannerRetard": "Instalment {n} ({montant} FCFA) is {jours} day(s) overdue. Read-only beyond {seuil} days overdue.",
     "bannerLectureSeule": "School in read-only mode: a payment is overdue.",
     "bannerAction": "Settle now",
@@ -451,7 +454,17 @@
       "ordre": "Please pay the previous instalment first.",
       "provider": "The payment service is temporarily unavailable. Please try again in a few minutes.",
       "enCours": "A payment is already in progress. Wait a few seconds and try again."
-    }
+    },
+    "parMois": "/ month",
+    "payeJusquau": "Paid until {date}",
+    "periodeCouverte": "Period covered: {debut} to {fin}",
+    "periodesPayees": "Months paid",
+    "enCoursPeriode": "Current",
+    "aVenir": "Upcoming",
+    "payerMoisSuivant": "Pay the next month",
+    "avanceMax": "You have already paid 12 months in advance, the maximum.",
+    "bannerFinProche": "Your subscription ends on {date} (in {jours} day(s)): pay the next month to avoid any interruption.",
+    "bannerExpire": "Your paid period ended on {date}. The school becomes read-only {seuil} days later: pay a month to restore access."
   },
   "scolarite": {
     "annee": "School year",
@@ -744,7 +757,7 @@
   },
   "tarifs": {
     "title": "Subscribe your school",
-    "subtitle": "Create your workspace in a few minutes and pay the first instalment online (Mobile Money or card). Full access opens as soon as the payment is confirmed.",
+    "subtitle": "Create your space in a few minutes and pay the first month online (Mobile Money or card). Full access opens as soon as the payment is confirmed.",
     "etablissementTitle": "Your school",
     "nomEtablissement": "School name",
     "ville": "City",

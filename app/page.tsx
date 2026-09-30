@@ -83,9 +83,9 @@ export default async function LandingPage() {
                 <p className={`font-heading text-lg font-semibold ${vedette ? '' : 'text-foreground'}`}>{dict.paliers[code]}</p>
                 <p className="mt-4 flex items-baseline gap-2">
                   <span className={`font-heading text-4xl font-semibold tabular-nums ${vedette ? '' : 'text-foreground'}`}>
-                    {PALIERS[code].prixAnnuelFcfa.toLocaleString(intlLocale(locale))}
+                    {PALIERS[code].prixMensuelFcfa.toLocaleString(intlLocale(locale))}
                   </span>
-                  <span className={`text-sm ${vedette ? 'text-white/60' : 'text-foreground-muted'}`}>{t.perYear}</span>
+                  <span className={`text-sm ${vedette ? 'text-white/60' : 'text-foreground-muted'}`}>{t.perMonth}</span>
                 </p>
                 <p className={`mt-4 flex items-start gap-2 text-sm ${vedette ? 'text-white/80' : 'text-foreground-muted'}`}>
                   <Check className={`mt-0.5 h-4 w-4 shrink-0 ${vedette ? 'text-secondary' : 'text-primary'}`} /> {descriptions[code]}

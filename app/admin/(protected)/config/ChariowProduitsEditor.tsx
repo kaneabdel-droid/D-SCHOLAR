@@ -2,12 +2,15 @@
 
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
-import { PALIER_CODES, type PalierCode } from '@/lib/abonnements/paliers'
-import { montantPourcentage, POURCENTAGES } from '@/lib/abonnements/plans'
+import { PALIER_CODES, PALIERS, type PalierCode } from '@/lib/abonnements/paliers'
 import { enregistrerProduitChariow } from '../actions'
 
 type Produit = { palier: string; pourcentage: number; product_id: string }
-const NOMS: Record<PalierCode, string> = { elementaire: 'Élémentaire', secondaire: 'Secondaire', complet: 'Cycle complet' }
+const NOMS: Record<PalierCode, string> = { elementaire: 'Élémentaire', secondaire: 'Moyen-secondaire', complet: 'Cycle complet' }
+// Abonnement mensuel : un produit par palier (un mois, part 100 %). Laissé vide,
+// le produit vient de la variable d'environnement.
+const POURCENTAGES = [100] as const
+const VARIABLES: Record<PalierCode, string> = { elementaire: 'CHARIOW_PRODUCT_Scholar_Elem', secondaire: 'CHARIOW_PRODUCT_Scholar_MS', complet: 'CHARIOW_PRODUCT_Scholar_FULL' }
 
 export default function ChariowProduitsEditor({ produits }: { produits: Produit[] }) {
   const cle = (p: string, pct: number) => `${p}_${pct}`
@@ -29,8 +32,8 @@ export default function ChariowProduitsEditor({ produits }: { produits: Produit[
         <thead className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">
           <tr>
             <th className="py-2 text-start">Palier</th>
-            <th className="py-2 text-start">Part</th>
-            <th className="py-2 text-start">Prix du produit</th>
+            <th className="py-2 text-start">Variable de repli</th>
+            <th className="py-2 text-start">Prix du produit (1 mois)</th>
             <th className="py-2 text-start">Product ID Chariow</th>
             <th />
           </tr>
@@ -40,13 +43,13 @@ export default function ChariowProduitsEditor({ produits }: { produits: Produit[
             POURCENTAGES.map((pct) => (
               <tr key={cle(palier, pct)}>
                 <td className="py-2 pe-3">{NOMS[palier]}</td>
-                <td className="py-2 pe-3">{pct} %</td>
-                <td className="py-2 pe-3 tabular-nums text-foreground-muted">{montantPourcentage(palier, pct).toLocaleString('fr-FR')} FCFA</td>
+                <td className="py-2 pe-3 font-mono text-xs text-foreground-muted">{VARIABLES[palier]}</td>
+                <td className="py-2 pe-3 tabular-nums text-foreground-muted">{PALIERS[palier].prixMensuelFcfa.toLocaleString('fr-FR')} FCFA</td>
                 <td className="py-2 pe-3">
                   <input
                     value={valeurs[cle(palier, pct)] ?? ''}
                     onChange={(e) => setValeurs((v) => ({ ...v, [cle(palier, pct)]: e.target.value }))}
-                    placeholder="product_id"
+                    placeholder="variable d’environnement"
                     disabled={enCours}
                     className="w-full min-w-48 rounded-lg border border-surface-border bg-background px-2 py-1.5 font-mono text-xs"
                   />

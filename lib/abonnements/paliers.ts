@@ -7,10 +7,12 @@ export type PalierCode = 'elementaire' | 'secondaire' | 'complet'
 
 export const CYCLES: Cycle[] = ['prescolaire', 'elementaire', 'moyen', 'secondaire']
 
-export const PALIERS: Record<PalierCode, { prixAnnuelFcfa: number; cyclesAutorises: Cycle[] }> = {
-  elementaire: { prixAnnuelFcfa: 120_000, cyclesAutorises: ['prescolaire', 'elementaire'] },
-  secondaire: { prixAnnuelFcfa: 200_000, cyclesAutorises: ['moyen', 'secondaire'] },
-  complet: { prixAnnuelFcfa: 300_000, cyclesAutorises: ['prescolaire', 'elementaire', 'moyen', 'secondaire'] },
+// Abonnement mensuel : prix d'un mois, égal au prix du produit Chariow du palier
+// (CHARIOW_PRODUCT_Scholar_Elem / _MS / _FULL, ou /admin/config).
+export const PALIERS: Record<PalierCode, { prixMensuelFcfa: number; cyclesAutorises: Cycle[] }> = {
+  elementaire: { prixMensuelFcfa: 10_000, cyclesAutorises: ['prescolaire', 'elementaire'] },
+  secondaire: { prixMensuelFcfa: 15_000, cyclesAutorises: ['moyen', 'secondaire'] },
+  complet: { prixMensuelFcfa: 22_500, cyclesAutorises: ['prescolaire', 'elementaire', 'moyen', 'secondaire'] },
 }
 
 export const PALIER_CODES = Object.keys(PALIERS) as PalierCode[]

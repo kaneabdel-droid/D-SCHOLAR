@@ -18,10 +18,15 @@ function apiKey(): string {
 }
 
 // Chariow débite le prix DU PRODUIT configuré dans sa boutique : un produit
-// par palier × part de tranche (100 / 50 %), au prix exact issu de
-// montantPourcentage() (cf. .env.local.example).
-// Table admin-éditable (chariow_produits, /admin/config) en priorité, repli sur
-// la variable d'env CHARIOW_PRODUCT_<PALIER>_<POURCENTAGE>.
+// par palier, au prix d'un mois (PALIERS[palier].prixMensuelFcfa).
+// Table admin-éditable (chariow_produits, /admin/config, part 100 %) en
+// priorité, repli sur les variables d'environnement ci-dessous.
+const VARIABLES_PRODUIT: Record<PalierCode, string> = {
+  elementaire: 'CHARIOW_PRODUCT_Scholar_Elem',
+  secondaire: 'CHARIOW_PRODUCT_Scholar_MS',
+  complet: 'CHARIOW_PRODUCT_Scholar_FULL',
+}
+
 async function idProduit(palier: PalierCode, pourcentage: Pourcentage): Promise<string | null> {
   const supabase = createAdminClient()
   const { data } = await supabase
@@ -32,7 +37,8 @@ async function idProduit(palier: PalierCode, pourcentage: Pourcentage): Promise<
     .maybeSingle()
   if (data?.product_id) return data.product_id
 
-  return process.env[`CHARIOW_PRODUCT_${palier.toUpperCase()}_${pourcentage}`] || null
+  // Seul le paiement d'un mois entier (100 %) a un produit.
+  return pourcentage === 100 ? process.env[VARIABLES_PRODUIT[palier]] || null : null
 }
 
 // Ordre des tests non négociable (Chariow.md §3.3) : "unpaid" contient "paid",

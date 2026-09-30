@@ -30,7 +30,7 @@ export default function InscriptionForm({
   const t = dict.tarifs
   const a = dict.abonnement
   const [palier, setPalier] = useState<PalierCode>(palierInitial)
-  const [plan, setPlan] = useState<PlanCode>('deux_tranches')
+  const [plan, setPlan] = useState<PlanCode>(offres[0]?.plans[0]?.plan ?? 'mensuel')
   const [erreur, setErreur] = useState<{ texte: string; versAbonnement?: boolean } | null>(null)
   const [enCours, startTransition] = useTransition()
   const ouvertLe = useRef<HTMLInputElement>(null)
@@ -84,7 +84,7 @@ export default function InscriptionForm({
               </div>
               <p className="mt-2 flex items-baseline gap-1.5">
                 <span className="font-heading text-3xl font-semibold tabular-nums text-foreground">{nombre(o.prix)}</span>
-                <span className="text-sm text-foreground-muted">{dict.landing.perYear}</span>
+                <span className="text-sm text-foreground-muted">{dict.landing.perMonth}</span>
               </p>
               <p className="mt-2 text-sm text-foreground-muted">{descriptions[o.palier]}</p>
             </button>
@@ -118,6 +118,8 @@ export default function InscriptionForm({
 
         <div className={`${cardClass} h-fit space-y-5 p-5 sm:p-6`}>
           <p className="font-heading text-base font-semibold text-foreground">{t.paiementTitle}</p>
+          {offre.plans.length > 1 ? (
+          <>
           <div className="space-y-2">
             {offre.plans.map((p) => (
               <label key={p.plan} className="flex cursor-pointer items-start gap-3 rounded-xl border border-surface-border p-3 has-[:checked]:border-primary has-[:checked]:bg-primary-soft">
@@ -138,6 +140,10 @@ export default function InscriptionForm({
               </li>
             ))}
           </ul>
+          </>
+          ) : (
+            <p className="rounded-xl bg-background p-3 text-sm text-foreground-muted">{a.planDetail.mensuel}</p>
+          )}
 
           <div>
             <div className="grid grid-cols-[6rem_1fr] gap-2">
