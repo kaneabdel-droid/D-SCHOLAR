@@ -28,9 +28,13 @@ export type Indicateurs = {
   examens: { examen: string; presentes: number; admis: number }[]
   assiduite: { heuresNJ: number; heuresTotal: number; retards: number }
   finances: {
+    // Année entière (du, reste) et part déjà échue (duADate, resteADate).
     du: number
+    duADate: number
     paye: number
     reste: number
+    resteADate: number
+    // Élèves avec un reste échu (vrai retard de paiement).
     elevesEnRetard: number
     parMois: { mois: string; montant: number }[]
     parMode: Record<string, number>
@@ -41,6 +45,10 @@ export type Indicateurs = {
 }
 
 export const pct = (a: number, b: number) => (b > 0 ? Math.round((a / b) * 1000) / 10 : null)
+
+// Taux de recouvrement à date : part de l'échu effectivement réglée (les paiements
+// d'avance au-delà de l'échu ne font pas dépasser 100 %).
+export const recouvrementADate = (f: { duADate: number; resteADate: number }) => (f.duADate > 0 ? pct(f.duADate - f.resteADate, f.duADate) : null)
 
 // Années de chaque site : on aligne les sites sur un libellé commun (« 2026-2027 »).
 export async function anneesDesSites(supabase: SupabaseClient, sites: SiteGroupe[]) {
@@ -65,7 +73,7 @@ export async function indicateursSite(supabase: SupabaseClient, site: SiteGroupe
   const vide: Indicateurs = {
     site, acces, annee, effectif: 0, filles: 0, garcons: 0, nouveaux: 0, redoublants: 0, parCycle: {}, classes: 0, enseignants: 0, personnel: 0,
     resultats: null, examens: [], assiduite: { heuresNJ: 0, heuresTotal: 0, retards: 0 },
-    finances: { du: 0, paye: 0, reste: 0, elevesEnRetard: 0, parMois: [], parMode: {}, moisCourant: 0 }, admissions: {}, billets: 0,
+    finances: { du: 0, duADate: 0, paye: 0, reste: 0, resteADate: 0, elevesEnRetard: 0, parMois: [], parMode: {}, moisCourant: 0 }, admissions: {}, billets: 0,
   }
   const [{ count: enseignants }, { count: personnel }] = await Promise.all([
     supabase.from('enseignants').select('id', { count: 'exact', head: true }).eq('etablissement_id', site.id).eq('actif', true),
@@ -144,13 +152,16 @@ export async function indicateursSite(supabase: SupabaseClient, site: SiteGroupe
   // Finances : dû / payé / reste, encaissements par mois de l'année scolaire et par mode.
   for (const s of situations.values()) {
     r.finances.du += s.du
+    r.finances.duADate += s.duADate
     r.finances.paye += s.paye
     r.finances.reste += s.reste
-    if (s.reste > 0) r.finances.elevesEnRetard++
+    r.finances.resteADate += s.resteADate
+    if (s.resteADate > 0) r.finances.elevesEnRetard++
   }
   const debut = new Date(annee.date_debut + 'T00:00:00')
+  // 12 mois à partir du mois qui précède la rentrée (période des inscriptions).
   const mois = Array.from({ length: 12 }, (_, k) => {
-    const d = new Date(debut.getFullYear(), debut.getMonth() + k, 1)
+    const d = new Date(debut.getFullYear(), debut.getMonth() - 1 + k, 1)
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
   })
   const parMois = new Map(mois.map((m) => [m, 0]))
@@ -158,7 +169,7 @@ export async function indicateursSite(supabase: SupabaseClient, site: SiteGroupe
   const courant = new Date().toISOString().slice(0, 7)
   for (const p of paiements as { montant: number; mode: string; date_paiement: string }[]) {
     const m = p.date_paiement.slice(0, 7)
-    // Paiements anticipés (avant la rentrée) : comptés sur le premier mois.
+    // Paiements encore plus anciens : comptés sur le premier mois de la série.
     const cle = parMois.has(m) ? m : m < mois[0] ? mois[0] : null
     if (cle) parMois.set(cle, (parMois.get(cle) ?? 0) + Number(p.montant))
     parMode[p.mode] = (parMode[p.mode] ?? 0) + Number(p.montant)
@@ -199,8 +210,10 @@ export function consolider(liste: Indicateurs[]) {
     moyenne: moyennes.length ? Math.round((moyennes.reduce((s, x) => s + x.moyenne! * x.decisions, 0) / moyennes.reduce((s, x) => s + x.decisions, 0)) * 100) / 100 : null,
     heuresNJ: somme((i) => i.assiduite.heuresNJ),
     du: somme((i) => i.finances.du),
+    duADate: somme((i) => i.finances.duADate),
     paye: somme((i) => i.finances.paye),
     reste: somme((i) => i.finances.reste),
+    resteADate: somme((i) => i.finances.resteADate),
     elevesEnRetard: somme((i) => i.finances.elevesEnRetard),
     moisCourant: somme((i) => i.finances.moisCourant),
     // Les sites peuvent commencer l'année à des mois différents : alignement par rang de mois.

@@ -392,7 +392,8 @@ export default async function EleveFichePage({ params, searchParams }: { params:
               <div className="flex flex-wrap gap-2 text-xs font-semibold">
                 <span className="rounded-full bg-background px-2.5 py-1">{dict.finances.totalDu} · {situation.du.toLocaleString(loc)}</span>
                 <span className="rounded-full bg-success/10 px-2.5 py-1 text-success">{dict.finances.totalPaye} · {situation.paye.toLocaleString(loc)}</span>
-                <span className={`rounded-full px-2.5 py-1 ${situation.reste > 0 ? 'bg-danger/10 text-danger' : 'bg-success/10 text-success'}`}>{dict.finances.totalReste} · {situation.reste.toLocaleString(loc)}</span>
+                <span className={`rounded-full px-2.5 py-1 ${situation.resteADate > 0 ? 'bg-danger/10 text-danger' : 'bg-success/10 text-success'}`}>{dict.finances.resteEchu} · {situation.resteADate.toLocaleString(loc)}</span>
+                <span className="rounded-full bg-background px-2.5 py-1">{dict.finances.totalReste} · {situation.reste.toLocaleString(loc)}</span>
               </div>
             )}
           </div>

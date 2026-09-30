@@ -1,7 +1,7 @@
 import { BarresHorizontales } from '@/components/groupe/Barres'
 import { createClient } from '@/utils/supabase/server'
 import { getGroupeContext } from '@/lib/auth/getGroupeContext'
-import { consolider, indicateursGroupe, pct, type Indicateurs } from '@/lib/groupe'
+import { consolider, indicateursGroupe, pct, recouvrementADate, type Indicateurs } from '@/lib/groupe'
 import { intlLocale } from '@/lib/i18n'
 import { getDictionary, getLocale } from '@/dictionaries'
 import { SelecteurLibelle } from '../GroupeNav'
@@ -77,8 +77,10 @@ export default async function GroupeComparatifs({ searchParams }: { searchParams
       lignes: [
         { cle: 'du', libelle: m.du, valeur: (i) => i.finances.du, groupe: g.du, affichage: (v) => (v === null ? '—' : f.montant(v)), sens: null },
         { cle: 'paye', libelle: m.paye, valeur: (i) => i.finances.paye, groupe: g.paye, affichage: (v) => (v === null ? '—' : f.montant(v)), sens: 'haut' },
-        { cle: 'recouvrement', libelle: m.recouvrement, valeur: (i) => pct(i.finances.paye, i.finances.du), groupe: pct(g.paye, g.du), affichage: f.taux, sens: 'haut' },
-        { cle: 'reste', libelle: m.reste, valeur: (i) => i.finances.reste, groupe: g.reste, affichage: (v) => (v === null ? '—' : f.montant(v)), sens: 'bas' },
+        { cle: 'duADate', libelle: m.duADate, valeur: (i) => i.finances.duADate, groupe: g.duADate, affichage: (v) => (v === null ? '—' : f.montant(v)), sens: null },
+        { cle: 'recouvrement', libelle: m.recouvrement, valeur: (i) => recouvrementADate(i.finances), groupe: recouvrementADate(g), affichage: f.taux, sens: 'haut' },
+        { cle: 'resteADate', libelle: m.resteADate, valeur: (i) => i.finances.resteADate, groupe: g.resteADate, affichage: (v) => (v === null ? '—' : f.montant(v)), sens: 'bas' },
+        { cle: 'reste', libelle: m.reste, valeur: (i) => i.finances.reste, groupe: g.reste, affichage: (v) => (v === null ? '—' : f.montant(v)), sens: null },
         { cle: 'retard', libelle: m.elevesEnRetard, valeur: (i) => pct(i.finances.elevesEnRetard, i.effectif), groupe: pct(g.elevesEnRetard, g.effectif), affichage: f.taux, sens: 'bas' },
         { cle: 'recetteEleve', libelle: m.recetteParEleve, valeur: (i) => (i.effectif ? Math.round(i.finances.paye / i.effectif) : null), groupe: g.effectif ? Math.round(g.paye / g.effectif) : null, affichage: (v) => (v === null ? '—' : f.montant(v)), sens: null },
       ],
@@ -118,7 +120,7 @@ export default async function GroupeComparatifs({ searchParams }: { searchParams
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {barre(m.effectif, (i) => i.effectif, (v) => (v === null ? '—' : f.nombre(v)))}
-        {barre(m.recouvrement, (i) => pct(i.finances.paye, i.finances.du), f.taux)}
+        {barre(m.recouvrement, (i) => recouvrementADate(i.finances), f.taux)}
         {barre(m.admission, (i) => (i.resultats ? pct(i.resultats.admis, i.resultats.decisions) : null), f.taux)}
         {barre(m.moyenne, (i) => i.resultats?.moyenne ?? null, f.moyenne)}
         {barre(m.heuresNJ, (i) => ratio(i.assiduite.heuresNJ, i.effectif), un1, true)}

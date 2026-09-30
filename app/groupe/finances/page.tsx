@@ -2,7 +2,7 @@ import { BarresHorizontales, ColonnesMois, Tuile } from '@/components/groupe/Bar
 import { createClient } from '@/utils/supabase/server'
 import { getGroupeContext } from '@/lib/auth/getGroupeContext'
 import { MODES_PAIEMENT } from '@/lib/finances'
-import { consolider, indicateursGroupe, pct } from '@/lib/groupe'
+import { consolider, indicateursGroupe, pct, recouvrementADate } from '@/lib/groupe'
 import { fmt, intlLocale } from '@/lib/i18n'
 import { getDictionary, getLocale } from '@/dictionaries'
 import { SelecteurLibelle } from '../GroupeNav'
@@ -29,9 +29,9 @@ export default async function GroupeFinances({ searchParams }: { searchParams: P
   const tableaux: Tableau[] = [
     {
       titre: t.rapport.parSite,
-      colonnes: [t.site, t.mesures.effectif, t.mesures.du, t.mesures.paye, t.mesures.reste, t.mesures.recouvrement, t.mesures.elevesEnRetard, t.kpi.moisCourant],
-      lignes: indicateurs.map((i) => [i.site.nom, i.effectif, n(i.finances.du), n(i.finances.paye), n(i.finances.reste), f.taux(pct(i.finances.paye, i.finances.du)), i.finances.elevesEnRetard, n(i.finances.moisCourant)]),
-      total: [t.groupe, g.effectif, n(g.du), n(g.paye), n(g.reste), f.taux(pct(g.paye, g.du)), g.elevesEnRetard, n(g.moisCourant)],
+      colonnes: [t.site, t.mesures.effectif, t.mesures.du, t.mesures.duADate, t.mesures.paye, t.mesures.recouvrement, t.mesures.resteADate, t.mesures.reste, t.mesures.elevesEnRetard, t.kpi.moisCourant],
+      lignes: indicateurs.map((i) => [i.site.nom, i.effectif, n(i.finances.du), n(i.finances.duADate), n(i.finances.paye), f.taux(recouvrementADate(i.finances)), n(i.finances.resteADate), n(i.finances.reste), i.finances.elevesEnRetard, n(i.finances.moisCourant)]),
+      total: [t.groupe, g.effectif, n(g.du), n(g.duADate), n(g.paye), f.taux(recouvrementADate(g)), n(g.resteADate), n(g.reste), g.elevesEnRetard, n(g.moisCourant)],
     },
     {
       titre: t.rapport.parMois,
@@ -69,9 +69,9 @@ export default async function GroupeFinances({ searchParams }: { searchParams: P
       </div>
 
       <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Tuile libelle={t.mesures.du} valeur={f.compact(g.du)} detail={f.montant(g.du)} />
-        <Tuile libelle={t.mesures.paye} valeur={f.compact(g.paye)} detail={fmt(t.kpi.recouvrement, { taux: f.taux(pct(g.paye, g.du)) })} ton="bon" />
-        <Tuile libelle={t.mesures.reste} valeur={f.compact(g.reste)} detail={fmt(t.kpi.elevesEnRetard, { n: g.elevesEnRetard })} ton={g.reste > 0 ? 'alerte' : 'bon'} />
+        <Tuile libelle={t.mesures.duADate} valeur={f.compact(g.duADate)} detail={fmt(t.kpi.surAnnee, { total: f.montant(g.du) })} />
+        <Tuile libelle={t.mesures.paye} valeur={f.compact(g.paye)} detail={fmt(t.kpi.recouvrement, { taux: f.taux(recouvrementADate(g)) })} ton="bon" />
+        <Tuile libelle={t.mesures.resteADate} valeur={f.compact(g.resteADate)} detail={fmt(t.kpi.elevesEnRetard, { n: g.elevesEnRetard })} ton={g.resteADate > 0 ? 'alerte' : 'bon'} />
         <Tuile libelle={t.mesures.recetteParEleve} valeur={g.effectif ? f.compact(g.paye / g.effectif) : '—'} detail={t.rapport.moyenneEncaissee} />
       </section>
 

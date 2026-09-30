@@ -3,7 +3,7 @@ import { AlertTriangle, ChevronRight } from 'lucide-react'
 import { ColonnesMois, Tuile } from '@/components/groupe/Barres'
 import { createClient } from '@/utils/supabase/server'
 import { getGroupeContext } from '@/lib/auth/getGroupeContext'
-import { consolider, indicateursGroupe, pct } from '@/lib/groupe'
+import { consolider, indicateursGroupe, pct, recouvrementADate } from '@/lib/groupe'
 import { fmt, intlLocale } from '@/lib/i18n'
 import { getDictionary, getLocale } from '@/dictionaries'
 import { SelecteurLibelle } from './GroupeNav'
@@ -26,13 +26,13 @@ export default async function GroupeSynthese({ searchParams }: { searchParams: P
 
   const { indicateurs, libelles, libelle } = await indicateursGroupe(supabase, groupe.sites, annee ?? null)
   const g = consolider(indicateurs)
-  const recouvrement = pct(g.paye, g.du)
+  const recouvrement = recouvrementADate(g)
   const anneeResultats = indicateurs.find((i) => i.resultats)?.resultats?.annee ?? null
 
   const alertes: { site: string; texte: string }[] = []
   for (const i of indicateurs) {
     if (i.acces !== 'complet') alertes.push({ site: i.site.nom, texte: t.alertes.abonnement[i.acces as 'lecture_seule' | 'suspendu'] ?? t.alertes.abonnement.lecture_seule })
-    const r = pct(i.finances.paye, i.finances.du)
+    const r = recouvrementADate(i.finances)
     if (r !== null && r < RECOUVREMENT_MIN) alertes.push({ site: i.site.nom, texte: fmt(t.alertes.recouvrement, { taux: f.taux(r), seuil: RECOUVREMENT_MIN }) })
     const hNJ = i.effectif ? i.assiduite.heuresNJ / i.effectif : 0
     if (hNJ > HEURES_NJ_MAX) alertes.push({ site: i.site.nom, texte: fmt(t.alertes.absenteisme, { h: hNJ.toLocaleString(loc, { maximumFractionDigits: 1 }) }) })
@@ -56,7 +56,7 @@ export default async function GroupeSynthese({ searchParams }: { searchParams: P
         <Tuile libelle={t.kpi.eleves} valeur={f.nombre(g.effectif)} detail={fmt(t.kpi.filles, { taux: f.taux(pct(g.filles, g.effectif)) })} />
         <Tuile libelle={t.kpi.enseignants} valeur={f.nombre(g.enseignants)} detail={fmt(t.kpi.parEnseignant, { n: g.enseignants ? (g.effectif / g.enseignants).toLocaleString(loc, { maximumFractionDigits: 1 }) : '—' })} />
         <Tuile libelle={t.kpi.encaisse} valeur={f.compact(g.paye)} detail={fmt(t.kpi.recouvrement, { taux: f.taux(recouvrement) })} ton={recouvrement !== null && recouvrement < RECOUVREMENT_MIN ? 'alerte' : 'bon'} />
-        <Tuile libelle={t.kpi.reste} valeur={f.compact(g.reste)} detail={fmt(t.kpi.elevesEnRetard, { n: g.elevesEnRetard })} ton={g.reste > 0 ? 'alerte' : 'bon'} />
+        <Tuile libelle={t.kpi.reste} valeur={f.compact(g.resteADate)} detail={fmt(t.kpi.elevesEnRetard, { n: g.elevesEnRetard })} ton={g.resteADate > 0 ? 'alerte' : 'bon'} />
         <Tuile libelle={t.kpi.admission} valeur={f.taux(pct(g.admis, g.decisions))} detail={anneeResultats ? fmt(t.kpi.resultatsDe, { annee: anneeResultats }) : t.kpi.pasDeResultats} />
         <Tuile libelle={t.kpi.moyenne} valeur={f.moyenne(g.moyenne)} detail={t.kpi.surVingt} />
         <Tuile libelle={t.kpi.classes} valeur={f.nombre(g.classes)} detail={fmt(t.kpi.parClasse, { n: g.classes ? (g.effectif / g.classes).toLocaleString(loc, { maximumFractionDigits: 1 }) : '—' })} />
@@ -83,7 +83,7 @@ export default async function GroupeSynthese({ searchParams }: { searchParams: P
         <h2 className="mb-3 font-heading text-lg font-semibold text-foreground">{t.sites}</h2>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {indicateurs.map((i) => {
-            const r = pct(i.finances.paye, i.finances.du)
+            const r = recouvrementADate(i.finances)
             return (
               <Link key={i.site.id} href={`/groupe/etablissements/${i.site.id}${libelle ? `?annee=${encodeURIComponent(libelle)}` : ''}`} className="group rounded-2xl border border-surface-border bg-surface p-5 shadow-xs transition hover:border-primary/40 hover:shadow-md">
                 <div className="flex items-start gap-3">
@@ -102,7 +102,7 @@ export default async function GroupeSynthese({ searchParams }: { searchParams: P
                 <div className="mt-3 h-2 rounded-full bg-background" title={`${t.kpi.recouvrementCourt} · ${f.taux(r)}`}>
                   <div className="h-full rounded-full bg-primary" style={{ width: `${Math.min(100, r ?? 0)}%` }} />
                 </div>
-                <p className="mt-2 text-xs text-foreground-muted tabular-nums">{f.montant(i.finances.paye)} / {f.montant(i.finances.du)}</p>
+                <p className="mt-2 text-xs text-foreground-muted tabular-nums">{fmt(t.kpi.payeSurEchu, { paye: f.montant(i.finances.paye), echu: f.montant(i.finances.duADate) })}</p>
               </Link>
             )
           })}

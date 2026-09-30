@@ -106,13 +106,14 @@ export default async function ServicesPage({ searchParams }: { searchParams: Pro
       supabase.from('frais_scolarite').select('libelle, periodicite').eq('annee_id', anneeId),
       supabase.from('services').select('nom').eq('actif', true),
     ])
-    const totaux = [...situations.values()].reduce((a, x) => ({ du: a.du + x.du, paye: a.paye + x.paye, reste: a.reste + x.reste }), { du: 0, paye: 0, reste: 0 })
-    const impayes = [...situations.entries()].filter(([, x]) => x.reste > 0).sort((a, b) => b[1].reste - a[1].reste).slice(0, 12)
+    const totaux = [...situations.values()].reduce((a, x) => ({ du: a.du + x.du, duADate: a.duADate + x.duADate, paye: a.paye + x.paye, resteADate: a.resteADate + x.resteADate }), { du: 0, duADate: 0, paye: 0, resteADate: 0 })
+    // Retards : seulement ce qui est déjà échu (mensualités écoulées, frais passés à échéance).
+    const impayes = [...situations.entries()].filter(([, x]) => x.resteADate > 0).sort((a, b) => b[1].resteADate - a[1].resteADate).slice(0, 12)
     const n = (v: number) => `${v.toLocaleString(loc)} ${dict.abonnement.fcfa}`
     contenu = (
       <div className="space-y-6">
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          {[{ l: t.totalDu, v: totaux.du, c: 'text-foreground' }, { l: t.totalPaye, v: totaux.paye, c: 'text-success' }, { l: t.totalReste, v: totaux.reste, c: 'text-danger' }].map((k) => (
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {[{ l: t.totalDu, v: totaux.du, c: 'text-foreground' }, { l: t.echuADate, v: totaux.duADate, c: 'text-foreground' }, { l: t.totalPaye, v: totaux.paye, c: 'text-success' }, { l: t.resteEchu, v: totaux.resteADate, c: 'text-danger' }].map((k) => (
             <div key={k.l} className={`${cardClass} p-5`}>
               <p className="text-sm text-foreground-muted">{k.l}</p>
               <p className={`mt-1 font-heading text-2xl font-semibold tabular-nums ${k.c}`}>{n(k.v)}</p>
@@ -126,7 +127,7 @@ export default async function ServicesPage({ searchParams }: { searchParams: Pro
               {impayes.map(([id, x]) => (
                 <li key={id} className="flex items-center gap-3 px-5 py-2.5 text-sm">
                   <Link href={`/eleves/${id}?annee=${anneeId}`} className="min-w-0 flex-1 truncate font-medium hover:text-primary">{nomEleve.get(id)?.nom} <span className="text-xs text-foreground-muted">· {nomEleve.get(id)?.classe}</span></Link>
-                  <span className="font-semibold tabular-nums text-danger">{n(x.reste)}</span>
+                  <span className="font-semibold tabular-nums text-danger">{n(x.resteADate)}</span>
                 </li>
               ))}
               {impayes.length === 0 && <li className="px-5 py-8 text-center text-sm text-foreground-muted">{t.aucunImpaye}</li>}

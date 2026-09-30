@@ -44,7 +44,7 @@ export default async function PortailAccueil() {
         {famille.enfants.map((e) => {
           const nbNotes = (notes ?? []).filter((n) => n.eleve_id === e.id).length
           const heures = (absences ?? []).filter((a) => a.eleve_id === e.id && a.annee_id === e.anneeId).reduce((s, a) => s + Number(a.duree), 0)
-          const du = reste.get(e.id)?.reste ?? 0
+          const du = reste.get(e.id)?.resteADate ?? 0
           return (
             <Link key={e.id} href={`/portail/${e.id}`} className={`${cardClass} group block p-5 transition hover:border-primary/40 hover:shadow-md`}>
               <div className="flex items-center gap-3">

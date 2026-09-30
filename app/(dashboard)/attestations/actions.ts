@@ -103,7 +103,8 @@ export async function emettreDocument(
   let reste = 0
   if (t === 'exeat') {
     const situation = (await situationsFinancieres(supabase, inscription.annee_id, [eleveId])).get(eleveId)
-    reste = situation?.reste ?? 0
+    // Ce qui est déjà échu : un élève qui part ne doit pas le reste de l'année.
+    reste = situation?.resteADate ?? 0
     if (reste > 0 && !forcer) return { impaye: reste }
   }
 

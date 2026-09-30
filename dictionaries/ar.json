@@ -895,7 +895,7 @@
     "totalDu": "المستحق",
     "totalPaye": "المدفوع",
     "totalReste": "الباقي",
-    "impayes": "أكبر المبالغ غير المسددة",
+    "impayes": "التأخرات في الأداء (مبالغ مستحقة)",
     "aucunImpaye": "لا توجد مبالغ غير مسددة.",
     "derniersPaiements": "آخر المدفوعات",
     "situation": "الوضعية المالية {annee}",
@@ -914,7 +914,9 @@
     },
     "montantMensuel": "المبلغ الشهري",
     "premiereEcheance": "أول استحقاق",
-    "aidePortee": "بالنسبة للتسمية نفسها، يحل المبلغ المحدد لمستوى قسم (CI، 5e، 2nde…) محل مبلغ السلك، الذي يحل محل مبلغ كل المستويات."
+    "aidePortee": "بالنسبة للتسمية نفسها، يحل المبلغ المحدد لمستوى قسم (CI، 5e، 2nde…) محل مبلغ السلك، الذي يحل محل مبلغ كل المستويات.",
+    "echuADate": "المستحق إلى اليوم",
+    "resteEchu": "المتأخر المستحق"
   },
   "documents": {
     "title": "الشهادات والإفادات",
@@ -1191,9 +1193,9 @@
       "enseignants": "الأساتذة",
       "parEnseignant": "{n} تلميذ لكل أستاذ",
       "encaisse": "المحصَّل",
-      "recouvrement": "نسبة التحصيل {taux}",
-      "reste": "المتبقي للتحصيل",
-      "elevesEnRetard": "{n} تلميذ عليه مبلغ متبقٍّ",
+      "recouvrement": "نسبة التحصيل إلى اليوم {taux}",
+      "reste": "المتأخر المستحق",
+      "elevesEnRetard": "{n} تلميذ متأخر في الأداء",
       "admission": "نسبة النجاح",
       "resultatsDe": "نتائج {annee}",
       "pasDeResultats": "لا توجد نتائج بعد",
@@ -1203,7 +1205,9 @@
       "parClasse": "{n} تلميذ في كل قسم",
       "moisCourant": "المحصَّل هذا الشهر",
       "admissionCourt": "النجاح",
-      "recouvrementCourt": "التحصيل"
+      "recouvrementCourt": "التحصيل",
+      "payeSurEchu": "{paye} مؤداة من أصل {echu} مستحقة",
+      "surAnnee": "من أصل {total} للسنة"
     },
     "encaissementsMensuels": "التحصيلات الشهرية",
     "aucunEncaissement": "لا توجد تحصيلات خلال الفترة.",
@@ -1228,14 +1232,16 @@
       "heuresNJ": "ساعات الغياب غير المبرر لكل تلميذ",
       "retards": "التأخرات لكل تلميذ",
       "billets": "الأذونات المسلَّمة",
-      "du": "المنتظر",
+      "du": "المنتظر للسنة",
       "paye": "المحصَّل",
-      "recouvrement": "نسبة التحصيل",
-      "reste": "المتبقي للتحصيل",
+      "recouvrement": "نسبة التحصيل إلى اليوم",
+      "reste": "المتبقي للسنة",
       "elevesEnRetard": "تلاميذ متأخرون في الأداء",
       "recetteParEleve": "المحصَّل لكل تلميذ",
       "candidatures": "طلبات الالتحاق",
-      "candidatsInscrits": "مترشحون مسجَّلون"
+      "candidatsInscrits": "مترشحون مسجَّلون",
+      "duADate": "المستحق إلى اليوم",
+      "resteADate": "المتأخر المستحق"
     },
     "sections": {
       "effectifs": "التلاميذ والتأطير",

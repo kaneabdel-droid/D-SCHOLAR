@@ -223,13 +223,13 @@ export default async function PortailEleve({ params, searchParams }: { params: P
       supabase.from('paiements_eleves').select('id, libelle, montant, date_paiement, numero_recu').eq('eleve_id', eleveId).eq('annee_id', enfant.anneeId).order('date_paiement', { ascending: false }),
       supabase.from('souscriptions_services').select('id, details, services(nom)').eq('eleve_id', eleveId).eq('annee_id', enfant.anneeId),
     ])
-    const s = situations.get(eleveId) ?? { du: 0, paye: 0, reste: 0 }
+    const s = situations.get(eleveId) ?? { du: 0, duADate: 0, paye: 0, reste: 0, resteADate: 0 }
     const f = dict.finances
     const m = (v: number) => `${v.toLocaleString(loc)} ${dict.abonnement.fcfa}`
     contenu = (
       <div className="space-y-4">
         <div className="grid grid-cols-3 gap-2">
-          {[{ l: f.totalDu, v: s.du, c: 'text-foreground' }, { l: f.totalPaye, v: s.paye, c: 'text-success' }, { l: f.totalReste, v: s.reste, c: s.reste > 0 ? 'text-danger' : 'text-success' }].map((k) => (
+          {[{ l: f.totalDu, v: s.du, c: 'text-foreground' }, { l: f.totalPaye, v: s.paye, c: 'text-success' }, { l: f.resteEchu, v: s.resteADate, c: s.resteADate > 0 ? 'text-danger' : 'text-success' }].map((k) => (
             <div key={k.l} className={`${cardClass} p-3 sm:p-4`}>
               <p className="text-xs text-foreground-muted">{k.l}</p>
               <p className={`mt-1 font-heading text-base font-semibold tabular-nums sm:text-xl ${k.c}`}>{m(k.v)}</p>

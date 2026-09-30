@@ -895,7 +895,7 @@
     "totalDu": "Due",
     "totalPaye": "Paid",
     "totalReste": "Balance",
-    "impayes": "Largest outstanding balances",
+    "impayes": "Late payments (amounts due)",
     "aucunImpaye": "No outstanding balance.",
     "derniersPaiements": "Latest payments",
     "situation": "Financial status {annee}",
@@ -914,7 +914,9 @@
     },
     "montantMensuel": "Amount per month",
     "premiereEcheance": "First due date",
-    "aidePortee": "For the same label, an amount set for a class level (CI, 5e, 2nde…) overrides the cycle amount, which overrides the all-levels amount."
+    "aidePortee": "For the same label, an amount set for a class level (CI, 5e, 2nde…) overrides the cycle amount, which overrides the all-levels amount.",
+    "echuADate": "Due to date",
+    "resteEchu": "Overdue"
   },
   "documents": {
     "title": "Certificates",
@@ -1191,9 +1193,9 @@
       "enseignants": "Teachers",
       "parEnseignant": "{n} students per teacher",
       "encaisse": "Collected",
-      "recouvrement": "collection rate {taux}",
-      "reste": "Outstanding",
-      "elevesEnRetard": "{n} students with a balance due",
+      "recouvrement": "collection to date {taux}",
+      "reste": "Overdue",
+      "elevesEnRetard": "{n} students behind on payments",
       "admission": "Promotion rate",
       "resultatsDe": "{annee} results",
       "pasDeResultats": "no results yet",
@@ -1203,7 +1205,9 @@
       "parClasse": "{n} students per class",
       "moisCourant": "Collected this month",
       "admissionCourt": "Promotion",
-      "recouvrementCourt": "Collection"
+      "recouvrementCourt": "Collection",
+      "payeSurEchu": "{paye} paid out of {echu} due",
+      "surAnnee": "out of {total} for the year"
     },
     "encaissementsMensuels": "Monthly collections",
     "aucunEncaissement": "No payment over the period.",
@@ -1228,14 +1232,16 @@
       "heuresNJ": "Unexcused hours per student",
       "retards": "Late arrivals per student",
       "billets": "Slips issued",
-      "du": "Expected",
+      "du": "Expected for the year",
       "paye": "Collected",
-      "recouvrement": "Collection rate",
-      "reste": "Outstanding",
+      "recouvrement": "Collection rate to date",
+      "reste": "Remaining for the year",
       "elevesEnRetard": "Students behind on payments",
       "recetteParEleve": "Collected per student",
       "candidatures": "Applications",
-      "candidatsInscrits": "Applicants enrolled"
+      "candidatsInscrits": "Applicants enrolled",
+      "duADate": "Due to date",
+      "resteADate": "Overdue"
     },
     "sections": {
       "effectifs": "Enrolment and staffing",

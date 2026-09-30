@@ -895,7 +895,7 @@
     "totalDu": "Dû",
     "totalPaye": "Payé",
     "totalReste": "Reste à payer",
-    "impayes": "Plus gros restes à payer",
+    "impayes": "Retards de paiement (montants échus)",
     "aucunImpaye": "Aucun impayé.",
     "derniersPaiements": "Derniers paiements",
     "situation": "Situation financière {annee}",
@@ -914,7 +914,9 @@
     },
     "montantMensuel": "Montant par mois",
     "premiereEcheance": "1re échéance",
-    "aidePortee": "Un montant fixé pour un niveau de classe (CI, 5e, 2nde…) remplace celui du cycle, qui remplace celui de tous les niveaux, à libellé identique."
+    "aidePortee": "Un montant fixé pour un niveau de classe (CI, 5e, 2nde…) remplace celui du cycle, qui remplace celui de tous les niveaux, à libellé identique.",
+    "echuADate": "Échu à ce jour",
+    "resteEchu": "Reste échu"
   },
   "documents": {
     "title": "Attestations & certificats",
@@ -1191,9 +1193,9 @@
       "enseignants": "Enseignants",
       "parEnseignant": "{n} élèves par enseignant",
       "encaisse": "Encaissé",
-      "recouvrement": "recouvrement {taux}",
-      "reste": "Reste à recouvrer",
-      "elevesEnRetard": "{n} élèves avec un reste à payer",
+      "recouvrement": "recouvrement à date {taux}",
+      "reste": "Reste échu",
+      "elevesEnRetard": "{n} élèves en retard de paiement",
       "admission": "Taux d'admission",
       "resultatsDe": "résultats {annee}",
       "pasDeResultats": "pas encore de résultats",
@@ -1203,7 +1205,9 @@
       "parClasse": "{n} élèves par classe",
       "moisCourant": "Encaissé ce mois",
       "admissionCourt": "Admission",
-      "recouvrementCourt": "Recouvrement"
+      "recouvrementCourt": "Recouvrement",
+      "payeSurEchu": "{paye} réglés sur {echu} échus",
+      "surAnnee": "sur {total} pour l'année"
     },
     "encaissementsMensuels": "Encaissements mensuels",
     "aucunEncaissement": "Aucun encaissement sur la période.",
@@ -1228,14 +1232,16 @@
       "heuresNJ": "Heures non justifiées par élève",
       "retards": "Retards par élève",
       "billets": "Billets délivrés",
-      "du": "Attendu",
+      "du": "Attendu sur l'année",
       "paye": "Encaissé",
-      "recouvrement": "Taux de recouvrement",
-      "reste": "Reste à recouvrer",
+      "recouvrement": "Recouvrement à date",
+      "reste": "Reste sur l'année",
       "elevesEnRetard": "Élèves en retard de paiement",
       "recetteParEleve": "Encaissé par élève",
       "candidatures": "Candidatures",
-      "candidatsInscrits": "Candidats inscrits"
+      "candidatsInscrits": "Candidats inscrits",
+      "duADate": "Échu à date",
+      "resteADate": "Reste échu"
     },
     "sections": {
       "effectifs": "Effectifs et encadrement",

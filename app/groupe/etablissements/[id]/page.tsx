@@ -6,7 +6,7 @@ import { inputClass } from '@/components/ui/styles'
 import { createClient } from '@/utils/supabase/server'
 import { getGroupeContext } from '@/lib/auth/getGroupeContext'
 import { situationsFinancieres } from '@/lib/finances'
-import { anneesDesSites, indicateursSite, pct } from '@/lib/groupe'
+import { anneesDesSites, indicateursSite, pct, recouvrementADate } from '@/lib/groupe'
 import { lireTout } from '@/lib/lireTout'
 import { un } from '@/lib/scolarite'
 import { fmt, intlLocale } from '@/lib/i18n'
@@ -50,7 +50,7 @@ export default async function GroupeSite({ params, searchParams }: { params: Pro
         <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           <Tuile libelle={t.kpi.eleves} valeur={f.nombre(i.effectif)} detail={fmt(t.kpi.filles, { taux: f.taux(pct(i.filles, i.effectif)) })} />
           <Tuile libelle={t.kpi.enseignants} valeur={f.nombre(i.enseignants)} detail={fmt(t.kpi.parClasse, { n: i.classes ? (i.effectif / i.classes).toLocaleString(loc, { maximumFractionDigits: 1 }) : '—' })} />
-          <Tuile libelle={t.kpi.encaisse} valeur={f.compact(i.finances.paye)} detail={fmt(t.kpi.recouvrement, { taux: f.taux(pct(i.finances.paye, i.finances.du)) })} />
+          <Tuile libelle={t.kpi.encaisse} valeur={f.compact(i.finances.paye)} detail={fmt(t.kpi.recouvrement, { taux: f.taux(recouvrementADate(i.finances)) })} />
           <Tuile libelle={t.kpi.admission} valeur={f.taux(i.resultats ? pct(i.resultats.admis, i.resultats.decisions) : null)} detail={i.resultats ? fmt(t.kpi.resultatsDe, { annee: i.resultats.annee }) : t.kpi.pasDeResultats} />
         </section>
         <div className="grid gap-4 lg:grid-cols-2">
@@ -80,7 +80,7 @@ export default async function GroupeSite({ params, searchParams }: { params: Pro
           const eleves = insc.filter((i) => i.classe_id === c.id)
           const ds = eleves.map((e) => dec.get(e.id)).filter((d) => d)
           const moy = ds.map((d) => d!.moyenne_annuelle).filter((m): m is number => m !== null).map(Number)
-          const fin = eleves.reduce((s, e) => { const x = situations.get(e.eleve_id); return x ? { du: s.du + x.du, paye: s.paye + x.paye, reste: s.reste + x.reste, retard: s.retard + (x.reste > 0 ? 1 : 0) } : s }, { du: 0, paye: 0, reste: 0, retard: 0 })
+          const fin = eleves.reduce((s, e) => { const x = situations.get(e.eleve_id); return x ? { du: s.du + x.du, duADate: s.duADate + x.duADate, paye: s.paye + x.paye, reste: s.reste + x.reste, resteADate: s.resteADate + x.resteADate, retard: s.retard + (x.resteADate > 0 ? 1 : 0) } : s }, { du: 0, duADate: 0, paye: 0, reste: 0, resteADate: 0, retard: 0 })
           return {
             ...c,
             ordre: un(c.niveaux)?.ordre ?? 0,
@@ -121,15 +121,15 @@ export default async function GroupeSite({ params, searchParams }: { params: Pro
       } else {
         const impayes = insc
           .map((i) => ({ i, s: situations.get(i.eleve_id), classe: lignes.find((c) => c.id === i.classe_id)?.nom ?? '' }))
-          .filter((x) => (x.s?.reste ?? 0) > 0)
-          .sort((a, b) => (b.s!.reste) - (a.s!.reste))
+          .filter((x) => (x.s?.resteADate ?? 0) > 0)
+          .sort((a, b) => (b.s!.resteADate) - (a.s!.resteADate))
           .slice(0, 25)
         contenu = (
           <div className="space-y-6">
             <div className="overflow-x-auto rounded-2xl border border-surface-border bg-surface shadow-xs">
               <table className="min-w-full text-sm">
                 <thead className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">
-                  <tr>{[dict.eleves.classe, t.mesures.effectif, t.mesures.du, t.mesures.paye, t.mesures.reste, t.mesures.recouvrement, t.mesures.elevesEnRetard].map((c, k) => <th key={c} className={`whitespace-nowrap px-4 py-3 ${k === 0 ? 'text-start' : 'text-end'}`}>{c}</th>)}</tr>
+                  <tr>{[dict.eleves.classe, t.mesures.effectif, t.mesures.du, t.mesures.duADate, t.mesures.paye, t.mesures.resteADate, t.mesures.recouvrement, t.mesures.elevesEnRetard].map((c, k) => <th key={c} className={`whitespace-nowrap px-4 py-3 ${k === 0 ? 'text-start' : 'text-end'}`}>{c}</th>)}</tr>
                 </thead>
                 <tbody className="divide-y divide-surface-border">
                   {lignes.map((c) => (
@@ -137,9 +137,10 @@ export default async function GroupeSite({ params, searchParams }: { params: Pro
                       <td className="px-4 py-2.5 font-medium text-foreground">{c.nom}</td>
                       <td className="px-4 py-2.5 text-end tabular-nums">{c.effectif}</td>
                       <td className="whitespace-nowrap px-4 py-2.5 text-end tabular-nums">{f.nombre(c.fin.du)}</td>
+                      <td className="whitespace-nowrap px-4 py-2.5 text-end tabular-nums">{f.nombre(c.fin.duADate)}</td>
                       <td className="whitespace-nowrap px-4 py-2.5 text-end tabular-nums">{f.nombre(c.fin.paye)}</td>
-                      <td className={`whitespace-nowrap px-4 py-2.5 text-end tabular-nums ${c.fin.reste > 0 ? 'text-danger' : ''}`}>{f.nombre(c.fin.reste)}</td>
-                      <td className="px-4 py-2.5 text-end tabular-nums">{f.taux(pct(c.fin.paye, c.fin.du))}</td>
+                      <td className={`whitespace-nowrap px-4 py-2.5 text-end tabular-nums ${c.fin.resteADate > 0 ? 'text-danger' : ''}`}>{f.nombre(c.fin.resteADate)}</td>
+                      <td className="px-4 py-2.5 text-end tabular-nums">{f.taux(recouvrementADate(c.fin))}</td>
                       <td className="px-4 py-2.5 text-end tabular-nums">{c.fin.retard}</td>
                     </tr>
                   ))}
@@ -152,7 +153,7 @@ export default async function GroupeSite({ params, searchParams }: { params: Pro
                 {impayes.map(({ i, s, classe }) => (
                   <li key={i.id} className="flex items-center gap-3 px-5 py-2.5 text-sm">
                     <span className="min-w-0 flex-1 truncate">{un(i.eleves)?.nom} {un(i.eleves)?.prenom} <span className="text-xs text-foreground-muted">· {classe} · <span className="font-mono">{un(i.eleves)?.matricule}</span></span></span>
-                    <span className="font-semibold tabular-nums text-danger">{f.montant(s!.reste)}</span>
+                    <span className="font-semibold tabular-nums text-danger">{f.montant(s!.resteADate)}</span>
                   </li>
                 ))}
                 {impayes.length === 0 && <li className="px-5 py-8 text-center text-sm text-foreground-muted">{dict.finances.aucunImpaye}</li>}
@@ -191,12 +192,12 @@ export default async function GroupeSite({ params, searchParams }: { params: Pro
         <div className="overflow-x-auto rounded-2xl border border-surface-border bg-surface shadow-xs">
           <table className="min-w-full text-sm">
             <thead className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">
-              <tr>{[dict.eleves.matricule, dict.eleves.eleve, dict.eleves.classe, t.statutInscription, t.heuresNJ, t.mesures.reste].map((c, k) => <th key={c} className={`whitespace-nowrap px-4 py-3 ${k < 4 ? 'text-start' : 'text-end'}`}>{c}</th>)}</tr>
+              <tr>{[dict.eleves.matricule, dict.eleves.eleve, dict.eleves.classe, t.statutInscription, t.heuresNJ, t.mesures.resteADate].map((c, k) => <th key={c} className={`whitespace-nowrap px-4 py-3 ${k < 4 ? 'text-start' : 'text-end'}`}>{c}</th>)}</tr>
             </thead>
             <tbody className="divide-y divide-surface-border">
               {((data ?? []) as unknown as L[]).map((l) => {
                 const e = un(l.eleves)
-                const reste = situations.get(l.eleve_id)?.reste ?? 0
+                const reste = situations.get(l.eleve_id)?.resteADate ?? 0
                 return (
                   <tr key={l.id}>
                     <td className="whitespace-nowrap px-4 py-2.5 font-mono text-xs">{e?.matricule}</td>
