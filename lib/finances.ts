@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { un } from '@/lib/scolarite'
+import { lireTout } from '@/lib/lireTout'
 
 // Nombre d'échéances d'un service sur une année scolaire (9 mois de cours).
 export const OCCURRENCES: Record<string, number> = { unique: 1, annuel: 1, trimestriel: 3, mensuel: 9 }
@@ -29,39 +30,41 @@ export function fraisDus(frais: Frais[], niveauId: string | null | undefined, cy
 }
 
 // Situation financière des élèves d'une année : frais de scolarité (communs,
-// du cycle ou du niveau) + services souscrits, moins les paiements.
+// du cycle ou du niveau) + services souscrits, moins les paiements. Le nombre
+// de mensualités est celui de l'établissement de l'année (vaut aussi pour la
+// vue groupe, qui lit plusieurs établissements).
 export async function situationsFinancieres(supabase: SupabaseClient, anneeId: string, eleveIds?: string[]) {
-  let qInsc = supabase.from('inscriptions').select('eleve_id, classes(niveau_id, niveaux(cycle))').eq('annee_id', anneeId)
-  let qSous = supabase.from('souscriptions_services').select('eleve_id, services(tarif, periodicite)').eq('annee_id', anneeId)
-  let qPaie = supabase.from('paiements_eleves').select('eleve_id, montant').eq('annee_id', anneeId)
-  if (eleveIds) {
-    qInsc = qInsc.in('eleve_id', eleveIds)
-    qSous = qSous.in('eleve_id', eleveIds)
-    qPaie = qPaie.in('eleve_id', eleveIds)
-  }
-  const [{ data: inscriptions }, { data: frais }, { data: souscriptions }, { data: paiements }, { data: etab }] = await Promise.all([
-    qInsc,
+  const [inscriptions, { data: frais }, souscriptions, paiements, { data: annee }] = await Promise.all([
+    lireTout((de, a) => {
+      const q = supabase.from('inscriptions').select('eleve_id, classes(niveau_id, niveaux(cycle))').eq('annee_id', anneeId)
+      return (eleveIds ? q.in('eleve_id', eleveIds) : q).order('id').range(de, a)
+    }),
     supabase.from('frais_scolarite').select('libelle, montant, periodicite, niveau_id, cycle').eq('annee_id', anneeId),
-    qSous,
-    qPaie,
-    // RLS : l'établissement du lecteur (personnel ou famille).
-    supabase.from('etablissements').select('mois_scolarite').limit(1).maybeSingle(),
+    lireTout((de, a) => {
+      const q = supabase.from('souscriptions_services').select('eleve_id, services(tarif, periodicite)').eq('annee_id', anneeId)
+      return (eleveIds ? q.in('eleve_id', eleveIds) : q).order('id').range(de, a)
+    }),
+    lireTout((de, a) => {
+      const q = supabase.from('paiements_eleves').select('eleve_id, montant').eq('annee_id', anneeId)
+      return (eleveIds ? q.in('eleve_id', eleveIds) : q).order('id').range(de, a)
+    }),
+    supabase.from('annees_scolaires').select('etablissements(mois_scolarite)').eq('id', anneeId).maybeSingle(),
   ])
-  const mois = Number(etab?.mois_scolarite ?? 9)
+  const mois = Number(un(annee?.etablissements as unknown as { mois_scolarite: number } | null)?.mois_scolarite ?? 9)
 
   const situations = new Map<string, Situation>()
   type Insc = { eleve_id: string; classes: { niveau_id: string; niveaux: { cycle: string } | null } | null }
-  for (const i of (inscriptions ?? []) as unknown as Insc[]) {
+  for (const i of inscriptions as unknown as Insc[]) {
     const classe = un(i.classes)
     const du = fraisDus((frais ?? []) as Frais[], classe?.niveau_id, un(classe?.niveaux)?.cycle, mois)
     situations.set(i.eleve_id, { du, paye: 0, reste: 0 })
   }
-  for (const s of (souscriptions ?? []) as unknown as { eleve_id: string; services: { tarif: number; periodicite: string } | null }[]) {
+  for (const s of souscriptions as unknown as { eleve_id: string; services: { tarif: number; periodicite: string } | null }[]) {
     const sv = un(s.services)
     const cur = situations.get(s.eleve_id)
     if (cur && sv) cur.du += Number(sv.tarif) * (OCCURRENCES[sv.periodicite] ?? 1)
   }
-  for (const p of paiements ?? []) {
+  for (const p of paiements as { eleve_id: string; montant: number }[]) {
     const cur = situations.get(p.eleve_id)
     if (cur) cur.paye += Number(p.montant)
   }

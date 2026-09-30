@@ -736,6 +736,10 @@
     "parent": {
       "titre": "Parent",
       "desc": "Mme Mariama Diagne suit ses deux enfants : notes et bulletins publiés, emplois du temps, absences, paiements et annonces."
+    },
+    "dg": {
+      "titre": "Directeur général",
+      "desc": "Le groupe Les Palmiers et ses 3 sites (Dakar, Thiès, Saint-Louis) : synthèse, comparatifs entre établissements et rapport financier."
     }
   },
   "tarifs": {
@@ -1156,5 +1160,146 @@
     "visaInfirmerie": "Visa du service de santé",
     "reimprimer": "Réimprimer",
     "confirmSuppression": "Supprimer ce billet ? Un retard inscrit dans l'assiduité reste enregistré."
+  },
+  "groupe": {
+    "roles": {
+      "proprietaire": "Propriétaire",
+      "dg": "Directeur général"
+    },
+    "lectureSeule": "consultation",
+    "onglets": {
+      "synthese": "Synthèse",
+      "comparatifs": "Comparatifs",
+      "finances": "Rapport financier",
+      "etablissements": "Établissements"
+    },
+    "alertes": {
+      "titre": "Points d'attention",
+      "abonnement": {
+        "lecture_seule": "abonnement en retard : le site est en lecture seule",
+        "suspendu": "abonnement suspendu"
+      },
+      "recouvrement": "recouvrement de {taux}, sous l'objectif de {seuil} %",
+      "absenteisme": "{h} h d'absence non justifiée par élève"
+    },
+    "aucunSite": "Aucun établissement n'est encore rattaché au groupe.",
+    "syntheseTitre": "Synthèse du groupe",
+    "syntheseSousTitre": "{n} établissements · chiffres consolidés et situation de chaque site.",
+    "kpi": {
+      "eleves": "Élèves",
+      "filles": "{taux} de filles",
+      "enseignants": "Enseignants",
+      "parEnseignant": "{n} élèves par enseignant",
+      "encaisse": "Encaissé",
+      "recouvrement": "recouvrement {taux}",
+      "reste": "Reste à recouvrer",
+      "elevesEnRetard": "{n} élèves avec un reste à payer",
+      "admission": "Taux d'admission",
+      "resultatsDe": "résultats {annee}",
+      "pasDeResultats": "pas encore de résultats",
+      "moyenne": "Moyenne générale",
+      "surVingt": "sur 20, toutes classes",
+      "classes": "Classes",
+      "parClasse": "{n} élèves par classe",
+      "moisCourant": "Encaissé ce mois",
+      "admissionCourt": "Admission",
+      "recouvrementCourt": "Recouvrement"
+    },
+    "encaissementsMensuels": "Encaissements mensuels",
+    "aucunEncaissement": "Aucun encaissement sur la période.",
+    "sites": "Établissements",
+    "accesLibelle": {
+      "complet": "Abonnement à jour",
+      "lecture_seule": "Lecture seule",
+      "suspendu": "Suspendu"
+    },
+    "mesures": {
+      "effectif": "Effectif",
+      "filles": "Part de filles",
+      "nouveaux": "Nouveaux élèves",
+      "classes": "Classes",
+      "parClasse": "Élèves par classe",
+      "enseignants": "Enseignants",
+      "parEnseignant": "Élèves par enseignant",
+      "admission": "Taux d'admission",
+      "redoublement": "Taux de redoublement",
+      "moyenne": "Moyenne générale",
+      "reussite": "Réussite",
+      "heuresNJ": "Heures non justifiées par élève",
+      "retards": "Retards par élève",
+      "billets": "Billets délivrés",
+      "du": "Attendu",
+      "paye": "Encaissé",
+      "recouvrement": "Taux de recouvrement",
+      "reste": "Reste à recouvrer",
+      "elevesEnRetard": "Élèves en retard de paiement",
+      "recetteParEleve": "Encaissé par élève",
+      "candidatures": "Candidatures",
+      "candidatsInscrits": "Candidats inscrits"
+    },
+    "sections": {
+      "effectifs": "Effectifs et encadrement",
+      "resultats": "Résultats",
+      "assiduite": "Assiduité",
+      "finances": "Finances",
+      "admissions": "Admissions"
+    },
+    "aucuneDonnee": "Pas de données pour cette année.",
+    "comparatifsTitre": "Comparatifs entre établissements",
+    "comparatifsSousTitre": "Les mêmes indicateurs, site par site, et la valeur du groupe.",
+    "indicateur": "Indicateur",
+    "groupe": "Groupe",
+    "meilleur": "Meilleur site",
+    "plusFaible": "Site le plus faible",
+    "legendeComparatifs": "▲ meilleur site · ▼ site le plus faible, pour les indicateurs où un sens est attendu. Les résultats portent sur la dernière année close de chaque site.",
+    "rapport": {
+      "titre": "Rapport financier {annee}",
+      "sousTitre": "Scolarité et services, montants en {devise}.",
+      "parSite": "Situation par établissement",
+      "parMois": "Encaissements par mois",
+      "parMode": "Par mode de paiement",
+      "total": "Total",
+      "imprimer": "Imprimer",
+      "csv": "Exporter (CSV)",
+      "edite": "Édité le {date}",
+      "moyenneEncaissee": "moyenne encaissée par élève"
+    },
+    "site": "Établissement",
+    "nouveauSite": {
+      "bouton": "Ajouter un établissement",
+      "titre": "Nouvel établissement du groupe",
+      "formule": "Formule d'abonnement",
+      "direction": "Directeur du site",
+      "motDePasse": "Mot de passe provisoire",
+      "cree": "Établissement créé : son directeur peut se connecter.",
+      "aide": "Le site est créé avec le référentiel de sa formule. Il a son propre abonnement, réglé par sa direction depuis la page Abonnement.",
+      "erreurs": {
+        "nom": "Le nom de l'établissement est requis.",
+        "palier": "Formule invalide.",
+        "directionNom": "Le nom du directeur est requis.",
+        "directionEmail": "Email du directeur invalide.",
+        "motDePasse": "Le mot de passe doit contenir au moins 8 caractères."
+      }
+    },
+    "etablissementsSousTitre": "Coordonnées, direction et abonnement de chaque site.",
+    "directionSite": "Direction",
+    "effectifParCycle": "Effectif par cycle",
+    "examens": "Examens officiels (taux de réussite)",
+    "aucunExamen": "Aucun examen enregistré cette année.",
+    "admissions": "Admissions de l'année",
+    "professeurPrincipal": "Professeur principal",
+    "plusGrosImpayes": "Plus gros restes à payer",
+    "elevesAffiches": "{n} élèves affichés sur {total}",
+    "statutInscription": "Inscription",
+    "heuresNJ": "H. non justifiées",
+    "enseignantsTitre": "Enseignants ({n})",
+    "personnelAdministratif": "Comptes du personnel",
+    "vuesSite": {
+      "apercu": "Aperçu",
+      "classes": "Classes",
+      "eleves": "Élèves",
+      "finances": "Finances",
+      "personnel": "Personnel"
+    }
   }
 }

@@ -6,6 +6,7 @@ import { isAdminEmail } from '@/lib/admin/auth'
 
 const LIENS = [
   { href: '/admin', label: 'Établissements' },
+  { href: '/admin/groupes', label: 'Groupes' },
   { href: '/admin/paiements', label: 'Paiements' },
   { href: '/admin/config', label: 'Configuration' },
 ]

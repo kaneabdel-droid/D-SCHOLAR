@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, GraduationCap, Info, Presentation, School, Users } from 'lucide-react'
+import { ArrowRight, Building2, GraduationCap, Info, Presentation, School, Users } from 'lucide-react'
 import LanguageSelector from '@/components/LanguageSelector'
 import { getDictionary, getLocale } from '@/dictionaries'
 import { connexionDemo } from './actions'
@@ -11,6 +11,7 @@ export default async function DecouvrirPage({ searchParams }: { searchParams?: P
   const t = dict.demo
 
   const roles = [
+    { role: 'dg', icone: Building2, titre: t.dg.titre, desc: t.dg.desc },
     { role: 'direction', icone: School, titre: t.direction.titre, desc: t.direction.desc },
     { role: 'enseignant', icone: Presentation, titre: t.enseignant.titre, desc: t.enseignant.desc },
     { role: 'parent', icone: Users, titre: t.parent.titre, desc: t.parent.desc },
@@ -39,7 +40,7 @@ export default async function DecouvrirPage({ searchParams }: { searchParams?: P
 
       <main className="mx-auto -mt-10 max-w-5xl px-4 pb-16 sm:px-6">
         {erreur && <p className="mb-4 rounded-xl border border-danger/20 bg-danger/10 px-4 py-3 text-center text-sm text-danger">{t.erreur}</p>}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {roles.map(({ role, icone: Icone, titre, desc }) => (
             <form key={role} action={connexionDemo} className="flex flex-col rounded-2xl border border-surface-border bg-surface p-6 shadow-sm transition hover:shadow-md">
               <input type="hidden" name="role" value={role} />

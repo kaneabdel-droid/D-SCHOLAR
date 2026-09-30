@@ -18,7 +18,7 @@ export default function CreerDemoButton() {
     setMessage(null)
     const v = (n: string) => (formData.get(n) as string | null) ?? ''
     startTransition(async () => {
-      const res = await creerDemo(v('direction'), v('enseignant'), v('parent'), v('password'))
+      const res = await creerDemo(v('direction'), v('enseignant'), v('parent'), v('dg'), v('password'))
       if (res.error) setMessage(res.error)
       else {
         toast.success('Établissement de démonstration créé')
@@ -64,7 +64,11 @@ export default function CreerDemoButton() {
             <input id="demo-parent" name="parent" type="email" required autoComplete="off" defaultValue="demo.parent@dembasolution.com" className={inputClass} />
           </div>
           <div>
-            <label className={labelClass} htmlFor="demo-password">Mot de passe des trois comptes</label>
+            <label className={labelClass} htmlFor="demo-dg">Compte directeur général (M. Cheikh Diop, groupe de 3 sites)</label>
+            <input id="demo-dg" name="dg" type="email" required autoComplete="off" defaultValue="demo.dg@dembasolution.com" className={inputClass} />
+          </div>
+          <div>
+            <label className={labelClass} htmlFor="demo-password">Mot de passe des quatre comptes</label>
             <input id="demo-password" name="password" type="text" required minLength={8} autoComplete="new-password" className={inputClass} />
             <p className={hintClass}>Au moins 8 caractères.</p>
           </div>

@@ -736,6 +736,10 @@
     "parent": {
       "titre": "وليّ أمر",
       "desc": "السيدة مريامة دياني تتابع طفليها: النقاط والكشوف المنشورة، جداول الحصص، الغيابات، المدفوعات والإعلانات."
+    },
+    "dg": {
+      "titre": "المدير العام",
+      "desc": "مجموعة Les Palmiers وفروعها الثلاثة (داكار، تييس، سان لويس): الملخص، المقارنة بين المؤسسات والتقرير المالي."
     }
   },
   "tarifs": {
@@ -1156,5 +1160,146 @@
     "visaInfirmerie": "تأشيرة المصلحة الصحية",
     "reimprimer": "إعادة الطباعة",
     "confirmSuppression": "حذف هذا الإذن؟ يبقى التأخر المسجل في المواظبة محفوظًا."
+  },
+  "groupe": {
+    "roles": {
+      "proprietaire": "المالك",
+      "dg": "المدير العام"
+    },
+    "lectureSeule": "اطلاع فقط",
+    "onglets": {
+      "synthese": "الملخص",
+      "comparatifs": "المقارنات",
+      "finances": "التقرير المالي",
+      "etablissements": "المؤسسات"
+    },
+    "alertes": {
+      "titre": "نقاط تستدعي الانتباه",
+      "abonnement": {
+        "lecture_seule": "اشتراك متأخر: الفرع في وضع القراءة فقط",
+        "suspendu": "اشتراك موقوف"
+      },
+      "recouvrement": "نسبة التحصيل {taux}، أقل من الهدف {seuil}٪",
+      "absenteisme": "{h} س من الغياب غير المبرر لكل تلميذ"
+    },
+    "aucunSite": "لا توجد أي مؤسسة مرتبطة بالمجموعة بعد.",
+    "syntheseTitre": "ملخص المجموعة",
+    "syntheseSousTitre": "{n} مؤسسات · أرقام مجمعة ووضعية كل فرع.",
+    "kpi": {
+      "eleves": "التلاميذ",
+      "filles": "{taux} إناث",
+      "enseignants": "الأساتذة",
+      "parEnseignant": "{n} تلميذ لكل أستاذ",
+      "encaisse": "المحصَّل",
+      "recouvrement": "نسبة التحصيل {taux}",
+      "reste": "المتبقي للتحصيل",
+      "elevesEnRetard": "{n} تلميذ عليه مبلغ متبقٍّ",
+      "admission": "نسبة النجاح",
+      "resultatsDe": "نتائج {annee}",
+      "pasDeResultats": "لا توجد نتائج بعد",
+      "moyenne": "المعدل العام",
+      "surVingt": "من 20، كل الأقسام",
+      "classes": "الأقسام",
+      "parClasse": "{n} تلميذ في كل قسم",
+      "moisCourant": "المحصَّل هذا الشهر",
+      "admissionCourt": "النجاح",
+      "recouvrementCourt": "التحصيل"
+    },
+    "encaissementsMensuels": "التحصيلات الشهرية",
+    "aucunEncaissement": "لا توجد تحصيلات خلال الفترة.",
+    "sites": "المؤسسات",
+    "accesLibelle": {
+      "complet": "اشتراك محيَّن",
+      "lecture_seule": "قراءة فقط",
+      "suspendu": "موقوف"
+    },
+    "mesures": {
+      "effectif": "عدد التلاميذ",
+      "filles": "نسبة الإناث",
+      "nouveaux": "التلاميذ الجدد",
+      "classes": "الأقسام",
+      "parClasse": "تلاميذ لكل قسم",
+      "enseignants": "الأساتذة",
+      "parEnseignant": "تلاميذ لكل أستاذ",
+      "admission": "نسبة النجاح",
+      "redoublement": "نسبة التكرار",
+      "moyenne": "المعدل العام",
+      "reussite": "النجاح في",
+      "heuresNJ": "ساعات الغياب غير المبرر لكل تلميذ",
+      "retards": "التأخرات لكل تلميذ",
+      "billets": "الأذونات المسلَّمة",
+      "du": "المنتظر",
+      "paye": "المحصَّل",
+      "recouvrement": "نسبة التحصيل",
+      "reste": "المتبقي للتحصيل",
+      "elevesEnRetard": "تلاميذ متأخرون في الأداء",
+      "recetteParEleve": "المحصَّل لكل تلميذ",
+      "candidatures": "طلبات الالتحاق",
+      "candidatsInscrits": "مترشحون مسجَّلون"
+    },
+    "sections": {
+      "effectifs": "التلاميذ والتأطير",
+      "resultats": "النتائج",
+      "assiduite": "المواظبة",
+      "finances": "المالية",
+      "admissions": "القبول"
+    },
+    "aucuneDonnee": "لا توجد بيانات لهذه السنة.",
+    "comparatifsTitre": "المقارنة بين المؤسسات",
+    "comparatifsSousTitre": "المؤشرات نفسها، فرعًا بفرع، وقيمة المجموعة.",
+    "indicateur": "المؤشر",
+    "groupe": "المجموعة",
+    "meilleur": "أفضل فرع",
+    "plusFaible": "أضعف فرع",
+    "legendeComparatifs": "▲ أفضل فرع · ▼ أضعف فرع، بالنسبة للمؤشرات التي لها اتجاه منتظر. تخص النتائج آخر سنة مختتمة لكل فرع.",
+    "rapport": {
+      "titre": "التقرير المالي {annee}",
+      "sousTitre": "رسوم الدراسة والخدمات، المبالغ بـ {devise}.",
+      "parSite": "الوضعية حسب المؤسسة",
+      "parMois": "التحصيلات حسب الشهر",
+      "parMode": "حسب طريقة الدفع",
+      "total": "المجموع",
+      "imprimer": "طباعة",
+      "csv": "تصدير (CSV)",
+      "edite": "حُرِّر في {date}",
+      "moyenneEncaissee": "متوسط المحصَّل لكل تلميذ"
+    },
+    "site": "المؤسسة",
+    "nouveauSite": {
+      "bouton": "إضافة مؤسسة",
+      "titre": "مؤسسة جديدة في المجموعة",
+      "formule": "صيغة الاشتراك",
+      "direction": "مدير الفرع",
+      "motDePasse": "كلمة مرور مؤقتة",
+      "cree": "تم إنشاء المؤسسة: يمكن لمديرها تسجيل الدخول.",
+      "aide": "يُنشأ الفرع بالمرجع الخاص بصيغته. له اشتراكه الخاص، تؤديه إدارته من صفحة الاشتراك.",
+      "erreurs": {
+        "nom": "اسم المؤسسة مطلوب.",
+        "palier": "صيغة غير صالحة.",
+        "directionNom": "اسم المدير مطلوب.",
+        "directionEmail": "بريد المدير غير صالح.",
+        "motDePasse": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل."
+      }
+    },
+    "etablissementsSousTitre": "معلومات الاتصال والإدارة والاشتراك لكل فرع.",
+    "directionSite": "الإدارة",
+    "effectifParCycle": "عدد التلاميذ حسب السلك",
+    "examens": "الامتحانات الرسمية (نسبة النجاح)",
+    "aucunExamen": "لا يوجد امتحان مسجل هذه السنة.",
+    "admissions": "القبول هذه السنة",
+    "professeurPrincipal": "الأستاذ الرئيسي",
+    "plusGrosImpayes": "أكبر المبالغ المتبقية",
+    "elevesAffiches": "{n} تلميذ معروض من أصل {total}",
+    "statutInscription": "التسجيل",
+    "heuresNJ": "س. غير مبررة",
+    "enseignantsTitre": "الأساتذة ({n})",
+    "personnelAdministratif": "حسابات الموظفين",
+    "vuesSite": {
+      "apercu": "نظرة عامة",
+      "classes": "الأقسام",
+      "eleves": "التلاميذ",
+      "finances": "المالية",
+      "personnel": "الموظفون"
+    }
   }
 }

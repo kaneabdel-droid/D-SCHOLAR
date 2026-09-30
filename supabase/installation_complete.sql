@@ -1,6 +1,6 @@
--- D-Scholar : installation complète (migrations 00 à 09), à exécuter en une fois
--- dans l'éditeur SQL de Supabase, sur un projet vide. Ordre : 00-06, 08, 09 puis
--- 07 (la démo utilise les tables des modules 08 et 09).
+-- D-Scholar : installation complète (migrations 00 à 10), à exécuter en une fois
+-- dans l'éditeur SQL de Supabase, sur un projet vide. Ordre : 00-06, 08, 09, 10
+-- puis 07 (la démo utilise les tables des modules 08 à 10).
 
 -- ============================================================
 -- 00_schema.sql
@@ -2036,6 +2036,106 @@ alter table public.chariow_produits drop constraint if exists chariow_produits_p
 alter table public.chariow_produits add constraint chariow_produits_pourcentage_check check (pourcentage in (50, 100));
 
 -- ============================================================
+-- 10_groupes.sql
+-- ============================================================
+
+-- ═════════════════════════════════════════════════════════════════════════════
+-- 10 · Groupes scolaires (plusieurs établissements sur plusieurs sites)
+-- Le propriétaire / directeur général (DG) consulte en lecture seule tous les
+-- établissements de son groupe : synthèse, comparatifs, rapport financier.
+-- Chaque établissement garde son propre abonnement ; la vue groupe est incluse.
+-- À exécuter après 09_billets_cartes.sql (puis relancer 07_demo.sql).
+-- ═════════════════════════════════════════════════════════════════════════════
+
+create table if not exists public.groupes (
+  id uuid default gen_random_uuid() primary key,
+  nom varchar(200) not null,
+  est_demo boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+alter table public.etablissements add column if not exists groupe_id uuid references public.groupes(id) on delete set null;
+create index if not exists idx_etablissements_groupe on public.etablissements(groupe_id);
+
+-- Membres de la direction du groupe (un compte appartient à un seul groupe ;
+-- compte dédié, distinct des comptes du personnel des sites).
+create table if not exists public.membres_groupe (
+  user_id uuid references auth.users(id) on delete cascade primary key,
+  groupe_id uuid references public.groupes(id) on delete cascade not null,
+  role varchar(20) not null default 'dg' check (role in ('proprietaire', 'dg')),
+  prenom varchar(100),
+  nom varchar(100),
+  email varchar(255),
+  telephone varchar(30),
+  actif boolean not null default true,
+  created_at timestamptz not null default now()
+);
+create index if not exists idx_membres_groupe on public.membres_groupe(groupe_id);
+
+-- Un compte DG est dédié : s'il était aussi membre du personnel d'un site, les
+-- écrans de ce site (filtrés par le RLS, pas par le code) mélangeraient les
+-- données de tous les sites du groupe. Un compte du personnel n'a donc jamais
+-- de groupe, même s'il figure dans membres_groupe.
+create or replace function public.mon_groupe_id() returns uuid
+language sql security definer stable set search_path = public as $$
+  select m.groupe_id from public.membres_groupe m
+  where m.user_id = auth.uid() and m.actif
+    and not exists (select 1 from public.utilisateurs u where u.id = m.user_id)
+$$;
+
+create or replace function public.groupe_etablissements() returns setof uuid
+language sql security definer stable set search_path = public as $$
+  select e.id from public.etablissements e
+  where e.groupe_id is not null and e.groupe_id = public.mon_groupe_id()
+$$;
+
+-- Accès (abonnement) de chaque site du groupe, pour le tableau de bord du DG.
+create or replace function public.acces_sites_groupe()
+returns table (etablissement_id uuid, acces text)
+language sql security definer stable set search_path = public as $$
+  select id, public.acces_etablissement(id) from public.etablissements where id in (select public.groupe_etablissements())
+$$;
+grant execute on function public.acces_sites_groupe() to authenticated;
+
+alter table public.groupes enable row level security;
+alter table public.membres_groupe enable row level security;
+drop policy if exists select_groupes on public.groupes;
+drop policy if exists select_membres_groupe on public.membres_groupe;
+create policy select_groupes on public.groupes for select using (id = public.mon_groupe_id());
+create policy select_membres_groupe on public.membres_groupe for select
+  using (user_id = auth.uid() or groupe_id = public.mon_groupe_id());
+-- Le groupe se renomme par le DG ; création et rattachements : console /admin
+-- et actions serveur (clé de service) après vérification du rôle.
+drop policy if exists update_groupes on public.groupes;
+create policy update_groupes on public.groupes for update using (id = public.mon_groupe_id()) with check (id = public.mon_groupe_id());
+
+-- Lecture seule du DG sur les établissements du groupe et toutes leurs données
+-- (tables portant etablissement_id), en plus des policies existantes.
+drop policy if exists groupe_etablissements on public.etablissements;
+create policy groupe_etablissements on public.etablissements for select using (id in (select public.groupe_etablissements()));
+
+do $$
+declare
+  t text;
+begin
+  for t in
+    select c.table_name from information_schema.columns c
+    join information_schema.tables tb on tb.table_schema = c.table_schema and tb.table_name = c.table_name and tb.table_type = 'BASE TABLE'
+    where c.table_schema = 'public' and c.column_name = 'etablissement_id'
+      and c.table_name not in ('compteurs', 'codes_activation', 'comptes_famille')
+  loop
+    execute format('alter table public.%I enable row level security', t);
+    execute format('drop policy if exists %I on public.%I', 'groupe_' || t, t);
+    execute format('create policy %I on public.%I for select using (etablissement_id in (select public.groupe_etablissements()))', 'groupe_' || t, t);
+  end loop;
+end $$;
+
+-- Tables sans etablissement_id mais lues par les écrans (via leur parent).
+drop policy if exists groupe_liens_famille on public.liens_famille;
+create policy groupe_liens_famille on public.liens_famille for select
+  using (eleve_id in (select id from public.eleves where etablissement_id in (select public.groupe_etablissements())));
+
+-- ============================================================
 -- 07_demo.sql
 -- ============================================================
 
@@ -2146,6 +2246,10 @@ begin
   if exists (select 1 from public.annees_scolaires where etablissement_id = e) then
     raise exception 'La démo doit être générée sur un établissement vide';
   end if;
+
+  -- Tables de travail : supprimées d'abord, la fonction pouvant être appelée
+  -- plusieurs fois dans une même transaction (creer_demo_groupe).
+  drop table if exists pg_temp._ens, pg_temp._cls, pg_temp._el, pg_temp._mens;
 
   update public.etablissements set est_demo = true, moyenne_passage = 10, moyenne_repechage = 9 where id = e;
   perform public.initialiser_referentiel(e);
@@ -2819,3 +2923,47 @@ $$;
 
 revoke execute on function public.creer_demo(uuid, uuid, uuid) from public, anon, authenticated;
 revoke execute on function public._demo_creer_eleve(uuid, integer, text, integer, date) from public, anon, authenticated;
+
+-- ─── Groupe de démonstration (3 sites) ─────────────────────────────────────
+-- Le site principal (déjà rempli par creer_demo) et deux sites vides créés par
+-- l'appelant sont réunis dans « Groupe scolaire Les Palmiers » ; les deux sites
+-- sont remplis puis différenciés (effectifs, tarifs, recouvrement) pour que les
+-- comparatifs du tableau de bord du DG aient du sens.
+create or replace function public.creer_demo_groupe(p_principal uuid, p_site2 uuid, p_site3 uuid, p_dg uuid)
+returns uuid
+language plpgsql security definer set search_path = public as $$
+declare
+  g uuid;
+begin
+  insert into public.groupes (nom, est_demo) values ('Groupe scolaire Les Palmiers', true) returning id into g;
+  perform public.creer_demo(p_site2, null, null);
+  perform public.creer_demo(p_site3, null, null);
+  update public.etablissements set groupe_id = g where id in (p_principal, p_site2, p_site3);
+
+  -- Thiès : tarifs plus bas (-20 %), un tiers des familles en retard sur la rentrée.
+  update public.frais_scolarite set montant = round(montant * 0.8) where etablissement_id = p_site2;
+  update public.paiements_eleves set montant = round(montant * 0.8) where etablissement_id = p_site2;
+  delete from public.paiements_eleves p
+  using public.annees_scolaires a
+  where p.etablissement_id = p_site2 and a.id = p.annee_id and a.active
+    and public._demo_alea(p.eleve_id::text || 'thies') < 0.33;
+
+  -- Saint-Louis : site plus petit (moins de nouveaux élèves) et plus de mois impayés.
+  delete from public.eleves el
+  using public.inscriptions i, public.annees_scolaires a
+  where el.etablissement_id = p_site3 and i.eleve_id = el.id and a.id = i.annee_id and a.active
+    and i.statut = 'nouveau' and public._demo_alea(el.id::text || 'stlouis') < 0.45;
+  delete from public.paiements_eleves p
+  using public.annees_scolaires a
+  where p.etablissement_id = p_site3 and a.id = p.annee_id and not a.active
+    and p.libelle like 'Mensualité · %' and (p.libelle like '%avril%' or p.libelle like '%mai%' or p.libelle like '%juin%')
+    and public._demo_alea(p.eleve_id::text || 'stlouis-impaye') < 0.3;
+
+  if p_dg is not null then
+    insert into public.membres_groupe (user_id, groupe_id, role, prenom, nom, email, telephone)
+    values (p_dg, g, 'proprietaire', 'Cheikh', 'Diop', (select email from auth.users where id = p_dg), '77 600 12 34');
+  end if;
+  return g;
+end;
+$$;
+revoke execute on function public.creer_demo_groupe(uuid, uuid, uuid, uuid) from public, anon, authenticated;

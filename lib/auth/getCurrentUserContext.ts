@@ -41,6 +41,9 @@ export const getCurrentUserContext = cache(async (): Promise<UserContext> => {
   ])
 
   if (!data || !data.actif) {
+    // Directeur général d'un groupe : sa vue est la synthèse du groupe.
+    const { data: membre } = await supabase.from('membres_groupe').select('actif').eq('user_id', user.id).maybeSingle()
+    if (membre?.actif) redirect('/groupe')
     // Parent ou élève : leur espace est le portail, pas le tableau de bord du personnel.
     const { data: famille } = await supabase.from('comptes_famille').select('actif').eq('id', user.id).maybeSingle()
     redirect(famille?.actif ? '/portail' : '/login?message=compte')

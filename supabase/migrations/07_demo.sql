@@ -106,6 +106,10 @@ begin
     raise exception 'La démo doit être générée sur un établissement vide';
   end if;
 
+  -- Tables de travail : supprimées d'abord, la fonction pouvant être appelée
+  -- plusieurs fois dans une même transaction (creer_demo_groupe).
+  drop table if exists pg_temp._ens, pg_temp._cls, pg_temp._el, pg_temp._mens;
+
   update public.etablissements set est_demo = true, moyenne_passage = 10, moyenne_repechage = 9 where id = e;
   perform public.initialiser_referentiel(e);
 
@@ -778,3 +782,47 @@ $$;
 
 revoke execute on function public.creer_demo(uuid, uuid, uuid) from public, anon, authenticated;
 revoke execute on function public._demo_creer_eleve(uuid, integer, text, integer, date) from public, anon, authenticated;
+
+-- ─── Groupe de démonstration (3 sites) ─────────────────────────────────────
+-- Le site principal (déjà rempli par creer_demo) et deux sites vides créés par
+-- l'appelant sont réunis dans « Groupe scolaire Les Palmiers » ; les deux sites
+-- sont remplis puis différenciés (effectifs, tarifs, recouvrement) pour que les
+-- comparatifs du tableau de bord du DG aient du sens.
+create or replace function public.creer_demo_groupe(p_principal uuid, p_site2 uuid, p_site3 uuid, p_dg uuid)
+returns uuid
+language plpgsql security definer set search_path = public as $$
+declare
+  g uuid;
+begin
+  insert into public.groupes (nom, est_demo) values ('Groupe scolaire Les Palmiers', true) returning id into g;
+  perform public.creer_demo(p_site2, null, null);
+  perform public.creer_demo(p_site3, null, null);
+  update public.etablissements set groupe_id = g where id in (p_principal, p_site2, p_site3);
+
+  -- Thiès : tarifs plus bas (-20 %), un tiers des familles en retard sur la rentrée.
+  update public.frais_scolarite set montant = round(montant * 0.8) where etablissement_id = p_site2;
+  update public.paiements_eleves set montant = round(montant * 0.8) where etablissement_id = p_site2;
+  delete from public.paiements_eleves p
+  using public.annees_scolaires a
+  where p.etablissement_id = p_site2 and a.id = p.annee_id and a.active
+    and public._demo_alea(p.eleve_id::text || 'thies') < 0.33;
+
+  -- Saint-Louis : site plus petit (moins de nouveaux élèves) et plus de mois impayés.
+  delete from public.eleves el
+  using public.inscriptions i, public.annees_scolaires a
+  where el.etablissement_id = p_site3 and i.eleve_id = el.id and a.id = i.annee_id and a.active
+    and i.statut = 'nouveau' and public._demo_alea(el.id::text || 'stlouis') < 0.45;
+  delete from public.paiements_eleves p
+  using public.annees_scolaires a
+  where p.etablissement_id = p_site3 and a.id = p.annee_id and not a.active
+    and p.libelle like 'Mensualité · %' and (p.libelle like '%avril%' or p.libelle like '%mai%' or p.libelle like '%juin%')
+    and public._demo_alea(p.eleve_id::text || 'stlouis-impaye') < 0.3;
+
+  if p_dg is not null then
+    insert into public.membres_groupe (user_id, groupe_id, role, prenom, nom, email, telephone)
+    values (p_dg, g, 'proprietaire', 'Cheikh', 'Diop', (select email from auth.users where id = p_dg), '77 600 12 34');
+  end if;
+  return g;
+end;
+$$;
+revoke execute on function public.creer_demo_groupe(uuid, uuid, uuid, uuid) from public, anon, authenticated;

@@ -14,6 +14,7 @@ const COMPTES_DEMO = {
   direction: 'demo.direction@dembasolution.com',
   enseignant: 'demo.ndiaye@dembasolution.com',
   parent: 'demo.parent@dembasolution.com',
+  dg: 'demo.dg@dembasolution.com',
 } as const
 
 const echec: () => never = () => redirect('/decouvrir-dscholar?demo_error=1')
@@ -36,6 +37,12 @@ export async function connexionDemo(formData: FormData) {
   if (erreurVerification) {
     console.error('Erreur de connexion à la démonstration :', erreurVerification)
     echec()
+  }
+
+  // Directeur général : synthèse du groupe (3 sites).
+  if (role === 'dg') {
+    revalidatePath('/', 'layout')
+    redirect('/groupe')
   }
 
   // Parent : directement sur le portail des familles.

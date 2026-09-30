@@ -736,6 +736,10 @@
     "parent": {
       "titre": "Parent",
       "desc": "Mrs Mariama Diagne follows her two children: published grades and report cards, timetables, absences, payments and announcements."
+    },
+    "dg": {
+      "titre": "Managing director",
+      "desc": "The Les Palmiers group and its 3 sites (Dakar, Thiès, Saint-Louis): summary, comparisons between schools and financial report."
     }
   },
   "tarifs": {
@@ -1156,5 +1160,146 @@
     "visaInfirmerie": "Health service stamp",
     "reimprimer": "Reprint",
     "confirmSuppression": "Delete this slip? Lateness recorded in attendance remains recorded."
+  },
+  "groupe": {
+    "roles": {
+      "proprietaire": "Owner",
+      "dg": "Managing director"
+    },
+    "lectureSeule": "view only",
+    "onglets": {
+      "synthese": "Summary",
+      "comparatifs": "Comparisons",
+      "finances": "Financial report",
+      "etablissements": "Schools"
+    },
+    "alertes": {
+      "titre": "Points of attention",
+      "abonnement": {
+        "lecture_seule": "subscription overdue: the site is read-only",
+        "suspendu": "subscription suspended"
+      },
+      "recouvrement": "collection rate {taux}, below the {seuil}% target",
+      "absenteisme": "{h} h of unexcused absence per student"
+    },
+    "aucunSite": "No school is linked to the group yet.",
+    "syntheseTitre": "Group summary",
+    "syntheseSousTitre": "{n} schools · consolidated figures and the status of each site.",
+    "kpi": {
+      "eleves": "Students",
+      "filles": "{taux} girls",
+      "enseignants": "Teachers",
+      "parEnseignant": "{n} students per teacher",
+      "encaisse": "Collected",
+      "recouvrement": "collection rate {taux}",
+      "reste": "Outstanding",
+      "elevesEnRetard": "{n} students with a balance due",
+      "admission": "Promotion rate",
+      "resultatsDe": "{annee} results",
+      "pasDeResultats": "no results yet",
+      "moyenne": "Overall average",
+      "surVingt": "out of 20, all classes",
+      "classes": "Classes",
+      "parClasse": "{n} students per class",
+      "moisCourant": "Collected this month",
+      "admissionCourt": "Promotion",
+      "recouvrementCourt": "Collection"
+    },
+    "encaissementsMensuels": "Monthly collections",
+    "aucunEncaissement": "No payment over the period.",
+    "sites": "Schools",
+    "accesLibelle": {
+      "complet": "Subscription up to date",
+      "lecture_seule": "Read-only",
+      "suspendu": "Suspended"
+    },
+    "mesures": {
+      "effectif": "Enrolment",
+      "filles": "Share of girls",
+      "nouveaux": "New students",
+      "classes": "Classes",
+      "parClasse": "Students per class",
+      "enseignants": "Teachers",
+      "parEnseignant": "Students per teacher",
+      "admission": "Promotion rate",
+      "redoublement": "Repetition rate",
+      "moyenne": "Overall average",
+      "reussite": "Pass rate",
+      "heuresNJ": "Unexcused hours per student",
+      "retards": "Late arrivals per student",
+      "billets": "Slips issued",
+      "du": "Expected",
+      "paye": "Collected",
+      "recouvrement": "Collection rate",
+      "reste": "Outstanding",
+      "elevesEnRetard": "Students behind on payments",
+      "recetteParEleve": "Collected per student",
+      "candidatures": "Applications",
+      "candidatsInscrits": "Applicants enrolled"
+    },
+    "sections": {
+      "effectifs": "Enrolment and staffing",
+      "resultats": "Results",
+      "assiduite": "Attendance",
+      "finances": "Finances",
+      "admissions": "Admissions"
+    },
+    "aucuneDonnee": "No data for this year.",
+    "comparatifsTitre": "Comparisons between schools",
+    "comparatifsSousTitre": "The same indicators, site by site, and the group value.",
+    "indicateur": "Indicator",
+    "groupe": "Group",
+    "meilleur": "Best site",
+    "plusFaible": "Weakest site",
+    "legendeComparatifs": "▲ best site · ▼ weakest site, for indicators with an expected direction. Results cover each site's last closed year.",
+    "rapport": {
+      "titre": "Financial report {annee}",
+      "sousTitre": "Tuition and services, amounts in {devise}.",
+      "parSite": "Status by school",
+      "parMois": "Collections by month",
+      "parMode": "By payment method",
+      "total": "Total",
+      "imprimer": "Print",
+      "csv": "Export (CSV)",
+      "edite": "Issued on {date}",
+      "moyenneEncaissee": "average collected per student"
+    },
+    "site": "School",
+    "nouveauSite": {
+      "bouton": "Add a school",
+      "titre": "New school in the group",
+      "formule": "Subscription plan",
+      "direction": "Site director",
+      "motDePasse": "Temporary password",
+      "cree": "School created: its director can now sign in.",
+      "aide": "The site is created with its plan's reference data. It has its own subscription, paid by its management from the Subscription page.",
+      "erreurs": {
+        "nom": "The school name is required.",
+        "palier": "Invalid plan.",
+        "directionNom": "The director's name is required.",
+        "directionEmail": "Invalid director email.",
+        "motDePasse": "The password must be at least 8 characters long."
+      }
+    },
+    "etablissementsSousTitre": "Contact details, management and subscription of each site.",
+    "directionSite": "Management",
+    "effectifParCycle": "Enrolment by cycle",
+    "examens": "National exams (pass rate)",
+    "aucunExamen": "No exam recorded this year.",
+    "admissions": "Admissions this year",
+    "professeurPrincipal": "Form teacher",
+    "plusGrosImpayes": "Largest outstanding balances",
+    "elevesAffiches": "{n} students shown out of {total}",
+    "statutInscription": "Enrolment",
+    "heuresNJ": "Unexcused h.",
+    "enseignantsTitre": "Teachers ({n})",
+    "personnelAdministratif": "Staff accounts",
+    "vuesSite": {
+      "apercu": "Overview",
+      "classes": "Classes",
+      "eleves": "Students",
+      "finances": "Finances",
+      "personnel": "Staff"
+    }
   }
 }
