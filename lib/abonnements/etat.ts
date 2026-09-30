@@ -60,7 +60,7 @@ const JOUR_MS = 24 * 60 * 60 * 1000
 // personnel alors que le RLS de ces tables est réservé à la direction.
 export const etatAbonnement = cache(async (etablissementId: string): Promise<EtatAbonnement> => {
   const supabase = createAdminClient()
-  const [{ data: etab }, { data: lignes }] = await Promise.all([
+  const [{ data: etab }, { data: lignes }, { data: calendrier }] = await Promise.all([
     supabase.from('etablissements').select('acces_manuel_jusqu_au').eq('id', etablissementId).single(),
     supabase
       .from('souscriptions')
@@ -68,6 +68,7 @@ export const etatAbonnement = cache(async (etablissementId: string): Promise<Eta
       .eq('etablissement_id', etablissementId)
       .neq('statut', 'annulee')
       .order('created_at', { ascending: false }),
+    supabase.from('annees_scolaires').select('date_debut, date_fin').eq('etablissement_id', etablissementId),
   ])
 
   const maintenant = new Date()
@@ -110,7 +111,7 @@ export const etatAbonnement = cache(async (etablissementId: string): Promise<Eta
     payeJusquau,
     historique,
     prochainMois: (() => {
-      const p = prochainePeriode(payees.map((s) => ({ plan: s.plan, debut: s.debut!, fin: s.fin!, mois_offerts: s.mois_offerts ?? 0 })), maintenant)
+      const p = prochainePeriode(payees.map((s) => ({ plan: s.plan, debut: s.debut!, fin: s.fin!, mois_offerts: s.mois_offerts ?? 0 })), maintenant, calendrier ?? [])
       return { rang: p.rang, moisOfferts: p.moisOfferts, debut: p.debut.toISOString(), fin: p.fin.toISOString() }
     })(),
     joursAvantFin: payeJusquau ? Math.ceil((new Date(payeJusquau).getTime() - maintenant.getTime()) / JOUR_MS) : null,

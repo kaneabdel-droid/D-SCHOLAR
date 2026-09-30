@@ -7,7 +7,7 @@ import { addMonths } from 'date-fns'
 import { createAdminClient } from '@/utils/supabase/admin'
 import { adaptateurPour } from './registry'
 import { PLANS, type PlanCode } from './plans'
-import { prochainePeriode, type PeriodePayee } from './cycle'
+import { prochainePeriode, type AnneeCalendrier, type PeriodePayee } from './cycle'
 import type { ProviderId, StatutProvider } from './types'
 
 type LignePaiement = {
@@ -65,9 +65,10 @@ async function crediterEcheance(paiement: LignePaiement, dateSucces: Date): Prom
     let fin: Date
     let moisOfferts = 0
     if (souscription.plan === 'mensuel') {
-      // Un mois, enchaîné sur la période précédente ; le 10e mois consécutif
-      // ajoute 2 mois de vacances offerts (cf. cycle.ts).
-      const p = prochainePeriode((precedentes ?? []) as PeriodePayee[], dateSucces)
+      // Un mois, enchaîné sur la période précédente ; vacances offertes selon
+      // le calendrier de l'établissement après 10 mois payés (cf. cycle.ts).
+      const { data: calendrier } = await supabase.from('annees_scolaires').select('date_debut, date_fin').eq('etablissement_id', souscription.etablissement_id)
+      const p = prochainePeriode((precedentes ?? []) as PeriodePayee[], dateSucces, (calendrier ?? []) as AnneeCalendrier[])
       debut = p.debut
       fin = p.fin
       moisOfferts = p.moisOfferts

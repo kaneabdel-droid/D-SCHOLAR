@@ -126,14 +126,14 @@ export default async function AbonnementPanel({ context, dict, locale }: { conte
         <section className={`${cardClass} p-5 sm:p-6`}>
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 className="font-heading text-base font-semibold text-foreground">{t.anneeAbonnement}</h2>
-            <span className="text-sm tabular-nums text-foreground-muted">{fmt(t.moisPayesSur, { n: pm.rang - 1, total: MOIS_PAYANTS_PAR_AN })}</span>
+            <span className="text-sm tabular-nums text-foreground-muted">{fmt(t.moisPayesSur, { n: Math.min(pm.rang - 1, MOIS_PAYANTS_PAR_AN), total: MOIS_PAYANTS_PAR_AN })}</span>
           </div>
-          <div className="mt-3 flex gap-1" role="img" aria-label={fmt(t.moisPayesSur, { n: pm.rang - 1, total: MOIS_PAYANTS_PAR_AN })}>
+          <div className="mt-3 flex gap-1" role="img" aria-label={fmt(t.moisPayesSur, { n: Math.min(pm.rang - 1, MOIS_PAYANTS_PAR_AN), total: MOIS_PAYANTS_PAR_AN })}>
             {Array.from({ length: MOIS_PAYANTS_PAR_AN + MOIS_OFFERTS }, (_, k) => (
-              <span key={k} className={`h-2.5 flex-1 rounded-full ${k < pm.rang - 1 ? 'bg-primary' : k >= MOIS_PAYANTS_PAR_AN ? 'bg-secondary/40' : 'bg-background'}`} />
+              <span key={k} className={`h-2.5 flex-1 rounded-full ${k < Math.min(pm.rang - 1, MOIS_PAYANTS_PAR_AN) ? 'bg-primary' : k >= MOIS_PAYANTS_PAR_AN ? 'bg-secondary/40' : 'bg-background'}`} />
             ))}
           </div>
-          <p className="mt-3 text-sm text-foreground-muted">{fmt(t.regleVacances, { payants: MOIS_PAYANTS_PAR_AN, offerts: MOIS_OFFERTS })}</p>
+          <p className="mt-3 text-sm text-foreground-muted">{fmt(t.regleVacances, { payants: MOIS_PAYANTS_PAR_AN })}</p>
         </section>
       )}
 
