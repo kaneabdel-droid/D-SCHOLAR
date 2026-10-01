@@ -760,6 +760,10 @@
     "dg": {
       "titre": "Directeur général",
       "desc": "Le groupe Les Palmiers et ses 3 sites (Dakar, Thiès, Saint-Louis) : synthèse, comparatifs entre établissements et rapport financier."
+    },
+    "eleve": {
+      "titre": "Élève",
+      "desc": "L'aîné de Mme Diagne, en 1re S, ouvre son propre espace : ses notes et bulletins publiés, son emploi du temps, ses absences et les annonces. Les comptes élèves s'ouvrent à partir de la 6e (cycle moyen)."
     }
   },
   "tarifs": {
@@ -1417,7 +1421,7 @@
                   },
                   {
                     "t": "Accès au portail :",
-                    "x": "en dessous du niveau minimum choisi, seuls les parents ont un accès ; à partir de ce niveau, les élèves aussi."
+                    "x": "en dessous du niveau minimum choisi, seuls les parents ont un accès ; à partir de ce niveau, l'élève peut avoir son propre compte. Par défaut, c'est la 6e : les comptes élèves s'ouvrent dès le cycle moyen."
                   }
                 ]
               }
@@ -1685,7 +1689,7 @@
         "title": "Le portail des familles",
         "blocks": [
           {
-            "p": "Après avoir activé leur accès avec le code remis par l'établissement, les parents et les élèves suivent la scolarité en temps réel : notes et bulletins publiés, emploi du temps, absences, paiements et annonces. Ils peuvent aussi justifier une absence. Un parent ne voit que ses propres enfants."
+            "p": "Après avoir activé leur accès avec le code remis par l'établissement, les parents et les élèves suivent la scolarité en temps réel : notes et bulletins publiés, emploi du temps, absences, paiements et annonces. Ils peuvent aussi justifier une absence. Un parent ne voit que ses propres enfants ; un élève (à partir de la 6e) ne voit que lui-même, sans les paiements."
           }
         ]
       },

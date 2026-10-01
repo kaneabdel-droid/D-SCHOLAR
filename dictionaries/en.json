@@ -760,6 +760,10 @@
     "dg": {
       "titre": "Managing director",
       "desc": "The Les Palmiers group and its 3 sites (Dakar, Thiès, Saint-Louis): summary, comparisons between schools and financial report."
+    },
+    "eleve": {
+      "titre": "Student",
+      "desc": "Mrs Diagne's eldest child, in 11th grade (1re S), opens their own area: published grades and report cards, timetable, absences and announcements. Student accounts open from 6th grade (middle school)."
     }
   },
   "tarifs": {
@@ -1417,7 +1421,7 @@
                   },
                   {
                     "t": "Portal access:",
-                    "x": "below the minimum level you choose, only parents get access; from that level on, students do too."
+                    "x": "below the minimum level you choose, only parents get access; from that level on, the student can have their own account. By default this is 6th grade (6e): student accounts open from middle school."
                   }
                 ]
               }
@@ -1685,7 +1689,7 @@
         "title": "The family portal",
         "blocks": [
           {
-            "p": "Once they have activated their access with the code given by the school, parents and students follow schooling in real time: published grades and report cards, timetable, absences, payments and announcements. They can also justify an absence. A parent only sees their own children."
+            "p": "Once they have activated their access with the code given by the school, parents and students follow schooling in real time: published grades and report cards, timetable, absences, payments and announcements. They can also justify an absence. A parent only sees their own children; a student (from 6th grade) only sees themselves, without payments."
           }
         ]
       },
