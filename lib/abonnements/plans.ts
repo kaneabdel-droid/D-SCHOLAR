@@ -22,8 +22,9 @@ export const PLAN_CODES: PlanCode[] = ['mensuel']
 export const SEUIL_LECTURE_SEULE_JOURS = 15
 export const SEUIL_SUSPENSION_JOURS = 30
 
-// Année d'abonnement : 10 mois payés, puis 2 mois de vacances offerts
-// (lib/abonnements/cycle.ts).
+// Année d'abonnement : 10 mois payés d'affilée, puis les vacances offertes selon
+// le calendrier de l'établissement (lib/abonnements/cycle.ts). MOIS_OFFERTS sert
+// quand la rentrée suivante n'est pas encore créée.
 export const MOIS_PAYANTS_PAR_AN = 10
 export const MOIS_OFFERTS = 2
 

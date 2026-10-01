@@ -14,7 +14,7 @@ alter table public.souscriptions add constraint souscriptions_mois_offerts_check
 revoke execute on function public.comptes_de_l_eleve(uuid) from public, anon, authenticated;
 
 -- Familles : les évaluations publiées des seules classes de leurs enfants
--- (classes actuelles et passées), plus celles de tout l'établissement.
+-- (classes actuelles et passées).
 drop policy if exists famille_evaluations on public.evaluations;
 create policy famille_evaluations on public.evaluations for select using (
   publiee and enseignement_id in (
