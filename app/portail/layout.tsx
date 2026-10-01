@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { GraduationCap, LogOut } from 'lucide-react'
+import { GraduationCap, Lock, LogOut } from 'lucide-react'
 import LanguageSelector from '@/components/LanguageSelector'
 import Notifications from '@/components/Notifications'
 import { ThemeSwitcher } from '@/components/ThemeSwitcher'
@@ -35,11 +35,23 @@ export default async function PortailLayout({ children }: { children: React.Reac
             </a>
           </div>
         </div>
-        {famille.enfants.length > 0 && (
+        {!famille.verrouille && famille.enfants.length > 0 && (
           <PortailNav enfants={famille.enfants.map((e) => ({ id: e.id, prenom: e.prenom }))} accueil={dict.portail.accueil} />
         )}
       </header>
-      <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">{children}</main>
+      <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
+        {famille.verrouille ? (
+          <div className="mx-auto max-w-xl rounded-2xl border border-surface-border bg-surface p-8 text-center shadow-sm">
+            <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-warning/10 text-warning">
+              <Lock className="h-7 w-7" />
+            </span>
+            <h1 className="mt-4 font-heading text-xl font-semibold text-foreground">{dict.portail.verrouille.titre}</h1>
+            <p className="mt-2 text-sm text-foreground-muted">{dict.portail.verrouille.texte}</p>
+          </div>
+        ) : (
+          children
+        )}
+      </main>
     </div>
   )
 }

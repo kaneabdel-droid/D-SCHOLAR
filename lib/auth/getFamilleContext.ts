@@ -11,6 +11,8 @@ export type FamilleContext = {
   nom: string | null
   etablissementId: string
   etablissementNom: string
+  // Établissement verrouillé par l'admin plateforme : portail fermé aux familles aussi.
+  verrouille: boolean
   enfants: EnfantPortail[]
 }
 
@@ -23,7 +25,7 @@ export const getFamilleContext = cache(async (): Promise<FamilleContext> => {
 
   const { data: compte } = await supabase
     .from('comptes_famille')
-    .select('type, prenom, nom, actif, etablissement_id, etablissements(nom)')
+    .select('type, prenom, nom, actif, etablissement_id, etablissements(nom, statut)')
     .eq('id', user.id)
     .maybeSingle()
   if (!compte || !compte.actif) redirect('/dashboard')
@@ -52,7 +54,7 @@ export const getFamilleContext = cache(async (): Promise<FamilleContext> => {
     }
   })
 
-  const etab = un(compte.etablissements as { nom: string } | { nom: string }[] | null)
+  const etab = un(compte.etablissements as { nom: string; statut: string } | { nom: string; statut: string }[] | null)
   return {
     userId: user.id,
     type: compte.type as 'parent' | 'eleve',
@@ -60,6 +62,7 @@ export const getFamilleContext = cache(async (): Promise<FamilleContext> => {
     nom: compte.nom,
     etablissementId: compte.etablissement_id,
     etablissementNom: etab?.nom ?? '',
+    verrouille: etab?.statut === 'suspendu',
     enfants,
   }
 })

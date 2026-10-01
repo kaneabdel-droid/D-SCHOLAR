@@ -1110,7 +1110,11 @@
     "minutes": "{n} min",
     "heures": "{n} h",
     "aucunPaiement": "No payment recorded.",
-    "pasDeClasse": "No current enrolment."
+    "pasDeClasse": "No current enrolment.",
+    "verrouille": {
+      "titre": "Access locked",
+      "texte": "Access to this school's portal is temporarily closed. Your data is kept; contact the school for more information."
+    }
   },
   "activation": {
     "title": "Activate my access",

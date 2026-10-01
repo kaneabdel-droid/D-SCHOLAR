@@ -1110,7 +1110,11 @@
     "minutes": "{n} min",
     "heures": "{n} h",
     "aucunPaiement": "Aucun paiement enregistré.",
-    "pasDeClasse": "Aucune inscription en cours."
+    "pasDeClasse": "Aucune inscription en cours.",
+    "verrouille": {
+      "titre": "Accès verrouillé",
+      "texte": "L'accès au portail de cet établissement est momentanément fermé. Vos données sont conservées ; contactez l'établissement pour en savoir plus."
+    }
   },
   "activation": {
     "title": "Activer mon accès",

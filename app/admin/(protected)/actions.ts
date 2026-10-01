@@ -65,6 +65,49 @@ export async function changerStatutEtablissement(etablissementId: string, statut
   return { success: true }
 }
 
+// Suppression définitive d'un établissement : toutes ses données partent en
+// cascade (élèves, notes, paiements…), puis les comptes de connexion de son
+// personnel et de ses familles. Le nom saisi doit correspondre exactement (garde
+// contre un clic malheureux) ; les établissements de démonstration sont refusés
+// (ils se gèrent depuis /admin/demo).
+export async function supprimerEtablissement(etablissementId: string, nomSaisi: string): Promise<ActionResult> {
+  const authError = await checkAdmin()
+  if (authError) return { error: authError }
+
+  const supabase = createAdminClient()
+  const { data: etab, error: etabError } = await withRetryResult(() =>
+    supabase.from('etablissements').select('id, nom, est_demo').eq('id', etablissementId).single()
+  )
+  if (etabError || !etab) return { error: etabError?.message ?? 'Établissement introuvable' }
+  if (etab.est_demo) return { error: 'Établissement de démonstration : à gérer depuis la page Démo' }
+  if (nomSaisi.trim() !== etab.nom.trim()) return { error: 'Le nom saisi ne correspond pas' }
+
+  // Comptes à supprimer après coup : utilisateurs.id référence auth.users sans
+  // cascade, il faut donc d'abord retirer l'établissement (et ses lignes).
+  const [{ data: personnel }, { data: familles }] = await Promise.all([
+    supabase.from('utilisateurs').select('id').eq('etablissement_id', etablissementId),
+    supabase.from('comptes_famille').select('id').eq('etablissement_id', etablissementId),
+  ])
+  const comptes = [...(personnel ?? []), ...(familles ?? [])].map((c) => c.id)
+
+  const { error } = await withRetryResult(() => supabase.from('etablissements').delete().eq('id', etablissementId))
+  if (error) return { error: error.message }
+
+  let echecs = 0
+  for (const id of comptes) {
+    const { error: e } = await supabase.auth.admin.deleteUser(id)
+    if (e) {
+      echecs++
+      console.error('Suppression du compte', id, e.message)
+    }
+  }
+
+  revalidatePath('/admin')
+  revalidatePath('/admin/paiements')
+  if (echecs) return { error: `Établissement supprimé, mais ${echecs} compte(s) de connexion n'ont pas pu être supprimés (voir les logs)` }
+  return { success: true }
+}
+
 // Accès complet offert jusqu'à une date (essai, démonstration), quel que soit
 // l'état des paiements — cf. acces_etablissement() (05_abonnements.sql).
 export async function definirAccesManuel(etablissementId: string, jusquAu: string | null): Promise<ActionResult> {

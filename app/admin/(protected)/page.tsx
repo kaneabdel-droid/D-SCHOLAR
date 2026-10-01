@@ -2,7 +2,7 @@ import { Building2, Users } from 'lucide-react'
 import { createAdminClient } from '@/utils/supabase/admin'
 import type { PalierCode } from '@/lib/abonnements/paliers'
 import CreerEtablissementButton from './CreerEtablissementButton'
-import EtablissementActions from './EtablissementActions'
+import EtablissementActions, { SupprimerEtablissementCell } from './EtablissementActions'
 import AccesOffertCell from './AccesOffertCell'
 import CreerDemoButton from './demo/CreerDemoButton'
 
@@ -10,7 +10,7 @@ export default async function AdminPage() {
   const supabase = createAdminClient()
 
   const [{ data: etablissements }, { data: utilisateurs }] = await Promise.all([
-    supabase.from('etablissements').select('id, nom, ville, palier, statut, abonnement_expire_le, acces_manuel_jusqu_au, created_at').order('created_at', { ascending: false }),
+    supabase.from('etablissements').select('id, nom, ville, palier, statut, est_demo, abonnement_expire_le, acces_manuel_jusqu_au, created_at').order('created_at', { ascending: false }),
     supabase.from('utilisateurs').select('etablissement_id, role, email'),
   ])
 
@@ -63,10 +63,11 @@ export default async function AdminPage() {
               <th className="px-4 py-3 text-start">Direction</th>
               <th className="px-4 py-3 text-start">Personnel</th>
               <th className="px-4 py-3 text-start">Palier</th>
-              <th className="px-4 py-3 text-start">Statut</th>
+              <th className="px-4 py-3 text-start">Verrou</th>
               <th className="px-4 py-3 text-start">Accès</th>
               <th className="px-4 py-3 text-start">Payé jusqu&apos;au</th>
               <th className="px-4 py-3 text-start">Créé le</th>
+              <th className="px-4 py-3"><span className="sr-only">Supprimer</span></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-surface-border">
@@ -82,11 +83,12 @@ export default async function AdminPage() {
                 <AccesOffertCell id={e.id} acces={acces.get(e.id) ?? 'suspendu'} jusquAu={e.acces_manuel_jusqu_au} />
                 <td className="px-4 py-3 text-foreground-muted">{e.abonnement_expire_le ? new Date(e.abonnement_expire_le).toLocaleDateString('fr-FR') : '—'}</td>
                 <td className="px-4 py-3 text-foreground-muted">{new Date(e.created_at).toLocaleDateString('fr-FR')}</td>
+                <SupprimerEtablissementCell id={e.id} nom={e.nom} estDemo={e.est_demo} />
               </tr>
             ))}
             {(etablissements ?? []).length === 0 && (
               <tr>
-                <td colSpan={8} className="px-4 py-10 text-center text-foreground-muted">Aucun établissement</td>
+                <td colSpan={9} className="px-4 py-10 text-center text-foreground-muted">Aucun établissement</td>
               </tr>
             )}
           </tbody>
