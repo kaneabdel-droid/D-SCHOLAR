@@ -1,5 +1,5 @@
--- D-Scholar : installation complète (migrations 00 à 13), à exécuter en une fois
--- dans l'éditeur SQL de Supabase, sur un projet vide. Ordre : 00-06, 08 à 13
+-- D-Scholar : installation complète (migrations 00 à 15), à exécuter en une fois
+-- dans l'éditeur SQL de Supabase, sur un projet vide. Ordre : 00-06, 08 à 15
 -- puis 07 (la démo utilise les tables des modules 08 à 10).
 
 -- ============================================================
@@ -2204,6 +2204,50 @@ create policy famille_evaluations on public.evaluations for select using (
     select en.id from public.enseignements en
     join public.inscriptions i on i.classe_id = en.classe_id
     where i.eleve_id in (select public.mes_eleves())));
+
+-- ============================================================
+-- 14_support_messages.sql
+-- ============================================================
+
+-- Demandes envoyées depuis la page "Assistance / Support". Chaque demande est enregistrée
+-- ici (aucune perdue même si l'email échoue) et transférée par email (Resend) à la boîte
+-- support@dembasolution.com commune aux produits, avec Reply-To = email du client
+-- (cf. lib/support/transferer.ts). email_envoye trace l'échec éventuel de l'envoi.
+create table if not exists public.support_messages (
+  id uuid primary key default gen_random_uuid(),
+  etablissement_id uuid not null references public.etablissements(id) on delete cascade,
+  user_id uuid references auth.users(id) on delete set null,
+  email text not null,
+  sujet text not null check (char_length(sujet) between 1 and 200),
+  message text not null check (char_length(message) between 1 and 5000),
+  statut varchar(20) not null default 'nouveau' check (statut in ('nouveau', 'en_cours', 'resolu')),
+  email_envoye boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_support_messages_etablissement_id on public.support_messages (etablissement_id, created_at desc);
+
+alter table public.support_messages enable row level security;
+
+-- Tout membre du personnel de l'établissement peut écrire au support et relire ses
+-- demandes ; ni modification ni suppression (statut géré par l'admin, service role).
+create policy support_messages_select on public.support_messages for select
+  using (etablissement_id = public.current_etablissement_id());
+
+create policy support_messages_insert on public.support_messages for insert
+  with check (user_id = auth.uid() and etablissement_id = public.current_etablissement_id());
+
+-- ============================================================
+-- 15_poste_utilisateurs.sql
+-- ============================================================
+
+-- Intitulé de poste du personnel, affiché à la place du libellé du rôle.
+-- Le rôle (utilisateurs.role) reste seul à porter les droits (RLS, lib/roles.ts) ;
+-- le poste n'est qu'un libellé libre, propre au pays et au cycle : pour le rôle
+-- « censeur », Directeur à l'élémentaire, Censeur au collège, Proviseur au lycée,
+-- et tout autre intitulé utilisé ailleurs (Principal, Préfet des études…).
+alter table public.utilisateurs
+  add column if not exists poste varchar(100);
 
 -- ============================================================
 -- 07_demo.sql

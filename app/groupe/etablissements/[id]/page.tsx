@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { libellePoste, type Role } from '@/lib/roles'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { BarresHorizontales, ColonnesMois, Tuile } from '@/components/groupe/Barres'
@@ -219,7 +220,7 @@ export default async function GroupeSite({ params, searchParams }: { params: Pro
   if (vue === 'personnel') {
     const [{ data: enseignants }, { data: utilisateurs }, { data: enseignements }] = await Promise.all([
       supabase.from('enseignants').select('id, civilite, prenom, nom, telephone, email, actif').eq('etablissement_id', id).order('nom'),
-      supabase.from('utilisateurs').select('id, role, prenom, nom, email, actif').eq('etablissement_id', id).order('role'),
+      supabase.from('utilisateurs').select('*').eq('etablissement_id', id).order('role'),
       annee ? supabase.from('enseignements').select('enseignant_id, matieres(nom), classes!inner(annee_id)').eq('classes.annee_id', annee.id) : Promise.resolve({ data: [] }),
     ])
     const matieres = new Map<string, Set<string>>()
@@ -246,7 +247,7 @@ export default async function GroupeSite({ params, searchParams }: { params: Pro
             {(utilisateurs ?? []).map((u) => (
               <li key={u.id} className={`flex justify-between gap-3 px-5 py-2.5 text-sm ${u.actif ? '' : 'opacity-50'}`}>
                 <span className="min-w-0 truncate">{[u.prenom, u.nom].filter(Boolean).join(' ')} <span className="text-xs text-foreground-muted" dir="ltr">{u.email}</span></span>
-                <span className="shrink-0 text-xs font-medium text-foreground-muted">{dict.roles[u.role as keyof typeof dict.roles]}</span>
+                <span className="shrink-0 text-xs font-medium text-foreground-muted">{libellePoste(u.role as Role, u.poste, dict.roles)}</span>
               </li>
             ))}
           </ul>

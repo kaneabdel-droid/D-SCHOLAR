@@ -11,6 +11,8 @@ export type UserContext = {
   nom: string | null
   prenom: string | null
   role: Role
+  // Intitulé de poste libre (15_poste_utilisateurs.sql), affiché à la place du rôle.
+  poste: string | null
   etablissementId: string
   etablissementNom: string
   etablissementStatut: 'actif' | 'suspendu'
@@ -32,7 +34,8 @@ export const getCurrentUserContext = cache(async (): Promise<UserContext> => {
   const [{ data }, { data: annee }, { data: acces }] = await Promise.all([
     supabase
       .from('utilisateurs')
-      .select('etablissement_id, role, nom, prenom, actif, etablissements(nom, statut, palier, est_demo)')
+      // `*` : inclut poste sans échouer si la migration 15 n'est pas encore appliquée.
+      .select('*, etablissements(nom, statut, palier, est_demo)')
       .eq('id', user.id)
       .maybeSingle(),
     // RLS : ne renvoie que les années de l'établissement de l'utilisateur.
@@ -57,6 +60,7 @@ export const getCurrentUserContext = cache(async (): Promise<UserContext> => {
     nom: data.nom,
     prenom: data.prenom,
     role: data.role as Role,
+    poste: data.poste ?? null,
     etablissementId: data.etablissement_id,
     etablissementNom: etablissement?.nom ?? '',
     etablissementStatut: etablissement?.statut ?? 'actif',

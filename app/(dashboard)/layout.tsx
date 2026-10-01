@@ -55,6 +55,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <ClientLayout
       role={context.role}
+      poste={context.poste}
       etablissementNom={context.etablissementNom}
       anneeLibelle={context.anneeActive?.libelle ?? null}
       utilisateurNom={[context.prenom, context.nom].filter(Boolean).join(' ') || context.email || ''}

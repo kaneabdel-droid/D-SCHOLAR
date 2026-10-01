@@ -7,8 +7,8 @@ import Modal from '@/components/ui/Modal'
 import { btnPrimary, btnSecondary, cardClass, hintClass, inputClass, labelClass } from '@/components/ui/styles'
 import type { Dictionary } from '@/dictionaries'
 import { fmt } from '@/lib/i18n'
-import { ROLES, type Role } from '@/lib/roles'
-import { changerRole, changerStatut, creerUtilisateur } from './actions'
+import { ROLES, libellePoste, type Role } from '@/lib/roles'
+import { changerPoste, changerRole, changerStatut, creerUtilisateur } from './actions'
 
 export type Utilisateur = {
   id: string
@@ -17,6 +17,7 @@ export type Utilisateur = {
   email: string | null
   telephone: string | null
   role: Role
+  poste: string | null
   actif: boolean
 }
 
@@ -28,11 +29,13 @@ export default function UtilisateursClient({
   utilisateurs,
   moi,
   estDirection,
+  suggestions,
   dict,
 }: {
   utilisateurs: Utilisateur[]
   moi: string
   estDirection: boolean
+  suggestions: string[]
   dict: Dictionary
 }) {
   const t = dict.utilisateurs
@@ -59,6 +62,15 @@ export default function UtilisateursClient({
       if (res.error) toast.error(res.error)
       else toast.success(t.roleSaved)
     })
+
+  const poste = (u: Utilisateur, valeur: string) => {
+    if (valeur.trim() === (u.poste ?? '').trim()) return
+    startTransition(async () => {
+      const res = await changerPoste(u.id, valeur)
+      if (res.error) toast.error(res.error)
+      else toast.success(t.posteSaved)
+    })
+  }
 
   const statut = (u: Utilisateur) => {
     if (u.actif && !confirm(fmt(t.confirmDesactiver, { nom: nomComplet(u) }))) return
@@ -101,6 +113,20 @@ export default function UtilisateursClient({
                       {estMoi && <span className="ms-2 text-xs font-normal text-foreground-muted">({t.you})</span>}
                     </p>
                     <p className="truncate text-xs text-foreground-muted">{[u.email, u.telephone].filter(Boolean).join(' · ')}</p>
+                    {estDirection && (
+                      <input
+                        key={u.poste ?? ''}
+                        defaultValue={u.poste ?? ''}
+                        list="postes-suggeres"
+                        maxLength={100}
+                        disabled={enCours}
+                        onBlur={(e) => poste(u, e.target.value)}
+                        placeholder={dict.roles[u.role]}
+                        aria-label={t.poste}
+                        title={t.posteHint}
+                        className={`${inputClass} mt-1.5 w-full py-1 text-xs sm:w-64`}
+                      />
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-2 sm:shrink-0">
@@ -117,7 +143,7 @@ export default function UtilisateursClient({
                       ))}
                     </select>
                   ) : (
-                    <span className="rounded-full bg-background px-3 py-1 text-xs font-medium text-foreground">{dict.roles[u.role]}</span>
+                    <span className="rounded-full bg-background px-3 py-1 text-xs font-medium text-foreground">{libellePoste(u.role, u.poste, dict.roles)}</span>
                   )}
                   {estDirection && !estMoi && (
                     <button
@@ -137,6 +163,10 @@ export default function UtilisateursClient({
           })}
         </ul>
       )}
+
+      <datalist id="postes-suggeres">
+        {suggestions.map((p) => <option key={p} value={p} />)}
+      </datalist>
 
       <Modal
         open={ouvert}
@@ -177,6 +207,11 @@ export default function UtilisateursClient({
                 <option key={r} value={r}>{dict.roles[r]}</option>
               ))}
             </select>
+          </div>
+          <div>
+            <label htmlFor="u-poste" className={labelClass}>{t.poste} <span className="font-normal text-foreground-muted">({c.optional})</span></label>
+            <input id="u-poste" name="poste" list="postes-suggeres" maxLength={100} placeholder={t.postePlaceholder} className={inputClass} />
+            <p className={hintClass}>{t.posteHint}</p>
           </div>
           <div>
             <label htmlFor="u-password" className={labelClass}>{t.password}</label>

@@ -127,7 +127,7 @@
   },
   "roles": {
     "direction": "Management",
-    "censeur": "Director of studies",
+    "censeur": "Headteacher / Vice-principal / Principal",
     "surveillant": "Head of discipline",
     "secretariat": "Registry office",
     "intendant": "Bursar",
@@ -347,7 +347,11 @@
     "statut": "Status",
     "empty": "No user.",
     "confirmDesactiver": "Deactivate {nom}'s account? They will no longer be able to sign in.",
-    "directionOnly": "Only the management can manage accounts."
+    "directionOnly": "Only the management can manage accounts.",
+    "poste": "Job title",
+    "posteHint": "Title shown (e.g. Headteacher in primary, Vice-principal in middle school, Principal in high school). Free text: enter any other title. Permissions remain those of the role.",
+    "postePlaceholder": "Job title",
+    "posteSaved": "Job title updated"
   },
   "suspendu": {
     "title": "Access suspended",
@@ -1407,7 +1411,7 @@
         "id": "partie-parametrage",
         "label": "Part 1",
         "title": "Setting up the school",
-        "text": "Done once, before the school year starts, by management or the director of studies. The dashboard shows the remaining setup steps.",
+        "text": "Done once, before the school year starts, by management or the head of section (Headteacher in primary, Vice-principal in middle school, Principal in high school). The dashboard shows the remaining setup steps.",
         "sections": [
           {
             "id": "etablissement",
@@ -1496,7 +1500,7 @@
                 "p": "Create an account for each staff member with their login email, their role and a temporary password (at least 8 characters) to give them. Each role only sees what concerns it: see the roles table at the end of this guide."
               },
               {
-                "p": "A teacher needs an account with the Teacher role to enter the grades of their courses."
+                "p": "A teacher needs an account with the Teacher role to enter the grades of their courses. The Job title field sets the title shown: Headteacher in primary, Vice-principal in middle school, Principal in high school, or any other title used in your country. Permissions remain those of the role."
               }
             ]
           }
@@ -1707,7 +1711,7 @@
               "head": [
                 "Module",
                 "Management",
-                "Director of studies",
+                "Headteacher / Vice-principal / Principal",
                 "Head of discipline",
                 "Registry office",
                 "Bursar",
@@ -1843,5 +1847,10 @@
         ]
       }
     ]
+  },
+  "postes": {
+    "elementaire": "Headteacher",
+    "moyen": "Vice-principal",
+    "secondaire": "Principal"
   }
 }

@@ -127,7 +127,7 @@
   },
   "roles": {
     "direction": "Direction",
-    "censeur": "Censeur / Directeur des études",
+    "censeur": "Directeur / Censeur / Proviseur",
     "surveillant": "Surveillant général",
     "secretariat": "Secrétariat",
     "intendant": "Intendant / Économe",
@@ -347,7 +347,11 @@
     "statut": "Statut",
     "empty": "Aucun utilisateur.",
     "confirmDesactiver": "Désactiver le compte de {nom} ? La personne ne pourra plus se connecter.",
-    "directionOnly": "Seule la direction peut gérer les comptes."
+    "directionOnly": "Seule la direction peut gérer les comptes.",
+    "poste": "Poste",
+    "posteHint": "Intitulé affiché (ex. : Directeur à l'élémentaire, Censeur au collège, Proviseur au lycée). Libre : saisissez tout autre poste. Les droits restent ceux du rôle.",
+    "postePlaceholder": "Intitulé du poste",
+    "posteSaved": "Poste mis à jour"
   },
   "suspendu": {
     "title": "Accès suspendu",
@@ -1407,7 +1411,7 @@
         "id": "partie-parametrage",
         "label": "Partie 1",
         "title": "Paramétrer l'établissement",
-        "text": "À faire une seule fois, avant la rentrée, par la direction ou le censeur. Le tableau de bord affiche les étapes de mise en route restantes.",
+        "text": "À faire une seule fois, avant la rentrée, par la direction ou le directeur des études (Directeur à l'élémentaire, Censeur au collège, Proviseur au lycée). Le tableau de bord affiche les étapes de mise en route restantes.",
         "sections": [
           {
             "id": "etablissement",
@@ -1496,7 +1500,7 @@
                 "p": "Créez un compte pour chaque membre du personnel avec son email de connexion, son rôle et un mot de passe provisoire (8 caractères minimum) à lui communiquer. Chaque rôle ne voit que ce qui le concerne : voir le tableau des rôles en fin de guide."
               },
               {
-                "p": "Un enseignant a besoin d'un compte avec le rôle Enseignant pour saisir les notes de ses cours."
+                "p": "Un enseignant a besoin d'un compte avec le rôle Enseignant pour saisir les notes de ses cours. Le champ Poste fixe l'intitulé affiché : Directeur à l'élémentaire, Censeur au collège, Proviseur au lycée, ou tout autre poste propre à votre pays. Les droits restent ceux du rôle."
               }
             ]
           }
@@ -1707,7 +1711,7 @@
               "head": [
                 "Module",
                 "Direction",
-                "Censeur",
+                "Dir. / Censeur / Proviseur",
                 "Surveillant",
                 "Secrétariat",
                 "Intendant",
@@ -1843,5 +1847,10 @@
         ]
       }
     ]
+  },
+  "postes": {
+    "elementaire": "Directeur",
+    "moyen": "Censeur",
+    "secondaire": "Proviseur"
   }
 }

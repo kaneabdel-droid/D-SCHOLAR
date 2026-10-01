@@ -11,6 +11,8 @@ import { getDictionary } from '@/dictionaries'
 
 type ActionResult = { success?: true; error?: string }
 
+const POSTE_MAX = 100
+
 // Bannissement long plutôt qu'un vrai statut « désactivé » (absent de Supabase
 // Auth) — même mécanisme que D-QUINCA et SIGGIE.
 const BAN_DUREE_DESACTIVATION = '87600h'
@@ -56,6 +58,8 @@ export async function creerUtilisateur(formData: FormData): Promise<ActionResult
       prenom: champ('prenom') || null,
       email,
       telephone: champ('telephone') || null,
+      // Seulement si renseigné : la création reste possible avant la migration 15.
+      ...(champ('poste') ? { poste: champ('poste').slice(0, POSTE_MAX) } : {}),
     })
   )
   if (insertError) {
@@ -125,5 +129,29 @@ export async function changerStatut(utilisateurId: string, actif: boolean): Prom
   if (error) return { error: messageErreur(error, dict, 'changerStatut') }
 
   revalidatePath('/parametres/utilisateurs')
+  return { success: true }
+}
+
+// Intitulé de poste (libellé libre, 15_poste_utilisateurs.sql) : modifiable par la
+// direction, y compris pour elle-même — il ne touche à aucun droit.
+export async function changerPoste(utilisateurId: string, poste: string): Promise<ActionResult> {
+  const context = await requireDirection()
+  const dict = await getDictionary()
+  if (context.acces !== 'complet') return { error: dict.errors.lectureSeule }
+  if (context.estDemo) return { error: dict.errors.demo }
+  if (!(await cibleDeMonEtablissement(utilisateurId, context.etablissementId))) return { error: dict.errors.forbidden }
+
+  const supabase = createAdminClient()
+  const { error } = await withRetryResult(() =>
+    supabase
+      .from('utilisateurs')
+      .update({ poste: poste.trim().slice(0, POSTE_MAX) || null })
+      .eq('id', utilisateurId)
+      .eq('etablissement_id', context.etablissementId)
+  )
+  if (error) return { error: messageErreur(error, dict, 'changerPoste') }
+
+  revalidatePath('/parametres/utilisateurs')
+  revalidatePath('/', 'layout')
   return { success: true }
 }

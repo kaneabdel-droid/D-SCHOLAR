@@ -31,7 +31,7 @@ import {
 import { ThemeSwitcher } from '@/components/ThemeSwitcher'
 import LanguageSelector from '@/components/LanguageSelector'
 import type { Dictionary } from '@/dictionaries'
-import { peutGererParametres, type Role } from '@/lib/roles'
+import { libellePoste, peutGererParametres, type Role } from '@/lib/roles'
 
 type CleNav = keyof Dictionary['nav']
 type Item = { key: CleNav; href: string; icon: LucideIcon; bientot?: boolean }
@@ -111,6 +111,7 @@ function initiales(nom: string) {
 export default function ClientLayout({
   children,
   role,
+  poste,
   etablissementNom,
   anneeLibelle,
   utilisateurNom,
@@ -121,6 +122,7 @@ export default function ClientLayout({
 }: {
   children: React.ReactNode
   role: Role
+  poste: string | null
   etablissementNom: string
   anneeLibelle: string | null
   utilisateurNom: string
@@ -202,7 +204,7 @@ export default function ClientLayout({
         </span>
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-medium text-sidebar-text-strong">{utilisateurNom}</p>
-          <p className="truncate text-xs text-sidebar-text">{dict.roles[role]}</p>
+          <p className="truncate text-xs text-sidebar-text">{libellePoste(role, poste, dict.roles)}</p>
         </div>
         <a href="/logout" title={dict.common.logout} aria-label={dict.common.logout} className="rounded-lg p-2 text-sidebar-text hover:bg-sidebar-hover hover:text-sidebar-text-strong">
           <LogOut className="h-4 w-4 rtl:-scale-x-100" />
