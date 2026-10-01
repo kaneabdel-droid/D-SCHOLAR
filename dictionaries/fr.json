@@ -121,7 +121,9 @@
     "anneeActive": "Année",
     "aucuneAnnee": "Aucune année active",
     "passages": "Passages & repêchages",
-    "billets": "Billets"
+    "billets": "Billets",
+    "sectionAide": "Aide",
+    "support": "Assistance / Support"
   },
   "roles": {
     "direction": "Direction",
@@ -1325,5 +1327,513 @@
       "finances": "Finances",
       "personnel": "Personnel"
     }
+  },
+  "supportPage": {
+    "title": "Assistance / Support",
+    "subtitle": "Une question ou un problème ? Notre équipe vous répond.",
+    "phone": "Téléphone / WhatsApp",
+    "hours": "Du lundi au samedi, aux heures de bureau",
+    "call": "Appeler",
+    "email": "Email",
+    "emailDesc": "Réponse par email sous 24 h ouvrées",
+    "formTitle": "Envoyez-nous un message",
+    "formDesc": "Un bug, une question ? Décrivez votre demande : nous vous répondons directement par email.",
+    "subject": "Sujet de votre demande",
+    "subjectPlaceholder": "Ex : problème sur un bulletin, question sur l'abonnement...",
+    "message": "Message détaillé",
+    "messagePlaceholder": "Décrivez votre problème ou votre question en détail...",
+    "send": "Envoyer le message",
+    "sending": "Envoi en cours...",
+    "sentTitle": "Message envoyé !",
+    "sentDesc": "Notre équipe a bien reçu votre message et vous répondra par email dans les plus brefs délais.",
+    "sendAnother": "Envoyer un autre message",
+    "errors": {
+      "required": "Veuillez remplir tous les champs.",
+      "tooLong": "Le sujet (200 caractères max) ou le message (5000 caractères max) est trop long.",
+      "notAuthenticated": "Votre session a expiré. Veuillez vous reconnecter.",
+      "failed": "Le message n'a pas pu être envoyé. Réessayez ou écrivez-nous à support@dembasolution.com."
+    }
+  },
+  "guide": {
+    "meta": {
+      "back": "Retour à l'accueil",
+      "pageTitle": "Guide d'utilisation",
+      "toc": "Sommaire",
+      "menu": "Menu",
+      "needHelp": "Besoin d'aide pour démarrer ?",
+      "needHelpText": "Notre guide d'utilisation explique, avec des mots simples, comment préparer votre établissement dans D-Scholar puis l'utiliser tout au long de l'année scolaire.",
+      "readGuide": "Consulter le guide",
+      "guideNav": "Guide"
+    },
+    "hero": {
+      "eyebrow": "Guide d'utilisation",
+      "title": "D-Scholar",
+      "subtitle": "La gestion de votre établissement scolaire : admissions, élèves, classes, enseignants, emplois du temps, notes, bulletins, attestations, paiements et portail des familles.",
+      "intro": "Ce guide se lit en trois temps : d'abord le paramétrage, à faire une fois avant la rentrée ; puis le travail de tous les jours ; enfin les documents officiels et la fin d'année. Chaque membre du personnel ne voit que les menus de son rôle."
+    },
+    "overview": {
+      "id": "apercu",
+      "title": "D-Scholar en une minute",
+      "lead": "D-Scholar suit chaque élève de sa candidature à sa sortie de l'établissement, et relie la direction, les enseignants et les familles.",
+      "cards": [
+        {
+          "t": "Le référentiel",
+          "x": "Année scolaire, niveaux, matières, coefficients et salles : décrits une fois, ils servent à tous les autres écrans."
+        },
+        {
+          "t": "Le cursus",
+          "x": "Admissions, inscriptions, passages et repêchages, année après année."
+        },
+        {
+          "t": "La pédagogie",
+          "x": "Classes, enseignants, emplois du temps sans conflit, notes et moyennes calculées automatiquement."
+        },
+        {
+          "t": "Les familles",
+          "x": "Parents et élèves suivent notes, bulletins, absences et paiements sur leur portail."
+        }
+      ]
+    },
+    "parts": [
+      {
+        "id": "partie-parametrage",
+        "label": "Partie 1",
+        "title": "Paramétrer l'établissement",
+        "text": "À faire une seule fois, avant la rentrée, par la direction ou le censeur. Le tableau de bord affiche les étapes de mise en route restantes.",
+        "sections": [
+          {
+            "id": "etablissement",
+            "title": "Informations de l'établissement",
+            "menu": "Paramètres › Établissement",
+            "blocks": [
+              {
+                "p": "Renseignez le nom, le sigle, l'adresse, la ville, le téléphone et l'email : ces informations apparaissent sur les bulletins, les relevés et les attestations."
+              },
+              {
+                "ul": [
+                  {
+                    "t": "Statut :",
+                    "x": "dans le privé, la scolarité est en général payée chaque mois ; indiquez le nombre de mois de scolarité (9 par défaut, d'octobre à juin)."
+                  },
+                  {
+                    "t": "Accès au portail :",
+                    "x": "en dessous du niveau minimum choisi, seuls les parents ont un accès ; à partir de ce niveau, les élèves aussi."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "annees",
+            "title": "Année scolaire et périodes",
+            "menu": "Paramètres › Années scolaires",
+            "blocks": [
+              {
+                "p": "Créez l'année (par exemple 2026-2027) et découpez-la en périodes : trimestres à l'élémentaire, semestres au collège et au lycée."
+              },
+              {
+                "callout": {
+                  "l": "Important",
+                  "x": "Une seule année est active à la fois : c'est elle qu'utilisent tous les écrans. Le sélecteur en haut de l'écran permet de consulter une autre année."
+                }
+              }
+            ]
+          },
+          {
+            "id": "referentiel",
+            "title": "Niveaux, matières, coefficients et salles",
+            "menu": "Paramètres",
+            "blocks": [
+              {
+                "ol": [
+                  {
+                    "t": "Niveaux & séries :",
+                    "x": "vérifiez les niveaux ouverts, classés par ordre de passage. Seuls les cycles inclus dans votre abonnement peuvent être ouverts ; au lycée, un niveau peut porter des séries."
+                  },
+                  {
+                    "t": "Matières :",
+                    "x": "listez les matières enseignées dans l'établissement."
+                  },
+                  {
+                    "t": "Coefficients :",
+                    "x": "saisissez le coefficient de chaque matière, niveau par niveau (et série par série au lycée)."
+                  },
+                  {
+                    "t": "Salles :",
+                    "x": "déclarez les salles ; elles servent à éviter les conflits dans les emplois du temps."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "evaluations",
+            "title": "Évaluations, seuils et appréciations",
+            "menu": "Paramètres › Évaluations / Appréciations",
+            "blocks": [
+              {
+                "p": "Définissez les types d'évaluation (devoir, composition…) avec le nombre attendu par période et leur poids : la moyenne d'une matière est la moyenne pondérée par type."
+              },
+              {
+                "p": "Fixez les seuils de fin d'année : au-dessus du seuil de passage, l'élève est admis ; entre les deux seuils, il passe en repêchage ; en dessous, il redouble. Le barème des appréciations attribue un commentaire selon la moyenne : l'appréciation retenue est celle dont le seuil est le plus élevé sans dépasser la moyenne de l'élève."
+              }
+            ]
+          },
+          {
+            "id": "utilisateurs",
+            "title": "Comptes du personnel",
+            "menu": "Paramètres › Utilisateurs",
+            "blocks": [
+              {
+                "p": "Créez un compte pour chaque membre du personnel avec son email de connexion, son rôle et un mot de passe provisoire (8 caractères minimum) à lui communiquer. Chaque rôle ne voit que ce qui le concerne : voir le tableau des rôles en fin de guide."
+              },
+              {
+                "p": "Un enseignant a besoin d'un compte avec le rôle Enseignant pour saisir les notes de ses cours."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "partie-quotidien",
+        "label": "Partie 2",
+        "title": "Au quotidien",
+        "text": "Les opérations répétées tout au long de l'année, chacune par le rôle concerné.",
+        "sections": [
+          {
+            "id": "admissions",
+            "title": "Admissions",
+            "menu": "Admissions",
+            "blocks": [
+              {
+                "p": "Enregistrez chaque candidature avec le niveau demandé, l'établissement et la moyenne d'origine. Faites-la avancer : soumise, en étude, test planifié (date et note du test), puis admise, liste d'attente ou refusée."
+              },
+              {
+                "p": "Un candidat admis s'inscrit en un clic avec le bouton Inscrire : il devient élève de l'établissement."
+              }
+            ]
+          },
+          {
+            "id": "eleves",
+            "title": "Élèves et accès des familles",
+            "menu": "Élèves",
+            "blocks": [
+              {
+                "p": "La fiche de l'élève réunit son identité, sa classe, ses responsables et tout son cursus. Pour un transfert, indiquez l'établissement quitté : il apparaît dans le cursus."
+              },
+              {
+                "p": "Pour ouvrir le portail à une famille, générez un code d'accès depuis la fiche et remettez-le aux parents (ou à l'élève). Avec ce code, ils créent eux-mêmes leur accès sur la page Activer, sans email ni SMS."
+              }
+            ]
+          },
+          {
+            "id": "classes",
+            "title": "Classes, enseignants et emplois du temps",
+            "menu": "Classes · Enseignants · Emplois du temps",
+            "blocks": [
+              {
+                "ul": [
+                  {
+                    "t": "Classes :",
+                    "x": "créez les classes de l'année, affectez-y les élèves et l'équipe pédagogique ; l'effectif s'affiche directement."
+                  },
+                  {
+                    "t": "Enseignants :",
+                    "x": "un enseignant peut dispenser plusieurs matières dans plusieurs classes."
+                  },
+                  {
+                    "t": "Emplois du temps :",
+                    "x": "saisissez les créneaux par classe ou par enseignant. Les conflits (même classe, même enseignant ou même salle au même moment) sont refusés à la saisie."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "notes",
+            "title": "Notes et évaluations",
+            "menu": "Notes & évaluations",
+            "blocks": [
+              {
+                "ol": [
+                  {
+                    "x": "Choisissez la classe, la matière et la période."
+                  },
+                  {
+                    "x": "Créez l'évaluation puis saisissez les notes ; le compteur indique combien de notes sont déjà saisies."
+                  },
+                  {
+                    "x": "Quand les notes sont prêtes, cliquez sur Publier aux familles : elles apparaissent sur le portail. Vous pouvez retirer la publication pour corriger."
+                  }
+                ]
+              },
+              {
+                "p": "Les moyennes par matière et générales sont calculées automatiquement à partir des types d'évaluation et des coefficients."
+              }
+            ]
+          },
+          {
+            "id": "vie-scolaire",
+            "title": "Assiduité et billets",
+            "menu": "Assiduité · Billets",
+            "blocks": [
+              {
+                "p": "Enregistrez les absences et les retards de l'année ; les familles les voient sur le portail."
+              },
+              {
+                "p": "La surveillance délivre les billets d'entrée, de sortie, de visite médicale et de retard : ils sont numérotés et s'impriment en deux volets."
+              }
+            ]
+          },
+          {
+            "id": "finances",
+            "title": "Services et paiements",
+            "menu": "Services",
+            "blocks": [
+              {
+                "ul": [
+                  {
+                    "t": "Catalogue :",
+                    "x": "décrivez les services proposés (tenue, transport, restauration, fournitures, activités) avec leur tarif et leur périodicité."
+                  },
+                  {
+                    "t": "Frais de scolarité :",
+                    "x": "fixez les frais de l'année, pour tous les niveaux ou niveau par niveau."
+                  },
+                  {
+                    "t": "Souscriptions :",
+                    "x": "inscrivez un élève à un service, avec des précisions si besoin (arrêt de bus, taille, régime…)."
+                  },
+                  {
+                    "t": "Paiements :",
+                    "x": "encaissez un paiement et imprimez le reçu ; les impayés de l'année sont suivis automatiquement."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "communication",
+            "title": "Communication",
+            "menu": "Communication",
+            "blocks": [
+              {
+                "p": "Publiez des annonces au personnel et aux familles : elles sont diffusées dans l'application et sur le portail, sans SMS."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "partie-documents",
+        "label": "Partie 3",
+        "title": "Documents officiels et fin d'année",
+        "text": "Bulletins, attestations vérifiables et décisions de passage.",
+        "sections": [
+          {
+            "id": "bulletins",
+            "title": "Bulletins et relevés",
+            "menu": "Bulletins & relevés",
+            "blocks": [
+              {
+                "p": "Éditez les bulletins de la classe par période ou annuels, et les relevés de notes certifiés de chaque élève. Ils reprennent les informations de l'établissement, les moyennes et les appréciations."
+              }
+            ]
+          },
+          {
+            "id": "attestations",
+            "title": "Attestations et certificats",
+            "menu": "Attestations",
+            "blocks": [
+              {
+                "p": "Délivrez les documents officiels (certificat de scolarité, attestation…). Chacun est numéroté et porte un QR code."
+              },
+              {
+                "callout": {
+                  "l": "Vérification",
+                  "x": "Toute personne peut vérifier un document sur la page Vérifier de D-Scholar, en scannant le QR code ou en saisissant le code imprimé dessous : les informations affichées doivent être identiques au document papier."
+                }
+              }
+            ]
+          },
+          {
+            "id": "passages",
+            "title": "Passages, repêchages et rentrée",
+            "menu": "Passages & repêchages",
+            "blocks": [
+              {
+                "ol": [
+                  {
+                    "x": "En fin d'année, cliquez sur Calculer les décisions : D-Scholar propose admis, repêchage ou redoublement selon les seuils fixés dans les paramètres."
+                  },
+                  {
+                    "x": "Examinez les repêchages et arrêtez la décision finale (et l'orientation si besoin)."
+                  },
+                  {
+                    "x": "Préparez la rentrée : les passants et les redoublants sont réinscrits dans les classes de l'année suivante."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "closing": [
+      {
+        "id": "portail",
+        "title": "Le portail des familles",
+        "blocks": [
+          {
+            "p": "Après avoir activé leur accès avec le code remis par l'établissement, les parents et les élèves suivent la scolarité en temps réel : notes et bulletins publiés, emploi du temps, absences, paiements et annonces. Ils peuvent aussi justifier une absence. Un parent ne voit que ses propres enfants."
+          }
+        ]
+      },
+      {
+        "id": "roles",
+        "title": "Qui peut faire quoi ?",
+        "lead": "Tout le personnel peut consulter ; ce tableau indique qui peut modifier chaque module.",
+        "blocks": [
+          {
+            "table": {
+              "head": [
+                "Module",
+                "Direction",
+                "Censeur",
+                "Surveillant",
+                "Secrétariat",
+                "Intendant",
+                "Enseignant"
+              ],
+              "rows": [
+                [
+                  "Paramètres",
+                  "✓",
+                  "✓",
+                  "",
+                  "",
+                  "",
+                  ""
+                ],
+                [
+                  "Élèves & admissions",
+                  "✓",
+                  "✓",
+                  "",
+                  "✓",
+                  "",
+                  ""
+                ],
+                [
+                  "Notes",
+                  "✓",
+                  "✓",
+                  "",
+                  "",
+                  "",
+                  "✓"
+                ],
+                [
+                  "Assiduité",
+                  "✓",
+                  "✓",
+                  "✓",
+                  "",
+                  "",
+                  "✓"
+                ],
+                [
+                  "Billets",
+                  "✓",
+                  "✓",
+                  "✓",
+                  "",
+                  "",
+                  ""
+                ],
+                [
+                  "Passages",
+                  "✓",
+                  "✓",
+                  "",
+                  "",
+                  "",
+                  ""
+                ],
+                [
+                  "Paiements",
+                  "✓",
+                  "",
+                  "",
+                  "",
+                  "✓",
+                  ""
+                ],
+                [
+                  "Services",
+                  "✓",
+                  "",
+                  "",
+                  "✓",
+                  "✓",
+                  ""
+                ],
+                [
+                  "Documents",
+                  "✓",
+                  "✓",
+                  "",
+                  "✓",
+                  "",
+                  ""
+                ],
+                [
+                  "Annonces",
+                  "✓",
+                  "✓",
+                  "✓",
+                  "✓",
+                  "",
+                  ""
+                ],
+                [
+                  "Abonnement",
+                  "✓",
+                  "",
+                  "",
+                  "",
+                  "",
+                  ""
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "abonnement",
+        "title": "Abonnement",
+        "menu": "Abonnement",
+        "note": "direction uniquement",
+        "blocks": [
+          {
+            "p": "L'abonnement est mensuel et sans engagement. Chaque paiement couvre un mois ; vous pouvez payer plusieurs mois d'avance, en Mobile Money (Orange Money, Wave, Free Money) ou par carte. Avec 10 mois payés d'affilée, les vacances de votre calendrier scolaire sont offertes."
+          },
+          {
+            "p": "En cas de retard de paiement, l'établissement passe en lecture seule : les données restent consultables, mais plus modifiables jusqu'au règlement."
+          }
+        ]
+      },
+      {
+        "id": "support",
+        "title": "Assistance",
+        "menu": "Aide › Assistance / Support",
+        "blocks": [
+          {
+            "p": "Une question ou un problème ? Écrivez-nous depuis le formulaire d'assistance de l'application : nous vous répondons par email. Vous pouvez aussi nous joindre au +221 70 848 42 98 (téléphone et WhatsApp) ou à support@dembasolution.com."
+          }
+        ]
+      }
+    ]
   }
 }

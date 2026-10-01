@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, Check, FileBadge, GraduationCap, Route, School, Users } from 'lucide-react'
+import { ArrowRight, BookOpen, Check, FileBadge, GraduationCap, Route, School, Users } from 'lucide-react'
 import LanguageSelector from '@/components/LanguageSelector'
 import { PALIERS, PALIER_CODES } from '@/lib/abonnements/paliers'
 import { intlLocale } from '@/lib/i18n'
@@ -33,6 +33,9 @@ export default async function LandingPage() {
             <span className="font-heading text-lg font-semibold tracking-wide">D-Scholar</span>
           </span>
           <div className="flex items-center gap-2">
+            <Link href="/guide" className="hidden rounded-lg px-3 py-2 text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white sm:inline-flex">
+              {dict.guide.meta.guideNav}
+            </Link>
             <div className="rounded-lg bg-white/90">
               <LanguageSelector currentLang={locale} />
             </div>
@@ -96,6 +99,23 @@ export default async function LandingPage() {
               </div>
             )
           })}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+        <div className="flex flex-col items-start gap-5 rounded-2xl border border-surface-border bg-surface p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+          <div className="flex items-start gap-4">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
+              <BookOpen className="h-5 w-5" />
+            </span>
+            <div>
+              <h2 className="font-heading text-xl font-semibold text-foreground">{dict.guide.meta.needHelp}</h2>
+              <p className="mt-1 max-w-2xl text-sm leading-relaxed text-foreground-muted">{dict.guide.meta.needHelpText}</p>
+            </div>
+          </div>
+          <Link href="/guide" className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover">
+            {dict.guide.meta.readGuide} <ArrowRight className="h-4 w-4 rtl:-scale-x-100" />
+          </Link>
         </div>
       </section>
 

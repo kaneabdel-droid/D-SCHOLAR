@@ -13,6 +13,7 @@ import {
   FileText,
   GraduationCap,
   LayoutDashboard,
+  LifeBuoy,
   LogOut,
   Megaphone,
   Menu,
@@ -91,6 +92,10 @@ function sections(role: Role): Section[] {
           },
         ]
       : []),
+    {
+      titre: 'sectionAide',
+      items: [{ key: 'support', href: '/support', icon: LifeBuoy }],
+    },
   ]
 }
 

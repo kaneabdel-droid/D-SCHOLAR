@@ -101,6 +101,39 @@ export async function modifierDateEcheance(echeanceId: string, date: string): Pr
   return { success: true }
 }
 
+// Supprime une tentative de paiement échouée (aucun argent encaissé, n'a jamais
+// crédité d'échéance). Le filtre statut = 'echoue' dans la requête elle-même fait
+// foi : un paiement payé ou en attente n'est jamais supprimé, même appelé hors UI.
+export async function supprimerPaiementEchoue(paiementId: string): Promise<ActionResult> {
+  const authError = await checkAdmin()
+  if (authError) return { error: authError }
+
+  const supabase = createAdminClient()
+  const { data, error } = await withRetryResult(() =>
+    supabase.from('paiements_abonnement').delete().eq('id', paiementId).eq('statut', 'echoue').select('id')
+  )
+  if (error) return { error: error.message }
+  if (!data || data.length === 0) return { error: 'Seuls les paiements échoués peuvent être supprimés' }
+
+  revalidatePath('/admin/paiements')
+  return { success: true }
+}
+
+// Suppression groupée de toutes les tentatives échouées (nettoyage de l'historique).
+export async function supprimerTousPaiementsEchoues(): Promise<ActionResult & { nombre?: number }> {
+  const authError = await checkAdmin()
+  if (authError) return { error: authError }
+
+  const supabase = createAdminClient()
+  const { data, error } = await withRetryResult(() =>
+    supabase.from('paiements_abonnement').delete().eq('statut', 'echoue').select('id')
+  )
+  if (error) return { error: error.message }
+
+  revalidatePath('/admin/paiements')
+  return { success: true, nombre: data?.length ?? 0 }
+}
+
 export async function enregistrerProduitChariow(palier: PalierCode, pourcentage: number, productId: string): Promise<ActionResult> {
   const authError = await checkAdmin()
   if (authError) return { error: authError }

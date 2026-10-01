@@ -8,7 +8,7 @@ import { withRetry } from '@/utils/supabase/retry'
 // landing, démo publique (/decouvrir-dscholar), inscription (/tarifs), vérification
 // des documents (/verifier), activation des comptes familles (/activer) et /api
 // (webhooks et cron, authentifiés par leur propre secret).
-const ROUTES_PUBLIQUES = ['/login', '/forgot-password', '/update-password', '/auth', '/api', '/decouvrir-dscholar', '/tarifs', '/verifier', '/activer']
+const ROUTES_PUBLIQUES = ['/login', '/guide', '/forgot-password', '/update-password', '/auth', '/api', '/decouvrir-dscholar', '/tarifs', '/verifier', '/activer']
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })

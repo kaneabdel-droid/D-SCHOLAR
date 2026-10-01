@@ -121,7 +121,9 @@
     "anneeActive": "Year",
     "aucuneAnnee": "No active year",
     "passages": "Promotions & resits",
-    "billets": "Slips"
+    "billets": "Slips",
+    "sectionAide": "Help",
+    "support": "Help & Support"
   },
   "roles": {
     "direction": "Management",
@@ -1325,5 +1327,513 @@
       "finances": "Finances",
       "personnel": "Staff"
     }
+  },
+  "supportPage": {
+    "title": "Help & Support",
+    "subtitle": "A question or a problem? Our team will get back to you.",
+    "phone": "Phone / WhatsApp",
+    "hours": "Monday to Saturday, during office hours",
+    "call": "Call",
+    "email": "Email",
+    "emailDesc": "Email reply within 24 business hours",
+    "formTitle": "Send us a message",
+    "formDesc": "A bug, a question? Describe your request: we will reply directly by email.",
+    "subject": "Subject of your request",
+    "subjectPlaceholder": "E.g. issue with a report card, question about the subscription...",
+    "message": "Detailed message",
+    "messagePlaceholder": "Describe your issue or question in detail...",
+    "send": "Send message",
+    "sending": "Sending...",
+    "sentTitle": "Message sent!",
+    "sentDesc": "Our team has received your message and will reply by email as soon as possible.",
+    "sendAnother": "Send another message",
+    "errors": {
+      "required": "Please fill in all fields.",
+      "tooLong": "The subject (max 200 characters) or the message (max 5000 characters) is too long.",
+      "notAuthenticated": "Your session has expired. Please sign in again.",
+      "failed": "The message could not be sent. Please try again or email us at support@dembasolution.com."
+    }
+  },
+  "guide": {
+    "meta": {
+      "back": "Back to home",
+      "pageTitle": "User guide",
+      "toc": "Contents",
+      "menu": "Menu",
+      "needHelp": "Need help getting started?",
+      "needHelpText": "Our user guide explains, in plain words, how to set up your school in D-Scholar and then use it throughout the school year.",
+      "readGuide": "Read the guide",
+      "guideNav": "Guide"
+    },
+    "hero": {
+      "eyebrow": "User guide",
+      "title": "D-Scholar",
+      "subtitle": "Your school management solution: admissions, students, classes, teachers, timetables, grades, report cards, certificates, payments and the family portal.",
+      "intro": "This guide reads in three steps: first the setup, done once before the school year starts; then the day-to-day work; finally official documents and the end of the year. Each staff member only sees the menus of their role."
+    },
+    "overview": {
+      "id": "apercu",
+      "title": "D-Scholar in one minute",
+      "lead": "D-Scholar follows each student from application to leaving the school, and connects management, teachers and families.",
+      "cards": [
+        {
+          "t": "The reference data",
+          "x": "School year, levels, subjects, coefficients and rooms: described once, they feed every other screen."
+        },
+        {
+          "t": "The school career",
+          "x": "Admissions, enrolments, promotions and resits, year after year."
+        },
+        {
+          "t": "Teaching",
+          "x": "Classes, teachers, conflict-free timetables, grades and automatically calculated averages."
+        },
+        {
+          "t": "Families",
+          "x": "Parents and students follow grades, report cards, absences and payments on their portal."
+        }
+      ]
+    },
+    "parts": [
+      {
+        "id": "partie-parametrage",
+        "label": "Part 1",
+        "title": "Setting up the school",
+        "text": "Done once, before the school year starts, by management or the director of studies. The dashboard shows the remaining setup steps.",
+        "sections": [
+          {
+            "id": "etablissement",
+            "title": "School information",
+            "menu": "Settings › School",
+            "blocks": [
+              {
+                "p": "Enter the name, acronym, address, city, phone number and email: this information appears on report cards, transcripts and certificates."
+              },
+              {
+                "ul": [
+                  {
+                    "t": "Status:",
+                    "x": "in private schools, tuition is usually paid monthly; enter the number of tuition months (9 by default, October to June)."
+                  },
+                  {
+                    "t": "Portal access:",
+                    "x": "below the minimum level you choose, only parents get access; from that level on, students do too."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "annees",
+            "title": "School year and terms",
+            "menu": "Settings › School years",
+            "blocks": [
+              {
+                "p": "Create the year (for example 2026-2027) and split it into terms: trimesters in primary school, semesters in middle and high school."
+              },
+              {
+                "callout": {
+                  "l": "Important",
+                  "x": "Only one year is active at a time: it is the one every screen uses. The selector at the top of the screen lets you look at another year."
+                }
+              }
+            ]
+          },
+          {
+            "id": "referentiel",
+            "title": "Levels, subjects, coefficients and rooms",
+            "menu": "Settings",
+            "blocks": [
+              {
+                "ol": [
+                  {
+                    "t": "Levels & streams:",
+                    "x": "check the open levels, sorted in promotion order. Only the cycles included in your subscription can be opened; in high school, a level can have streams."
+                  },
+                  {
+                    "t": "Subjects:",
+                    "x": "list the subjects taught in the school."
+                  },
+                  {
+                    "t": "Coefficients:",
+                    "x": "enter each subject's coefficient, level by level (and stream by stream in high school)."
+                  },
+                  {
+                    "t": "Rooms:",
+                    "x": "declare the rooms; they are used to prevent timetable conflicts."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "evaluations",
+            "title": "Assessments, thresholds and remarks",
+            "menu": "Settings › Assessments / Remarks",
+            "blocks": [
+              {
+                "p": "Define the assessment types (homework, exam…) with the number expected per term and their weight: a subject's average is the average weighted by type."
+              },
+              {
+                "p": "Set the end-of-year thresholds: above the promotion threshold, the student moves up; between the two thresholds, they go to a resit; below, they repeat the year. The remarks scale assigns a remark based on the average: the remark used is the one with the highest threshold not above the student's average."
+              }
+            ]
+          },
+          {
+            "id": "utilisateurs",
+            "title": "Staff accounts",
+            "menu": "Settings › Users",
+            "blocks": [
+              {
+                "p": "Create an account for each staff member with their login email, their role and a temporary password (at least 8 characters) to give them. Each role only sees what concerns it: see the roles table at the end of this guide."
+              },
+              {
+                "p": "A teacher needs an account with the Teacher role to enter the grades of their courses."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "partie-quotidien",
+        "label": "Part 2",
+        "title": "Day to day",
+        "text": "The tasks repeated throughout the year, each done by the relevant role.",
+        "sections": [
+          {
+            "id": "admissions",
+            "title": "Admissions",
+            "menu": "Admissions",
+            "blocks": [
+              {
+                "p": "Record each application with the requested level, the previous school and its average. Move it forward: submitted, under review, test scheduled (test date and score), then admitted, waiting list or rejected."
+              },
+              {
+                "p": "An admitted applicant is enrolled in one click with the Enrol button: they become a student of the school."
+              }
+            ]
+          },
+          {
+            "id": "eleves",
+            "title": "Students and family access",
+            "menu": "Students",
+            "blocks": [
+              {
+                "p": "The student record gathers their identity, class, guardians and full school career. For a transfer, enter the school they left: it appears in their career."
+              },
+              {
+                "p": "To open the portal to a family, generate an access code from the record and give it to the parents (or the student). With this code, they create their own access on the Activate page, with no email or SMS."
+              }
+            ]
+          },
+          {
+            "id": "classes",
+            "title": "Classes, teachers and timetables",
+            "menu": "Classes · Teachers · Timetables",
+            "blocks": [
+              {
+                "ul": [
+                  {
+                    "t": "Classes:",
+                    "x": "create the year's classes, assign students and the teaching team; the class size is shown directly."
+                  },
+                  {
+                    "t": "Teachers:",
+                    "x": "a teacher can teach several subjects in several classes."
+                  },
+                  {
+                    "t": "Timetables:",
+                    "x": "enter time slots by class or by teacher. Conflicts (same class, same teacher or same room at the same time) are refused when entered."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "notes",
+            "title": "Grades and assessments",
+            "menu": "Grades & assessments",
+            "blocks": [
+              {
+                "ol": [
+                  {
+                    "x": "Choose the class, the subject and the term."
+                  },
+                  {
+                    "x": "Create the assessment and enter the grades; the counter shows how many grades are already entered."
+                  },
+                  {
+                    "x": "When the grades are ready, click Publish to families: they appear on the portal. You can withdraw the publication to make corrections."
+                  }
+                ]
+              },
+              {
+                "p": "Subject and overall averages are calculated automatically from the assessment types and the coefficients."
+              }
+            ]
+          },
+          {
+            "id": "vie-scolaire",
+            "title": "Attendance and slips",
+            "menu": "Attendance · Slips",
+            "blocks": [
+              {
+                "p": "Record the year's absences and late arrivals; families see them on the portal."
+              },
+              {
+                "p": "Supervision issues entry, exit, medical visit and late slips: they are numbered and print in two parts."
+              }
+            ]
+          },
+          {
+            "id": "finances",
+            "title": "Services and payments",
+            "menu": "Services",
+            "blocks": [
+              {
+                "ul": [
+                  {
+                    "t": "Catalogue:",
+                    "x": "describe the services offered (uniform, transport, catering, supplies, activities) with their price and frequency."
+                  },
+                  {
+                    "t": "Tuition fees:",
+                    "x": "set the year's fees, for all levels or level by level."
+                  },
+                  {
+                    "t": "Subscriptions:",
+                    "x": "sign a student up for a service, with details if needed (bus stop, size, diet…)."
+                  },
+                  {
+                    "t": "Payments:",
+                    "x": "record a payment and print the receipt; the year's unpaid amounts are tracked automatically."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "communication",
+            "title": "Communication",
+            "menu": "Communication",
+            "blocks": [
+              {
+                "p": "Publish announcements to staff and families: they are shown in the application and on the portal, with no SMS."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "partie-documents",
+        "label": "Part 3",
+        "title": "Official documents and end of year",
+        "text": "Report cards, verifiable certificates and promotion decisions.",
+        "sections": [
+          {
+            "id": "bulletins",
+            "title": "Report cards and transcripts",
+            "menu": "Report cards & transcripts",
+            "blocks": [
+              {
+                "p": "Produce the class report cards per term or for the whole year, and the certified transcript of each student. They include the school's information, the averages and the remarks."
+              }
+            ]
+          },
+          {
+            "id": "attestations",
+            "title": "Certificates",
+            "menu": "Certificates",
+            "blocks": [
+              {
+                "p": "Issue official documents (certificate of enrolment, attestation…). Each one is numbered and carries a QR code."
+              },
+              {
+                "callout": {
+                  "l": "Verification",
+                  "x": "Anyone can check a document on D-Scholar's Verify page, by scanning the QR code or entering the code printed below it: the information shown must match the paper document."
+                }
+              }
+            ]
+          },
+          {
+            "id": "passages",
+            "title": "Promotions, resits and the new school year",
+            "menu": "Promotions & resits",
+            "blocks": [
+              {
+                "ol": [
+                  {
+                    "x": "At the end of the year, click Calculate decisions: D-Scholar proposes promoted, resit or repeat according to the thresholds set in the settings."
+                  },
+                  {
+                    "x": "Review the resits and set the final decision (and the orientation if needed)."
+                  },
+                  {
+                    "x": "Prepare the new school year: promoted and repeating students are re-enrolled in the next year's classes."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "closing": [
+      {
+        "id": "portail",
+        "title": "The family portal",
+        "blocks": [
+          {
+            "p": "Once they have activated their access with the code given by the school, parents and students follow schooling in real time: published grades and report cards, timetable, absences, payments and announcements. They can also justify an absence. A parent only sees their own children."
+          }
+        ]
+      },
+      {
+        "id": "roles",
+        "title": "Who can do what?",
+        "lead": "All staff can view; this table shows who can edit each module.",
+        "blocks": [
+          {
+            "table": {
+              "head": [
+                "Module",
+                "Management",
+                "Director of studies",
+                "Head of discipline",
+                "Registry office",
+                "Bursar",
+                "Teacher"
+              ],
+              "rows": [
+                [
+                  "Settings",
+                  "✓",
+                  "✓",
+                  "",
+                  "",
+                  "",
+                  ""
+                ],
+                [
+                  "Students & admissions",
+                  "✓",
+                  "✓",
+                  "",
+                  "✓",
+                  "",
+                  ""
+                ],
+                [
+                  "Grades",
+                  "✓",
+                  "✓",
+                  "",
+                  "",
+                  "",
+                  "✓"
+                ],
+                [
+                  "Attendance",
+                  "✓",
+                  "✓",
+                  "✓",
+                  "",
+                  "",
+                  "✓"
+                ],
+                [
+                  "Slips",
+                  "✓",
+                  "✓",
+                  "✓",
+                  "",
+                  "",
+                  ""
+                ],
+                [
+                  "Promotions",
+                  "✓",
+                  "✓",
+                  "",
+                  "",
+                  "",
+                  ""
+                ],
+                [
+                  "Payments",
+                  "✓",
+                  "",
+                  "",
+                  "",
+                  "✓",
+                  ""
+                ],
+                [
+                  "Services",
+                  "✓",
+                  "",
+                  "",
+                  "✓",
+                  "✓",
+                  ""
+                ],
+                [
+                  "Documents",
+                  "✓",
+                  "✓",
+                  "",
+                  "✓",
+                  "",
+                  ""
+                ],
+                [
+                  "Announcements",
+                  "✓",
+                  "✓",
+                  "✓",
+                  "✓",
+                  "",
+                  ""
+                ],
+                [
+                  "Subscription",
+                  "✓",
+                  "",
+                  "",
+                  "",
+                  "",
+                  ""
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "abonnement",
+        "title": "Subscription",
+        "menu": "Subscription",
+        "note": "management only",
+        "blocks": [
+          {
+            "p": "The subscription is monthly with no commitment. Each payment covers one month; you can pay several months in advance, by Mobile Money (Orange Money, Wave, Free Money) or by card. With 10 consecutive months paid, the holidays of your school calendar are free."
+          },
+          {
+            "p": "If a payment is late, the school switches to read-only: data can still be viewed but no longer changed until payment is made."
+          }
+        ]
+      },
+      {
+        "id": "support",
+        "title": "Support",
+        "menu": "Help › Help & Support",
+        "blocks": [
+          {
+            "p": "A question or a problem? Write to us from the support form in the application: we reply by email. You can also reach us on +221 70 848 42 98 (phone and WhatsApp) or at support@dembasolution.com."
+          }
+        ]
+      }
+    ]
   }
 }
