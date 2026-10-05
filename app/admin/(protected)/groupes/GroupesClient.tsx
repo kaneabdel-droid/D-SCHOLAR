@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Link2, Plus, Unlink } from 'lucide-react'
+import { Link2, Plus, Unlink, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import Modal from '@/components/ui/Modal'
 import { btnIcon, btnPrimary, btnSecondary, inputClass, labelClass } from '@/components/ui/styles'
@@ -110,6 +110,38 @@ export function MembreActif({ userId, actif }: { userId: string; actif: boolean 
       className={`rounded-full px-2 py-0.5 text-xs font-semibold ${actif ? 'bg-success/10 text-success' : 'bg-foreground-muted/10 text-foreground-muted'}`}
     >
       {actif ? 'Actif' : 'Désactivé'}
+    </button>
+  )
+}
+
+export function SupprimerGroupeButton({ id, nom, estDemo }: { id: string; nom: string; estDemo: boolean }) {
+  const [enCours, startTransition] = useTransition()
+
+  const supprimer = () => {
+    const saisi = prompt(`Suppression DÉFINITIVE de « ${nom} » : les établissements seront détachés, et les comptes DG effacés.\n\nPour confirmer, tapez le nom exact du groupe :`)
+    if (saisi === null) return
+    if (saisi.trim() !== nom.trim()) {
+      toast.error('Le nom saisi ne correspond pas : suppression annulée')
+      return
+    }
+    startTransition(async () => {
+      const { supprimerGroupe } = await import('./actions')
+      const res = await supprimerGroupe(id, saisi)
+      if (res.error) toast.error(res.error)
+      else toast.success('Groupe supprimé')
+    })
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={supprimer}
+      disabled={enCours || estDemo}
+      title={estDemo ? 'Démonstration : à gérer depuis la page Démo' : 'Supprimer le groupe'}
+      aria-label="Supprimer le groupe"
+      className={`${btnIcon} hover:text-danger disabled:cursor-not-allowed disabled:opacity-40`}
+    >
+      <Trash2 className="h-4 w-4" />
     </button>
   )
 }

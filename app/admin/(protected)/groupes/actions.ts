@@ -81,3 +81,36 @@ export async function basculerMembre(userId: string, actif: boolean): Promise<Ac
   revalidatePath('/admin/groupes')
   return { success: true }
 }
+
+export async function supprimerGroupe(groupeId: string, nomSaisi: string): Promise<ActionResult> {
+  const authError = await checkAdmin()
+  if (authError) return { error: authError }
+
+  const supabase = createAdminClient()
+  const { data: groupe, error: gError } = await withRetryResult(() =>
+    supabase.from('groupes').select('id, nom, est_demo').eq('id', groupeId).single()
+  )
+  if (gError || !groupe) return { error: gError?.message ?? 'Groupe introuvable' }
+  if (groupe.est_demo) return { error: 'Groupe de démonstration : à gérer depuis la page Démo' }
+  if (nomSaisi.trim() !== groupe.nom.trim()) return { error: 'Le nom saisi ne correspond pas' }
+
+  // Get members' auth IDs to delete their accounts
+  const { data: membres } = await supabase.from('membres_groupe').select('user_id').eq('groupe_id', groupeId)
+  const comptes = (membres ?? []).map((m) => m.user_id)
+
+  const { error } = await withRetryResult(() => supabase.from('groupes').delete().eq('id', groupeId))
+  if (error) return { error: error.message }
+
+  let echecs = 0
+  for (const id of comptes) {
+    const { error: e } = await supabase.auth.admin.deleteUser(id)
+    if (e) {
+      echecs++
+      console.error('Suppression du compte', id, e.message)
+    }
+  }
+
+  revalidatePath('/admin/groupes')
+  if (echecs) return { error: `Groupe supprimé, mais ${echecs} compte(s) de connexion n'ont pas pu être supprimés (voir les logs)` }
+  return { success: true }
+}

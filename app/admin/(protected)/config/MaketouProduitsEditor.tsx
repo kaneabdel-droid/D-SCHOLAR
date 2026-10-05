@@ -1,0 +1,69 @@
+'use client'
+
+import { useState, useTransition } from 'react'
+import { toast } from 'sonner'
+import { PALIER_CODES, PALIERS, type PalierCode } from '@/lib/abonnements/paliers'
+import { enregistrerProduitMaketou } from '../actions'
+
+type Produit = { palier: string; pourcentage: number; product_id: string }
+const NOMS: Record<PalierCode, string> = { elementaire: 'Élémentaire', secondaire: 'Moyen-secondaire', complet: 'Cycle complet' }
+// Abonnement mensuel : un produit par palier (un mois, part 100 %). Laissé vide,
+// le produit vient de la variable d'environnement.
+const POURCENTAGES = [100] as const
+const VARIABLES: Record<PalierCode, string> = { elementaire: 'MAKETOU_PRODUCT_Scholar_Elem', secondaire: 'MAKETOU_PRODUCT_Scholar_MS', complet: 'MAKETOU_PRODUCT_Scholar_FULL' }
+
+export default function MaketouProduitsEditor({ produits }: { produits: Produit[] }) {
+  const cle = (p: string, pct: number) => `${p}_${pct}`
+  const [valeurs, setValeurs] = useState<Record<string, string>>(() =>
+    Object.fromEntries(produits.map((p) => [cle(p.palier, p.pourcentage), p.product_id]))
+  )
+  const [enCours, startTransition] = useTransition()
+
+  const enregistrer = (palier: PalierCode, pct: number) =>
+    startTransition(async () => {
+      const res = await enregistrerProduitMaketou(palier, pct, valeurs[cle(palier, pct)] ?? '')
+      if (res.error) toast.error(res.error)
+      else toast.success('Produit enregistré')
+    })
+
+  return (
+    <div className="mt-4 overflow-x-auto">
+      <table className="min-w-full text-sm">
+        <thead className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">
+          <tr>
+            <th className="py-2 text-start">Palier</th>
+            <th className="py-2 text-start">Variable de repli</th>
+            <th className="py-2 text-start">Prix du produit (1 mois)</th>
+            <th className="py-2 text-start">Product ID Maketou</th>
+            <th />
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-surface-border">
+          {PALIER_CODES.map((palier) =>
+            POURCENTAGES.map((pct) => (
+              <tr key={cle(palier, pct)}>
+                <td className="py-2 pe-3">{NOMS[palier]}</td>
+                <td className="py-2 pe-3 font-mono text-xs text-foreground-muted">{VARIABLES[palier]}</td>
+                <td className="py-2 pe-3 tabular-nums text-foreground-muted">{PALIERS[palier].prixMensuelFcfa.toLocaleString('fr-FR')} FCFA</td>
+                <td className="py-2 pe-3">
+                  <input
+                    value={valeurs[cle(palier, pct)] ?? ''}
+                    onChange={(e) => setValeurs((v) => ({ ...v, [cle(palier, pct)]: e.target.value }))}
+                    placeholder="variable d’environnement"
+                    disabled={enCours}
+                    className="w-full min-w-48 rounded-lg border border-surface-border bg-background px-2 py-1.5 font-mono text-xs"
+                  />
+                </td>
+                <td className="py-2">
+                  <button type="button" onClick={() => enregistrer(palier, pct)} disabled={enCours} className="rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground disabled:opacity-50">
+                    OK
+                  </button>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  )
+}

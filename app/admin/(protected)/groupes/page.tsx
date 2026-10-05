@@ -1,5 +1,5 @@
 import { createAdminClient } from '@/utils/supabase/admin'
-import { CreerGroupeButton, DetacherSite, MembreActif, RattacherSite } from './GroupesClient'
+import { CreerGroupeButton, DetacherSite, MembreActif, RattacherSite, SupprimerGroupeButton } from './GroupesClient'
 
 // Groupes scolaires : plusieurs établissements sous un même propriétaire / DG,
 // qui dispose de la vue groupe (/groupe). Chaque site garde son abonnement.
@@ -28,6 +28,7 @@ export default async function AdminGroupesPage() {
             <div className="flex flex-wrap items-center gap-3 border-b border-surface-border px-5 py-4">
               <h2 className="flex-1 font-heading text-base font-semibold">{g.nom} {g.est_demo && <span className="ms-2 rounded-full bg-warning/10 px-2 py-0.5 text-xs text-warning">démo</span>}</h2>
               <RattacherSite groupeId={g.id} libres={libres.map((e) => ({ id: e.id, nom: e.nom }))} />
+              <SupprimerGroupeButton id={g.id} nom={g.nom} estDemo={g.est_demo} />
             </div>
             <div className="grid gap-6 p-5 md:grid-cols-2">
               <div>

@@ -193,3 +193,20 @@ export async function enregistrerProduitChariow(palier: PalierCode, pourcentage:
   revalidatePath('/admin/config')
   return { success: true }
 }
+
+export async function enregistrerProduitMaketou(palier: PalierCode, pourcentage: number, productId: string): Promise<ActionResult> {
+  const authError = await checkAdmin()
+  if (authError) return { error: authError }
+  if (!PALIER_CODES.includes(palier) || ![100, 50, 25].includes(pourcentage)) return { error: 'Palier ou pourcentage invalide' }
+
+  const supabase = createAdminClient()
+  const { error } = productId.trim()
+    ? await withRetryResult(() =>
+        supabase.from('maketou_produits').upsert({ palier, pourcentage, product_id: productId.trim(), updated_at: new Date().toISOString() })
+      )
+    : await withRetryResult(() => supabase.from('maketou_produits').delete().eq('palier', palier).eq('pourcentage', pourcentage))
+  if (error) return { error: error.message }
+
+  revalidatePath('/admin/config')
+  return { success: true }
+}
