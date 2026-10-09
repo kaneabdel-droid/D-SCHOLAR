@@ -1,7 +1,7 @@
 import type { PalierCode } from './paliers'
 import type { Pourcentage } from './plans'
 
-export type ProviderId = 'chariow' | 'moneroo'
+export type ProviderId = 'chariow' | 'moneroo' | 'maketou'
 
 export type InitierPaiementParams = {
   paiementId: string
