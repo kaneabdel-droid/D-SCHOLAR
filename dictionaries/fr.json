@@ -104,6 +104,7 @@
     "sectionPedagogie": "Pédagogie",
     "sectionVieScolaire": "Vie scolaire",
     "sectionAdministration": "Administration",
+    "sectionFinances": "Finances & Trésorerie",
     "dashboard": "Tableau de bord",
     "admissions": "Admissions",
     "eleves": "Élèves",
@@ -118,10 +119,14 @@
     "attestations": "Attestations",
     "parametres": "Paramètres",
     "abonnement": "Abonnement",
+    "facturation": "Facturation",
+    "tresorerie": "Comptabilité",
     "anneeActive": "Année",
     "aucuneAnnee": "Aucune année active",
     "passages": "Passages & repêchages",
     "billets": "Billets",
+    "sectionRh": "Administration & RH",
+    "rh": "Ressources Humaines",
     "sectionAide": "Aide",
     "support": "Assistance / Support"
   },
@@ -137,12 +142,15 @@
     "prescolaire": "Préscolaire",
     "elementaire": "Élémentaire",
     "moyen": "Moyen (collège)",
-    "secondaire": "Secondaire (lycée)"
+    "secondaire": "Secondaire (lycée)",
+    "professionnel": "Professionnel (Métiers)",
+    "superieur": "Supérieur (Licence/Master)"
   },
   "paliers": {
     "elementaire": "Élémentaire",
     "secondaire": "Moyen-secondaire",
-    "complet": "Cycle complet"
+    "complet": "Cycle complet",
+    "superieur": "Supérieur"
   },
   "theme": {
     "label": "Thème",
@@ -205,6 +213,157 @@
       "evaluations": "Évaluations",
       "appreciations": "Appréciations"
     }
+  },
+  "tresorerie": {
+    "title": "Comptabilité & Trésorerie",
+    "subtitle": "Suivi des flux financiers de l'établissement (recettes et dépenses).",
+    "tabs": {
+      "bilan": "Tableau de bord & Bilan",
+      "comptes": "Comptes",
+      "charges": "Catégories de charges",
+      "mouvements": "Mouvements"
+    },
+    "comptes": {
+      "title": "Comptes de trésorerie",
+      "newButton": "Nouveau compte",
+      "newTitle": "Créer un compte",
+      "nom": "Nom du compte",
+      "type": "Type de compte",
+      "types": {
+        "caisse": "Caisse",
+        "banque": "Banque",
+        "mobile_money": "Mobile Money"
+      },
+      "soldeInitial": "Solde initial (FCFA)",
+      "soldeActuel": "Solde actuel (FCFA)"
+    },
+    "charges": {
+      "title": "Catégories de charges",
+      "newButton": "Nouvelle catégorie",
+      "newTitle": "Créer une catégorie",
+      "nom": "Nom de la charge"
+    },
+    "mouvements": {
+      "title": "Mouvements de trésorerie",
+      "newButton": "Nouveau mouvement",
+      "newTitle": "Saisir un mouvement",
+      "type": "Type d'opération",
+      "types": {
+        "recette": "Recette",
+        "depense": "Dépense",
+        "virement_entrant": "Virement entrant",
+        "virement_sortant": "Virement sortant"
+      },
+      "compte": "Compte",
+      "categorie": "Catégorie (dépense)",
+      "montant": "Montant (FCFA)",
+      "date": "Date",
+      "libelle": "Libellé",
+      "piece": "Référence (pièce)"
+    },
+    "bilan": {
+      "title": "Bilan & Rentabilité",
+      "recettes": "Total Recettes",
+      "depenses": "Total Dépenses",
+      "resultat": "Résultat Net"
+    }
+  },
+  "facturation": {
+    "title": "Facturation & Encaissements",
+    "subtitle": "Gérez les factures et paiements des élèves de l'établissement.",
+    "tabs": {
+      "factures": "Factures",
+      "paiements": "Encaissements"
+    },
+    "factures": {
+      "title": "Factures des élèves",
+      "newButton": "Nouvelle facture",
+      "newTitle": "Créer une facture",
+      "eleve": "Élève",
+      "motif": "Motif",
+      "montant": "Montant (FCFA)",
+      "echeance": "Date d'échéance",
+      "statut": "Statut",
+      "statuts": {
+        "en_attente": "En attente",
+        "partiel": "Paiement partiel",
+        "paye": "Payée"
+      }
+    },
+    "paiements": {
+      "title": "Paiements & Encaissements",
+      "newButton": "Encaisser un paiement",
+      "newTitle": "Enregistrer un paiement",
+      "eleve": "Élève",
+      "facture": "Facture liée",
+      "montant": "Montant encaissé",
+      "date": "Date de paiement",
+      "mode": "Moyen de paiement",
+      "modes": {
+        "especes": "Espèces",
+        "mobile_money": "Mobile Money",
+        "virement": "Virement",
+        "cheque": "Chèque",
+        "autre": "Autre"
+      },
+      "recu": "N° Reçu"
+    }
+  },
+  "rh": {
+    "title": "Ressources Humaines",
+    "subtitle": "Gérez le personnel, les enseignants et les salaires.",
+    "tabs": {
+      "personnel": "Personnel & Enseignants",
+      "salaires": "Salaires & Vacations"
+    },
+    "personnel": {
+      "title": "Annuaire du Personnel",
+      "newButton": "Nouveau membre",
+      "newTitle": "Ajouter au personnel",
+      "nom": "Nom Complet",
+      "contact": "Contact",
+      "statut": "Statut",
+      "salaireBase": "Salaire de base / Mensuel",
+      "tauxHoraire": "Taux horaire (Vacataire)"
+    },
+    "salaires": {
+      "title": "Paiements des Salaires",
+      "newButton": "Nouveau paiement",
+      "newTitle": "Enregistrer un paiement de salaire",
+      "employe": "Employé / Enseignant",
+      "mois": "Mois concerné",
+      "montant": "Montant payé",
+      "date": "Date de paiement",
+      "mode": "Mode de paiement"
+    }
+  },
+  "assiduite": {
+    "title": "Assiduité",
+    "subtitle": "Absences et retards de l'année choisie.",
+    "date": "Date",
+    "type": "Type",
+    "duree": "Durée",
+    "justification": "Justification",
+    "motif": "Motif",
+    "types": {
+      "absence": "Absence",
+      "retard": "Retard"
+    },
+    "heures": "{n} h",
+    "minutes": "{n} min",
+    "justifiee": "Justifiée",
+    "nonJustifiee": "Non justifiée",
+    "classement": "Élèves les plus absents",
+    "totalHeures": "{n} h au total",
+    "nonJustifiees": "{n} h non justifiées",
+    "empty": "Aucune absence enregistrée.",
+    "derniers": "{n} derniers événements",
+    "faireAppel": "Faire l'appel",
+    "present": "Présent",
+    "dureeSeance": "Durée de la séance (h)",
+    "appelOk": "Appel enregistré : {n} absence(s) ou retard(s)",
+    "demandeFamille": "Justification de la famille :",
+    "confirmSuppression": "Supprimer cette absence ?"
   },
   "etablissement": {
     "title": "Informations de l'établissement",
@@ -381,7 +540,8 @@
     "pricingSecondaire": "Moyen et secondaire : collège et lycée",
     "pricingComplet": "Tous les cycles, du préscolaire à la terminale",
     "footer": "D-Scholar, une solution DembaSolution.",
-    "perMonth": "FCFA / mois"
+    "perMonth": "FCFA / mois",
+    "pricingSuperieur": "Licence / Master"
   },
   "abonnement": {
     "title": "Abonnement",
@@ -670,34 +830,6 @@
     "debut": "Début",
     "fin": "Fin",
     "ajouter": "Ajouter"
-  },
-  "assiduite": {
-    "title": "Assiduité",
-    "subtitle": "Absences et retards de l'année choisie.",
-    "date": "Date",
-    "type": "Type",
-    "duree": "Durée",
-    "justification": "Justification",
-    "motif": "Motif",
-    "types": {
-      "absence": "Absence",
-      "retard": "Retard"
-    },
-    "heures": "{n} h",
-    "minutes": "{n} min",
-    "justifiee": "Justifiée",
-    "nonJustifiee": "Non justifiée",
-    "classement": "Élèves les plus absents",
-    "totalHeures": "{n} h au total",
-    "nonJustifiees": "{n} h non justifiées",
-    "empty": "Aucune absence enregistrée.",
-    "derniers": "{n} derniers événements",
-    "faireAppel": "Faire l'appel",
-    "present": "Présent",
-    "dureeSeance": "Durée de la séance (h)",
-    "appelOk": "Appel enregistré : {n} absence(s) ou retard(s)",
-    "demandeFamille": "Justification de la famille :",
-    "confirmSuppression": "Supprimer cette absence ?"
   },
   "passages": {
     "title": "Passages & repêchages",

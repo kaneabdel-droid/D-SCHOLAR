@@ -123,7 +123,11 @@
     "passages": "Promotions & resits",
     "billets": "Slips",
     "sectionAide": "Help",
-    "support": "Help & Support"
+    "support": "Help & Support",
+    "facturation": "Facturation",
+    "tresorerie": "Comptabilité",
+    "sectionRh": "Administration & RH",
+    "rh": "Ressources Humaines"
   },
   "roles": {
     "direction": "Management",
@@ -137,12 +141,15 @@
     "prescolaire": "Pre-school",
     "elementaire": "Primary",
     "moyen": "Lower secondary",
-    "secondaire": "Upper secondary"
+    "secondaire": "Upper secondary",
+    "professionnel": "Professionnel (Métiers)",
+    "superieur": "Supérieur (Licence/Master)"
   },
   "paliers": {
     "elementaire": "Primary",
     "secondaire": "Middle & high school",
-    "complet": "Full cycle"
+    "complet": "Full cycle",
+    "superieur": "Supérieur"
   },
   "theme": {
     "label": "Theme",
@@ -381,7 +388,8 @@
     "pricingSecondaire": "Middle and high school",
     "pricingComplet": "Every cycle, from pre-school to final year",
     "footer": "D-Scholar, a DembaSolution product.",
-    "perMonth": "FCFA / month"
+    "perMonth": "FCFA / month",
+    "pricingSuperieur": "Licence / Master"
   },
   "abonnement": {
     "title": "Subscription",
@@ -672,32 +680,32 @@
     "ajouter": "Add"
   },
   "assiduite": {
-    "title": "Attendance",
-    "subtitle": "Absences and late arrivals for the selected year.",
+    "title": "Assiduité",
+    "subtitle": "Absences et retards de l'année choisie.",
     "date": "Date",
     "type": "Type",
-    "duree": "Duration",
-    "justification": "Excuse",
-    "motif": "Reason",
+    "duree": "Durée",
+    "justification": "Justification",
+    "motif": "Motif",
     "types": {
       "absence": "Absence",
-      "retard": "Late"
+      "retard": "Retard"
     },
     "heures": "{n} h",
     "minutes": "{n} min",
-    "justifiee": "Excused",
-    "nonJustifiee": "Unexcused",
-    "classement": "Most absent students",
-    "totalHeures": "{n} h in total",
-    "nonJustifiees": "{n} h unexcused",
-    "empty": "No absence recorded.",
-    "derniers": "Latest {n} events",
-    "faireAppel": "Take attendance",
-    "present": "Present",
-    "dureeSeance": "Lesson length (h)",
-    "appelOk": "Attendance saved: {n} absence(s) or late arrival(s)",
-    "demandeFamille": "Family's excuse:",
-    "confirmSuppression": "Delete this absence?"
+    "justifiee": "Justifiée",
+    "nonJustifiee": "Non justifiée",
+    "classement": "Élèves les plus absents",
+    "totalHeures": "{n} h au total",
+    "nonJustifiees": "{n} h non justifiées",
+    "empty": "Aucune absence enregistrée.",
+    "derniers": "{n} derniers événements",
+    "faireAppel": "Faire l'appel",
+    "present": "Présent",
+    "dureeSeance": "Durée de la séance (h)",
+    "appelOk": "Appel enregistré : {n} absence(s) ou retard(s)",
+    "demandeFamille": "Justification de la famille :",
+    "confirmSuppression": "Supprimer cette absence ?"
   },
   "passages": {
     "title": "Promotions & resits",
@@ -1852,5 +1860,128 @@
     "elementaire": "Headteacher",
     "moyen": "Vice-principal",
     "secondaire": "Principal"
+  },
+  "tresorerie": {
+    "title": "Comptabilité & Trésorerie",
+    "subtitle": "Suivi des flux financiers de l'établissement (recettes et dépenses).",
+    "tabs": {
+      "bilan": "Tableau de bord & Bilan",
+      "comptes": "Comptes",
+      "charges": "Catégories de charges",
+      "mouvements": "Mouvements"
+    },
+    "comptes": {
+      "title": "Comptes de trésorerie",
+      "newButton": "Nouveau compte",
+      "newTitle": "Créer un compte",
+      "nom": "Nom du compte",
+      "type": "Type de compte",
+      "types": {
+        "caisse": "Caisse",
+        "banque": "Banque",
+        "mobile_money": "Mobile Money"
+      },
+      "soldeInitial": "Solde initial (FCFA)",
+      "soldeActuel": "Solde actuel (FCFA)"
+    },
+    "charges": {
+      "title": "Catégories de charges",
+      "newButton": "Nouvelle catégorie",
+      "newTitle": "Créer une catégorie",
+      "nom": "Nom de la charge"
+    },
+    "mouvements": {
+      "title": "Mouvements de trésorerie",
+      "newButton": "Nouveau mouvement",
+      "newTitle": "Saisir un mouvement",
+      "type": "Type d'opération",
+      "types": {
+        "recette": "Recette",
+        "depense": "Dépense",
+        "virement_entrant": "Virement entrant",
+        "virement_sortant": "Virement sortant"
+      },
+      "compte": "Compte",
+      "categorie": "Catégorie (dépense)",
+      "montant": "Montant (FCFA)",
+      "date": "Date",
+      "libelle": "Libellé",
+      "piece": "Référence (pièce)"
+    },
+    "bilan": {
+      "title": "Bilan & Rentabilité",
+      "recettes": "Total Recettes",
+      "depenses": "Total Dépenses",
+      "resultat": "Résultat Net"
+    }
+  },
+  "facturation": {
+    "title": "Facturation & Encaissements",
+    "subtitle": "Gérez les factures et paiements des élèves de l'établissement.",
+    "tabs": {
+      "factures": "Factures",
+      "paiements": "Encaissements"
+    },
+    "factures": {
+      "title": "Factures des élèves",
+      "newButton": "Nouvelle facture",
+      "newTitle": "Créer une facture",
+      "eleve": "Élève",
+      "motif": "Motif",
+      "montant": "Montant (FCFA)",
+      "echeance": "Date d'échéance",
+      "statut": "Statut",
+      "statuts": {
+        "en_attente": "En attente",
+        "partiel": "Paiement partiel",
+        "paye": "Payée"
+      }
+    },
+    "paiements": {
+      "title": "Paiements & Encaissements",
+      "newButton": "Encaisser un paiement",
+      "newTitle": "Enregistrer un paiement",
+      "eleve": "Élève",
+      "facture": "Facture liée",
+      "montant": "Montant encaissé",
+      "date": "Date de paiement",
+      "mode": "Moyen de paiement",
+      "modes": {
+        "especes": "Espèces",
+        "mobile_money": "Mobile Money",
+        "virement": "Virement",
+        "cheque": "Chèque",
+        "autre": "Autre"
+      },
+      "recu": "N° Reçu"
+    }
+  },
+  "rh": {
+    "title": "Ressources Humaines",
+    "subtitle": "Gérez le personnel, les enseignants et les salaires.",
+    "tabs": {
+      "personnel": "Personnel & Enseignants",
+      "salaires": "Salaires & Vacations"
+    },
+    "personnel": {
+      "title": "Annuaire du Personnel",
+      "newButton": "Nouveau membre",
+      "newTitle": "Ajouter au personnel",
+      "nom": "Nom Complet",
+      "contact": "Contact",
+      "statut": "Statut",
+      "salaireBase": "Salaire de base / Mensuel",
+      "tauxHoraire": "Taux horaire (Vacataire)"
+    },
+    "salaires": {
+      "title": "Paiements des Salaires",
+      "newButton": "Nouveau paiement",
+      "newTitle": "Enregistrer un paiement de salaire",
+      "employe": "Employé / Enseignant",
+      "mois": "Mois concerné",
+      "montant": "Montant payé",
+      "date": "Date de paiement",
+      "mode": "Mode de paiement"
+    }
   }
 }

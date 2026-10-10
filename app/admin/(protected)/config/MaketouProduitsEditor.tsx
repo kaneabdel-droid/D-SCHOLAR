@@ -6,11 +6,11 @@ import { PALIER_CODES, PALIERS, type PalierCode } from '@/lib/abonnements/palier
 import { enregistrerProduitMaketou } from '../actions'
 
 type Produit = { palier: string; pourcentage: number; product_id: string }
-const NOMS: Record<PalierCode, string> = { elementaire: 'Élémentaire', secondaire: 'Moyen-secondaire', complet: 'Cycle complet' }
+const NOMS: Record<PalierCode, string> = { elementaire: 'Élémentaire', secondaire: 'Moyen-secondaire', complet: 'Cycle complet', superieur: 'Supérieur' }
 // Abonnement mensuel : un produit par palier (un mois, part 100 %). Laissé vide,
 // le produit vient de la variable d'environnement.
 const POURCENTAGES = [100] as const
-const VARIABLES: Record<PalierCode, string> = { elementaire: 'MAKETOU_PRODUCT_Scholar_Elem', secondaire: 'MAKETOU_PRODUCT_Scholar_MS', complet: 'MAKETOU_PRODUCT_Scholar_FULL' }
+const VARIABLES: Record<PalierCode, string> = { elementaire: 'MAKETOU_PRODUCT_Scholar_Elem', secondaire: 'MAKETOU_PRODUCT_Scholar_MS', complet: 'MAKETOU_PRODUCT_Scholar_FULL', superieur: 'MAKETOU_PRODUCT_Scholar_SUP' }
 
 export default function MaketouProduitsEditor({ produits }: { produits: Produit[] }) {
   const cle = (p: string, pct: number) => `${p}_${pct}`

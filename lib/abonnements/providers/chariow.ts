@@ -25,6 +25,7 @@ const VARIABLES_PRODUIT: Record<PalierCode, string> = {
   elementaire: 'CHARIOW_PRODUCT_Scholar_Elem',
   secondaire: 'CHARIOW_PRODUCT_Scholar_MS',
   complet: 'CHARIOW_PRODUCT_Scholar_FULL',
+  superieur: 'CHARIOW_PRODUCT_Scholar_SUP',
 }
 
 async function idProduit(palier: PalierCode, pourcentage: Pourcentage): Promise<string | null> {

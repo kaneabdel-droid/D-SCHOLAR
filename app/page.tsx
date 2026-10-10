@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { ArrowRight, BookOpen, Check, FileBadge, GraduationCap, Route, School, Users } from 'lucide-react'
 import LanguageSelector from '@/components/LanguageSelector'
-import { PALIERS, PALIER_CODES } from '@/lib/abonnements/paliers'
+import { PALIERS, PALIER_CODES, type PalierCode } from '@/lib/abonnements/paliers'
 import { intlLocale } from '@/lib/i18n'
 import { getDictionary, getLocale } from '@/dictionaries'
 
@@ -17,7 +17,7 @@ export default async function LandingPage() {
     { icon: Users, titre: t.features.famillesTitle, texte: t.features.famillesText },
   ]
 
-  const descriptions = { elementaire: t.pricingElementaire, secondaire: t.pricingSecondaire, complet: t.pricingComplet }
+  const descriptions: Record<PalierCode, string> = { elementaire: t.pricingElementaire, secondaire: t.pricingSecondaire, complet: t.pricingComplet, superieur: t.pricingSuperieur || "Licence / Master" }
 
   return (
     <div className="min-h-dvh bg-background">

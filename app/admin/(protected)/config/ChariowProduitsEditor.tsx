@@ -6,11 +6,11 @@ import { PALIER_CODES, PALIERS, type PalierCode } from '@/lib/abonnements/palier
 import { enregistrerProduitChariow } from '../actions'
 
 type Produit = { palier: string; pourcentage: number; product_id: string }
-const NOMS: Record<PalierCode, string> = { elementaire: 'Élémentaire', secondaire: 'Moyen-secondaire', complet: 'Cycle complet' }
+const NOMS: Record<PalierCode, string> = { elementaire: 'Élémentaire', secondaire: 'Moyen-secondaire', complet: 'Cycle complet', superieur: 'Supérieur' }
 // Abonnement mensuel : un produit par palier (un mois, part 100 %). Laissé vide,
 // le produit vient de la variable d'environnement.
 const POURCENTAGES = [100] as const
-const VARIABLES: Record<PalierCode, string> = { elementaire: 'CHARIOW_PRODUCT_Scholar_Elem', secondaire: 'CHARIOW_PRODUCT_Scholar_MS', complet: 'CHARIOW_PRODUCT_Scholar_FULL' }
+const VARIABLES: Record<PalierCode, string> = { elementaire: 'CHARIOW_PRODUCT_Scholar_Elem', secondaire: 'CHARIOW_PRODUCT_Scholar_MS', complet: 'CHARIOW_PRODUCT_Scholar_FULL', superieur: 'CHARIOW_PRODUCT_Scholar_SUP' }
 
 export default function ChariowProduitsEditor({ produits }: { produits: Produit[] }) {
   const cle = (p: string, pct: number) => `${p}_${pct}`

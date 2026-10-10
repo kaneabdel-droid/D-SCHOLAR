@@ -19,7 +19,7 @@ export default async function TarifsPage({ searchParams }: { searchParams: Promi
     prix: PALIERS[p].prixMensuelFcfa,
     plans: PLAN_CODES.map((plan) => ({ plan, tranches: montantsTranches(p, plan) })),
   }))
-  const descriptions = { elementaire: dict.landing.pricingElementaire, secondaire: dict.landing.pricingSecondaire, complet: dict.landing.pricingComplet }
+  const descriptions: Record<PalierCode, string> = { elementaire: dict.landing.pricingElementaire, secondaire: dict.landing.pricingSecondaire, complet: dict.landing.pricingComplet, superieur: dict.landing.pricingSuperieur || "Licence / Master" }
 
   return (
     <div className="min-h-dvh bg-background">

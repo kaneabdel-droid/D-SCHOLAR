@@ -88,7 +88,7 @@ export async function updateSession(request: NextRequest) {
         .then(({ data }: any) => data.user)
     ).catch(() => null)
 
-    if (isAdminEmail(sharedAdminUser?.email) || isAdminEmail(user?.email)) {
+    if (isAdminEmail((sharedAdminUser as any)?.email) || isAdminEmail((user as any)?.email)) {
       return supabaseResponse
     }
 

@@ -6,7 +6,7 @@ import { Lock, LockOpen, Trash2 } from 'lucide-react'
 import { PALIER_CODES, type PalierCode } from '@/lib/abonnements/paliers'
 import { changerPalier, changerStatutEtablissement, supprimerEtablissement } from './actions'
 
-const NOMS_PALIERS: Record<PalierCode, string> = { elementaire: 'Élémentaire', secondaire: 'Secondaire', complet: 'Cycle complet' }
+const NOMS_PALIERS: Record<PalierCode, string> = { elementaire: 'Élémentaire', secondaire: 'Secondaire', complet: 'Cycle complet', superieur: 'Supérieur' }
 
 // Deux cellules du tableau admin : palier (select) et verrou (statut actif / suspendu).
 export default function EtablissementActions({ id, palier, statut }: { id: string; palier: PalierCode; statut: 'actif' | 'suspendu' }) {

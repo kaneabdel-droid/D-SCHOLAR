@@ -18,10 +18,10 @@ create index if not exists idx_support_messages_etablissement_id on public.suppo
 
 alter table public.support_messages enable row level security;
 
--- Tout membre du personnel de l'établissement peut écrire au support et relire ses
--- demandes ; ni modification ni suppression (statut géré par l'admin, service role).
+drop policy if exists support_messages_select on public.support_messages;
 create policy support_messages_select on public.support_messages for select
   using (etablissement_id = public.current_etablissement_id());
 
+drop policy if exists support_messages_insert on public.support_messages;
 create policy support_messages_insert on public.support_messages for insert
   with check (user_id = auth.uid() and etablissement_id = public.current_etablissement_id());

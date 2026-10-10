@@ -84,6 +84,19 @@ function sections(role: Role): Section[] {
     ...(parametrage
       ? [
           {
+            titre: 'sectionFinances' as CleNav,
+            items: [
+              { key: 'facturation' as CleNav, href: '/facturation', icon: CreditCard },
+              { key: 'tresorerie' as CleNav, href: '/tresorerie', icon: FileText },
+            ],
+          },
+          {
+            titre: 'sectionRh' as CleNav,
+            items: [
+              { key: 'rh' as CleNav, href: '/rh', icon: Users },
+            ],
+          },
+          {
             titre: 'sectionAdministration' as CleNav,
             items: [
               { key: 'parametres' as CleNav, href: '/parametres', icon: Settings },

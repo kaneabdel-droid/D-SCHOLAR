@@ -123,7 +123,11 @@
     "passages": "الانتقال والاستدراك",
     "billets": "الأذونات",
     "sectionAide": "المساعدة",
-    "support": "المساعدة والدعم"
+    "support": "المساعدة والدعم",
+    "facturation": "Facturation",
+    "tresorerie": "Comptabilité",
+    "sectionRh": "Administration & RH",
+    "rh": "Ressources Humaines"
   },
   "roles": {
     "direction": "الإدارة",
@@ -137,12 +141,15 @@
     "prescolaire": "التعليم الأولي",
     "elementaire": "التعليم الابتدائي",
     "moyen": "التعليم المتوسط (الإعدادي)",
-    "secondaire": "التعليم الثانوي"
+    "secondaire": "التعليم الثانوي",
+    "professionnel": "Professionnel (Métiers)",
+    "superieur": "Supérieur (Licence/Master)"
   },
   "paliers": {
     "elementaire": "ابتدائي",
     "secondaire": "الإعدادي-الثانوي",
-    "complet": "المسار الكامل"
+    "complet": "المسار الكامل",
+    "superieur": "Supérieur"
   },
   "theme": {
     "label": "المظهر",
@@ -381,7 +388,8 @@
     "pricingSecondaire": "الإعدادي والثانوي",
     "pricingComplet": "جميع المراحل، من الأولي إلى النهائي",
     "footer": "D-Scholar، حل من DembaSolution.",
-    "perMonth": "فرنك CFA / شهر"
+    "perMonth": "فرنك CFA / شهر",
+    "pricingSuperieur": "Licence / Master"
   },
   "abonnement": {
     "title": "الاشتراك",
@@ -672,32 +680,32 @@
     "ajouter": "إضافة"
   },
   "assiduite": {
-    "title": "المواظبة",
-    "subtitle": "الغيابات والتأخرات في السنة المختارة.",
-    "date": "التاريخ",
-    "type": "النوع",
-    "duree": "المدة",
-    "justification": "التبرير",
-    "motif": "السبب",
+    "title": "Assiduité",
+    "subtitle": "Absences et retards de l'année choisie.",
+    "date": "Date",
+    "type": "Type",
+    "duree": "Durée",
+    "justification": "Justification",
+    "motif": "Motif",
     "types": {
-      "absence": "غياب",
-      "retard": "تأخر"
+      "absence": "Absence",
+      "retard": "Retard"
     },
-    "heures": "{n} ساعة",
-    "minutes": "{n} دقيقة",
-    "justifiee": "مبرر",
-    "nonJustifiee": "غير مبرر",
-    "classement": "التلاميذ الأكثر غيابًا",
-    "totalHeures": "{n} ساعة إجمالًا",
-    "nonJustifiees": "{n} ساعة غير مبررة",
-    "empty": "لا يوجد أي غياب مسجل.",
-    "derniers": "آخر {n} حدث",
-    "faireAppel": "تسجيل الحضور",
-    "present": "حاضر",
-    "dureeSeance": "مدة الحصة (ساعة)",
-    "appelOk": "تم تسجيل الحضور: {n} غياب أو تأخر",
-    "demandeFamille": "تبرير الأسرة:",
-    "confirmSuppression": "حذف هذا الغياب؟"
+    "heures": "{n} h",
+    "minutes": "{n} min",
+    "justifiee": "Justifiée",
+    "nonJustifiee": "Non justifiée",
+    "classement": "Élèves les plus absents",
+    "totalHeures": "{n} h au total",
+    "nonJustifiees": "{n} h non justifiées",
+    "empty": "Aucune absence enregistrée.",
+    "derniers": "{n} derniers événements",
+    "faireAppel": "Faire l'appel",
+    "present": "Présent",
+    "dureeSeance": "Durée de la séance (h)",
+    "appelOk": "Appel enregistré : {n} absence(s) ou retard(s)",
+    "demandeFamille": "Justification de la famille :",
+    "confirmSuppression": "Supprimer cette absence ?"
   },
   "passages": {
     "title": "الانتقال والاستدراك",
@@ -1852,5 +1860,128 @@
     "elementaire": "مدير",
     "moyen": "ناظر",
     "secondaire": "مدير ثانوية"
+  },
+  "tresorerie": {
+    "title": "Comptabilité & Trésorerie",
+    "subtitle": "Suivi des flux financiers de l'établissement (recettes et dépenses).",
+    "tabs": {
+      "bilan": "Tableau de bord & Bilan",
+      "comptes": "Comptes",
+      "charges": "Catégories de charges",
+      "mouvements": "Mouvements"
+    },
+    "comptes": {
+      "title": "Comptes de trésorerie",
+      "newButton": "Nouveau compte",
+      "newTitle": "Créer un compte",
+      "nom": "Nom du compte",
+      "type": "Type de compte",
+      "types": {
+        "caisse": "Caisse",
+        "banque": "Banque",
+        "mobile_money": "Mobile Money"
+      },
+      "soldeInitial": "Solde initial (FCFA)",
+      "soldeActuel": "Solde actuel (FCFA)"
+    },
+    "charges": {
+      "title": "Catégories de charges",
+      "newButton": "Nouvelle catégorie",
+      "newTitle": "Créer une catégorie",
+      "nom": "Nom de la charge"
+    },
+    "mouvements": {
+      "title": "Mouvements de trésorerie",
+      "newButton": "Nouveau mouvement",
+      "newTitle": "Saisir un mouvement",
+      "type": "Type d'opération",
+      "types": {
+        "recette": "Recette",
+        "depense": "Dépense",
+        "virement_entrant": "Virement entrant",
+        "virement_sortant": "Virement sortant"
+      },
+      "compte": "Compte",
+      "categorie": "Catégorie (dépense)",
+      "montant": "Montant (FCFA)",
+      "date": "Date",
+      "libelle": "Libellé",
+      "piece": "Référence (pièce)"
+    },
+    "bilan": {
+      "title": "Bilan & Rentabilité",
+      "recettes": "Total Recettes",
+      "depenses": "Total Dépenses",
+      "resultat": "Résultat Net"
+    }
+  },
+  "facturation": {
+    "title": "Facturation & Encaissements",
+    "subtitle": "Gérez les factures et paiements des élèves de l'établissement.",
+    "tabs": {
+      "factures": "Factures",
+      "paiements": "Encaissements"
+    },
+    "factures": {
+      "title": "Factures des élèves",
+      "newButton": "Nouvelle facture",
+      "newTitle": "Créer une facture",
+      "eleve": "Élève",
+      "motif": "Motif",
+      "montant": "Montant (FCFA)",
+      "echeance": "Date d'échéance",
+      "statut": "Statut",
+      "statuts": {
+        "en_attente": "En attente",
+        "partiel": "Paiement partiel",
+        "paye": "Payée"
+      }
+    },
+    "paiements": {
+      "title": "Paiements & Encaissements",
+      "newButton": "Encaisser un paiement",
+      "newTitle": "Enregistrer un paiement",
+      "eleve": "Élève",
+      "facture": "Facture liée",
+      "montant": "Montant encaissé",
+      "date": "Date de paiement",
+      "mode": "Moyen de paiement",
+      "modes": {
+        "especes": "Espèces",
+        "mobile_money": "Mobile Money",
+        "virement": "Virement",
+        "cheque": "Chèque",
+        "autre": "Autre"
+      },
+      "recu": "N° Reçu"
+    }
+  },
+  "rh": {
+    "title": "Ressources Humaines",
+    "subtitle": "Gérez le personnel, les enseignants et les salaires.",
+    "tabs": {
+      "personnel": "Personnel & Enseignants",
+      "salaires": "Salaires & Vacations"
+    },
+    "personnel": {
+      "title": "Annuaire du Personnel",
+      "newButton": "Nouveau membre",
+      "newTitle": "Ajouter au personnel",
+      "nom": "Nom Complet",
+      "contact": "Contact",
+      "statut": "Statut",
+      "salaireBase": "Salaire de base / Mensuel",
+      "tauxHoraire": "Taux horaire (Vacataire)"
+    },
+    "salaires": {
+      "title": "Paiements des Salaires",
+      "newButton": "Nouveau paiement",
+      "newTitle": "Enregistrer un paiement de salaire",
+      "employe": "Employé / Enseignant",
+      "mois": "Mois concerné",
+      "montant": "Montant payé",
+      "date": "Date de paiement",
+      "mode": "Mode de paiement"
+    }
   }
 }

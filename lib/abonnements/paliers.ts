@@ -2,16 +2,17 @@
 // Le miroir SQL est public.cycles_du_palier() (02_rls_functions.sql) : à garder
 // synchronisé si la répartition des cycles change.
 
-export type Cycle = 'prescolaire' | 'elementaire' | 'moyen' | 'secondaire'
-export type PalierCode = 'elementaire' | 'secondaire' | 'complet'
+export type Cycle = 'prescolaire' | 'elementaire' | 'moyen' | 'secondaire' | 'professionnel' | 'superieur'
+export type PalierCode = 'elementaire' | 'secondaire' | 'complet' | 'superieur'
 
-export const CYCLES: Cycle[] = ['prescolaire', 'elementaire', 'moyen', 'secondaire']
+export const CYCLES: Cycle[] = ['prescolaire', 'elementaire', 'moyen', 'secondaire', 'professionnel', 'superieur']
 
 // Abonnement mensuel : prix d'un mois, égal au prix du produit Chariow du palier
 // (CHARIOW_PRODUCT_Scholar_Elem / _MS / _FULL, ou /admin/config).
 export const PALIERS: Record<PalierCode, { prixMensuelFcfa: number; cyclesAutorises: Cycle[] }> = {
   elementaire: { prixMensuelFcfa: 10_000, cyclesAutorises: ['prescolaire', 'elementaire'] },
-  secondaire: { prixMensuelFcfa: 15_000, cyclesAutorises: ['moyen', 'secondaire'] },
+  secondaire: { prixMensuelFcfa: 15_000, cyclesAutorises: ['moyen', 'secondaire', 'professionnel'] },
+  superieur: { prixMensuelFcfa: 20_000, cyclesAutorises: ['superieur'] },
   complet: { prixMensuelFcfa: 22_500, cyclesAutorises: ['prescolaire', 'elementaire', 'moyen', 'secondaire'] },
 }
 
