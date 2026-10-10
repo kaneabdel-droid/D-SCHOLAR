@@ -1,4 +1,4 @@
-import { Building2, Users } from 'lucide-react'
+import { Package, Building2, Users } from 'lucide-react'
 import { createAdminClient } from '@/utils/supabase/admin'
 import type { PalierCode } from '@/lib/abonnements/paliers'
 import CreerEtablissementButton from './CreerEtablissementButton'
