@@ -46,11 +46,11 @@ export const maketouAdapter: AdaptateurPaiement = {
     if (!productId) {
       return {
         ok: false,
-        error: \`Aucun produit Maketou configuré pour \${params.palier}/\${params.pourcentage}%. Créer le produit dans la boutique Maketou au prix indiqué et renseigner son id.\`,
+        error: `Aucun produit Maketou configuré pour ${params.palier}/${params.pourcentage}%. Créer le produit dans la boutique Maketou au prix indiqué et renseigner son id.`,
       }
     }
 
-    const { first, last } = splitName(params.nomClient ? \`\${params.prenomClient} \${params.nomClient}\` : params.prenomClient, params.emailClient)
+    const { first, last } = splitName(params.nomClient ? `${params.prenomClient} ${params.nomClient}` : params.prenomClient, params.emailClient)
 
     const body = {
       productDocumentId: productId,
@@ -64,10 +64,10 @@ export const maketouAdapter: AdaptateurPaiement = {
 
     let res: Response
     try {
-      res = await fetch(\`\${maketouApiUrl}/api/v1/stores/cart/checkout\`, {
+      res = await fetch(`${maketouApiUrl}/api/v1/stores/cart/checkout`, {
         method: 'POST',
         headers: {
-          Authorization: \`Bearer \${maketouApiKey}\`,
+          Authorization: `Bearer ${maketouApiKey}`,
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
@@ -75,21 +75,21 @@ export const maketouAdapter: AdaptateurPaiement = {
         signal: AbortSignal.timeout(15_000),
       })
     } catch (err) {
-      return { ok: false, error: \`Erreur réseau Maketou : \${(err as Error).message}\` }
+      return { ok: false, error: `Erreur réseau Maketou : ${(err as Error).message}` }
     }
 
     let parsed: any
     try {
       parsed = await res.json()
     } catch {
-      return { ok: false, error: \`Maketou a répondu \${res.status} (réponse non-JSON)\` }
+      return { ok: false, error: `Maketou a répondu ${res.status} (réponse non-JSON)` }
     }
 
     const providerTransactionId = parsed.cart?.id
     const checkoutUrl = parsed.redirectUrl
 
     if (!res.ok || !providerTransactionId || !checkoutUrl) {
-      return { ok: false, error: parsed.message || \`Maketou a répondu \${res.status}\` }
+      return { ok: false, error: parsed.message || `Maketou a répondu ${res.status}` }
     }
 
     return {
@@ -103,8 +103,8 @@ export const maketouAdapter: AdaptateurPaiement = {
     if (!maketouApiKey) return null
     let res: Response
     try {
-      res = await fetch(\`\${maketouApiUrl}/api/v1/stores/cart/\${encodeURIComponent(referenceProvider)}\`, {
-        headers: { Authorization: \`Bearer \${maketouApiKey}\`, Accept: 'application/json' },
+      res = await fetch(`${maketouApiUrl}/api/v1/stores/cart/${encodeURIComponent(referenceProvider)}`, {
+        headers: { Authorization: `Bearer ${maketouApiKey}`, Accept: 'application/json' },
         signal: AbortSignal.timeout(15_000),
       })
     } catch {
