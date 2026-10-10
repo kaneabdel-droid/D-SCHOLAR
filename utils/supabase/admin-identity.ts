@@ -86,6 +86,9 @@ export function createAdminIdentityMiddlewareClient(
   request: NextRequest,
   response: NextResponse
 ) {
+  if (!process.env.ADMIN_IDENTITY_SUPABASE_URL || !process.env.ADMIN_IDENTITY_SUPABASE_ANON_KEY) {
+    return { auth: { getUser: async () => ({ data: { user: null }, error: null }) } } as any;
+  }
   return createServerClient(
     process.env.ADMIN_IDENTITY_SUPABASE_URL!,
     process.env.ADMIN_IDENTITY_SUPABASE_ANON_KEY!,
