@@ -1,17 +1,18 @@
 import type { AdaptateurPaiement, InitierPaiementParams, InitierPaiementResultat, StatutPaiementDistant, StatutProvider } from '../types'
-import type { PalierCode, DureeMois } from '../paliers'
+import type { PalierCode } from '../paliers'
+import type { Pourcentage } from '../plans'
 import { versNumeroNational } from '../telephone'
 import { createAdminClient } from '@/utils/supabase/admin'
 const maketouApiKey = process.env.MAKETOU_API_KEY
 const maketouApiUrl = process.env.MAKETOU_API_URL || 'https://api.maketou.net'
 
-async function idProduit(palier: PalierCode, dureeMois: DureeMois): Promise<string | null> {
+async function idProduit(palier: PalierCode, pourcentage: Pourcentage): Promise<string | null> {
   const supabase = createAdminClient()
   const { data } = await supabase
     .from('maketou_produits')
     .select('product_id')
     .eq('palier', palier)
-    .eq('duree_mois', dureeMois)
+    .eq('pourcentage', pourcentage)
     .maybeSingle()
   return data?.product_id || null
 }
@@ -29,7 +30,7 @@ function splitName(full: string | undefined, fallbackEmail: string): { first: st
     const local = fallbackEmail.split('@')[0] || 'Client'
     return { first: local, last: '-' }
   }
-  const parts = v.split(/\\s+/)
+  const parts = v.split(/\s+/)
   return { first: parts[0]!, last: parts.slice(1).join(' ') || '-' }
 }
 
@@ -41,11 +42,11 @@ export const maketouAdapter: AdaptateurPaiement = {
       return { ok: false, error: 'Maketou non configuré (MAKETOU_API_KEY manquant)' }
     }
 
-    const productId = await idProduit(params.palier, params.dureeMois)
+    const productId = await idProduit(params.palier, params.pourcentage)
     if (!productId) {
       return {
         ok: false,
-        error: `Aucun produit Maketou configuré pour ${params.palier}/${params.dureeMois} mois. Créer le produit dans la boutique Maketou au prix indiqué et renseigner son id.`,
+        error: `Aucun produit Maketou configuré pour ${params.palier}/${params.pourcentage}%. Créer le produit dans la boutique Maketou au prix indiqué et renseigner son id.`,
       }
     }
 
@@ -58,7 +59,7 @@ export const maketouAdapter: AdaptateurPaiement = {
       lastName: last,
       phone: versNumeroNational(params.telephoneLocal, params.telephonePays),
       redirectURL: params.retourUrl,
-      meta: { paymentId: params.abonnementId },
+      meta: { paymentId: params.paiementId },
     }
 
     let res: Response
