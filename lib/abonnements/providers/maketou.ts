@@ -1,18 +1,17 @@
 import type { AdaptateurPaiement, InitierPaiementParams, InitierPaiementResultat, StatutPaiementDistant, StatutProvider } from '../types'
-import type { PalierCode } from '../paliers'
-import type { Pourcentage } from '../plans'
+import type { PalierCode, DureeMois } from '../paliers'
 import { versNumeroNational } from '../telephone'
 import { createAdminClient } from '@/utils/supabase/admin'
 const maketouApiKey = process.env.MAKETOU_API_KEY
 const maketouApiUrl = process.env.MAKETOU_API_URL || 'https://api.maketou.net'
 
-async function idProduit(palier: PalierCode, pourcentage: Pourcentage): Promise<string | null> {
+async function idProduit(palier: PalierCode, dureeMois: DureeMois): Promise<string | null> {
   const supabase = createAdminClient()
   const { data } = await supabase
     .from('maketou_produits')
     .select('product_id')
     .eq('palier', palier)
-    .eq('pourcentage', pourcentage)
+    .eq('duree_mois', dureeMois)
     .maybeSingle()
   return data?.product_id || null
 }
@@ -42,11 +41,11 @@ export const maketouAdapter: AdaptateurPaiement = {
       return { ok: false, error: 'Maketou non configuré (MAKETOU_API_KEY manquant)' }
     }
 
-    const productId = await idProduit(params.palier, params.pourcentage)
+    const productId = await idProduit(params.palier, params.dureeMois)
     if (!productId) {
       return {
         ok: false,
-        error: `Aucun produit Maketou configuré pour ${params.palier}/${params.pourcentage}%. Créer le produit dans la boutique Maketou au prix indiqué et renseigner son id.`,
+        error: `Aucun produit Maketou configuré pour ${params.palier}/${params.dureeMois} mois. Créer le produit dans la boutique Maketou au prix indiqué et renseigner son id.`,
       }
     }
 
@@ -59,7 +58,7 @@ export const maketouAdapter: AdaptateurPaiement = {
       lastName: last,
       phone: versNumeroNational(params.telephoneLocal, params.telephonePays),
       redirectURL: params.retourUrl,
-      meta: { paymentId: params.paiementId },
+      meta: { paymentId: params.abonnementId },
     }
 
     let res: Response
