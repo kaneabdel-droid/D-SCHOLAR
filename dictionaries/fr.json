@@ -148,7 +148,7 @@
   },
   "paliers": {
     "elementaire": "Élémentaire",
-    "secondaire": "Moyen-secondaire",
+    "secondaire": "Moyen-secondaire-Professionnel",
     "complet": "Cycle complet",
     "superieur": "Supérieur"
   },
@@ -385,9 +385,11 @@
     "statutJuridique": "Statut de l'établissement",
     "statuts": {
       "prive": "Privé",
-      "public": "Public"
+      "public": "Public",
+      "professionnel": "Professionnel",
+      "superieur": "Supérieur"
     },
-    "statutHint": "Dans le privé, la scolarité est en général payée chaque mois.",
+    "statutHint": "Statut juridique et vocation : Privé, Public, Professionnel ou Supérieur.",
     "moisScolarite": "Mensualités par an",
     "moisHint": "9 par défaut (octobre à juin)."
   },
@@ -537,7 +539,7 @@
     "pricingSubtitle": "10 mois payés, les vacances de votre calendrier scolaire offertes. Réglez mois par mois en Mobile Money ou par carte, ou plusieurs mois d'avance.",
     "perYear": "FCFA / an",
     "pricingElementaire": "Préscolaire et élémentaire",
-    "pricingSecondaire": "Moyen et secondaire : collège et lycée",
+    "pricingSecondaire": "Moyen, secondaire et professionnel : collège, lycée et formation pro",
     "pricingComplet": "Tous les cycles, du préscolaire à la terminale",
     "footer": "D-Scholar, une solution DembaSolution.",
     "perMonth": "FCFA / mois",
@@ -1556,8 +1558,8 @@
               {
                 "ul": [
                   {
-                    "t": "Statut :",
-                    "x": "dans le privé, la scolarité est en général payée chaque mois ; indiquez le nombre de mois de scolarité (9 par défaut, d'octobre à juin)."
+                    "t": "Statut de l'établissement :",
+                    "x": "choisissez entre Privé, Public, Professionnel ou Supérieur. Pour les établissements privés, de formation professionnelle et d'enseignement supérieur, la scolarité est en général payée chaque mois (9 mensualités par défaut, d'octobre à juin)."
                   },
                   {
                     "t": "Accès au portail :",
@@ -1592,7 +1594,7 @@
                 "ol": [
                   {
                     "t": "Niveaux & séries :",
-                    "x": "vérifiez les niveaux ouverts, classés par ordre de passage. Seuls les cycles inclus dans votre abonnement peuvent être ouverts ; au lycée, un niveau peut porter des séries."
+                    "x": "vérifiez les niveaux ouverts, classés par ordre de passage. Seuls les cycles inclus dans votre palier d'abonnement peuvent être ouverts : préscolaire, élémentaire, moyen, secondaire, professionnel (CAP, BEP, BT, BTS) et supérieur (Licence, Master). Au lycée, en filière pro ou supérieure, un niveau peut comporter des séries ou filières."
                   },
                   {
                     "t": "Matières :",
@@ -1600,7 +1602,7 @@
                   },
                   {
                     "t": "Coefficients :",
-                    "x": "saisissez le coefficient de chaque matière, niveau par niveau (et série par série au lycée)."
+                    "x": "saisissez le coefficient de chaque matière, niveau par niveau (et série ou spécialité par série au lycée, en pro et dans le supérieur)."
                   },
                   {
                     "t": "Salles :",

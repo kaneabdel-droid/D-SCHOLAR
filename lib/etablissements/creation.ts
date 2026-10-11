@@ -9,6 +9,7 @@ export type NouvelEtablissement = {
   telephone: string
   palier: PalierCode
   prive?: boolean
+  statutJuridique?: string
   directionNom: string
   directionPrenom: string
   directionEmail: string
@@ -38,7 +39,7 @@ export async function creerEtablissementAvecDirection(supabase: SupabaseClient, 
         ville: e.ville.trim() || null,
         telephone: e.telephone.trim() || null,
         palier: e.palier,
-        statut_juridique: e.prive === false ? 'public' : 'prive',
+        statut_juridique: e.statutJuridique || (e.prive === false ? 'public' : 'prive'),
         groupe_id: e.groupeId ?? null,
         acces_manuel_jusqu_au: e.accesOffertJusquAu && /^\d{4}-\d{2}-\d{2}$/.test(e.accesOffertJusquAu) ? `${e.accesOffertJusquAu}T23:59:59Z` : null,
       })

@@ -14,7 +14,7 @@ function dansTrenteJours() {
   return d.toISOString().slice(0, 10)
 }
 
-const NOMS_PALIERS: Record<PalierCode, string> = { elementaire: 'Élémentaire', secondaire: 'Secondaire', complet: 'Cycle complet', superieur: 'Supérieur' }
+const NOMS_PALIERS: Record<PalierCode, string> = { elementaire: 'Élémentaire', secondaire: 'Moyen-secondaire-Professionnel', complet: 'Cycle complet', superieur: 'Supérieur' }
 
 export default function CreerEtablissementButton() {
   const router = useRouter()

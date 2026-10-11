@@ -68,7 +68,7 @@ export default function InscriptionForm({
       <input type="hidden" name="plan" value={plan} />
 
       {/* Formules */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {offres.map((o) => {
           const actif = o.palier === palier
           return (
@@ -79,8 +79,8 @@ export default function InscriptionForm({
               className={`${cardClass} p-5 text-start transition ${actif ? 'border-primary ring-2 ring-primary/25' : 'hover:border-primary/40'}`}
             >
               <div className="flex items-center justify-between gap-2">
-                <p className="font-heading text-lg font-semibold text-foreground">{dict.paliers[o.palier]}</p>
-                {actif && <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground"><Check className="h-3.5 w-3.5" /></span>}
+                <p className="font-heading text-lg font-semibold leading-snug break-words text-foreground">{dict.paliers[o.palier]}</p>
+                {actif && <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground"><Check className="h-3.5 w-3.5" /></span>}
               </div>
               <p className="mt-2 flex items-baseline gap-1.5">
                 <span className="font-heading text-3xl font-semibold tabular-nums text-foreground">{nombre(o.prix)}</span>

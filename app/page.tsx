@@ -81,18 +81,24 @@ export default async function LandingPage() {
             return (
               <div
                 key={code}
-                className={`rounded-2xl border p-6 ${vedette ? 'border-primary bg-[var(--sidebar)] text-white shadow-xl shadow-primary/10' : 'border-surface-border bg-surface'}`}
+                className={`flex flex-col justify-between rounded-2xl border p-6 ${vedette ? 'border-primary bg-[var(--sidebar)] text-white shadow-xl shadow-primary/10' : 'border-surface-border bg-surface'}`}
               >
-                <p className={`font-heading text-lg font-semibold ${vedette ? '' : 'text-foreground'}`}>{dict.paliers[code]}</p>
-                <p className="mt-4 flex items-baseline gap-2">
-                  <span className={`font-heading text-4xl font-semibold tabular-nums ${vedette ? '' : 'text-foreground'}`}>
-                    {PALIERS[code].prixMensuelFcfa.toLocaleString(intlLocale(locale))}
-                  </span>
-                  <span className={`text-sm ${vedette ? 'text-white/60' : 'text-foreground-muted'}`}>{t.perMonth}</span>
-                </p>
-                <p className={`mt-4 flex items-start gap-2 text-sm ${vedette ? 'text-white/80' : 'text-foreground-muted'}`}>
-                  <Check className={`mt-0.5 h-4 w-4 shrink-0 ${vedette ? 'text-secondary' : 'text-primary'}`} /> {descriptions[code]}
-                </p>
+                <div>
+                  <div className="min-h-[3rem]">
+                    <p className={`font-heading text-lg font-semibold leading-snug break-words ${vedette ? '' : 'text-foreground'}`}>
+                      {dict.paliers[code]}
+                    </p>
+                  </div>
+                  <p className="mt-4 flex items-baseline gap-2">
+                    <span className={`font-heading text-4xl font-semibold tabular-nums ${vedette ? '' : 'text-foreground'}`}>
+                      {PALIERS[code].prixMensuelFcfa.toLocaleString(intlLocale(locale))}
+                    </span>
+                    <span className={`text-sm ${vedette ? 'text-white/60' : 'text-foreground-muted'}`}>{t.perMonth}</span>
+                  </p>
+                  <p className={`mt-4 flex items-start gap-2 text-sm ${vedette ? 'text-white/80' : 'text-foreground-muted'}`}>
+                    <Check className={`mt-0.5 h-4 w-4 shrink-0 ${vedette ? 'text-secondary' : 'text-primary'}`} /> {descriptions[code]}
+                  </p>
+                </div>
                 <Link href={`/tarifs?palier=${code}`} className={`mt-6 inline-flex w-full items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold ${vedette ? 'bg-secondary text-white hover:brightness-105' : 'bg-primary text-primary-foreground hover:bg-primary-hover'}`}>
                   {dict.tarifs.choisir}
                 </Link>

@@ -25,6 +25,7 @@ export async function creerSite(formData: FormData): Promise<{ success?: true; e
     telephone: v('telephone'),
     palier,
     prive: v('statut_juridique') !== 'public',
+    statutJuridique: v('statut_juridique') || (v('prive') === 'false' ? 'public' : 'prive'),
     directionNom: v('direction_nom'),
     directionPrenom: v('direction_prenom'),
     directionEmail: v('direction_email'),

@@ -52,14 +52,14 @@ export default function EtablissementForm({
         {champ('telephone', t.telephone, 'tel')}
         {champ('email', t.email, 'email')}
       </div>
-      <div className="grid gap-4 sm:grid-cols-[2fr_1fr]">
+      <div className="grid gap-4 lg:grid-cols-[2.5fr_1fr]">
         <fieldset>
           <legend className={labelClass}>{t.statutJuridique}</legend>
-          <div className="mt-1.5 flex gap-2">
-            {(['prive', 'public'] as const).map((v) => (
-              <label key={v} className="flex flex-1 cursor-pointer items-center gap-2 rounded-lg border border-surface-border px-3 py-2 text-sm has-[:checked]:border-primary has-[:checked]:bg-primary-soft">
+          <div className="mt-1.5 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {(['prive', 'public', 'professionnel', 'superieur'] as const).map((v) => (
+              <label key={v} className="flex cursor-pointer items-center gap-2 rounded-lg border border-surface-border px-3 py-2 text-sm has-[:checked]:border-primary has-[:checked]:bg-primary-soft">
                 <input type="radio" name="statut_juridique" value={v} defaultChecked={(valeurs.statut_juridique ?? 'prive') === v} disabled={lectureSeule} />
-                {t.statuts[v]}
+                <span className="truncate">{t.statuts[v]}</span>
               </label>
             ))}
           </div>

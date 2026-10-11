@@ -1472,7 +1472,7 @@ create table public.souscriptions_services (
 -- Établissement privé ou public. Dans le privé, la scolarité est le plus souvent
 -- mensuelle (mois_scolarite mensualités par an, 9 par défaut : octobre à juin).
 alter table public.etablissements
-  add column statut_juridique varchar(10) not null default 'prive' check (statut_juridique in ('prive', 'public')),
+  add column statut_juridique varchar(30) not null default 'prive' check (statut_juridique in ('prive', 'public', 'professionnel', 'superieur')),
   add column mois_scolarite smallint not null default 9 check (mois_scolarite between 1 and 12);
 
 create or replace function public.modifier_regime_etablissement(p_statut_juridique text, p_mois_scolarite integer) returns void
@@ -1482,7 +1482,7 @@ begin
     raise exception 'Réservé à la direction';
   end if;
   update public.etablissements
-  set statut_juridique = case when p_statut_juridique in ('prive', 'public') then p_statut_juridique else statut_juridique end,
+  set statut_juridique = case when p_statut_juridique in ('prive', 'public', 'professionnel', 'superieur') then p_statut_juridique else statut_juridique end,
       mois_scolarite = greatest(1, least(12, coalesce(p_mois_scolarite, mois_scolarite)))
   where id = public.current_etablissement_id();
 end;

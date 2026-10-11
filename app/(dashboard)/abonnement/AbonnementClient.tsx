@@ -251,14 +251,14 @@ export function SouscrireForm({
     <form onSubmit={valider} className="mt-5 space-y-6">
       <fieldset>
         <legend className={labelClass}>{libelles.choisirPalier}</legend>
-        <div className="mt-2 grid gap-3 sm:grid-cols-3">
+        <div className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {offres.map((o) => (
             <label
               key={o.palier}
               className="cursor-pointer rounded-xl border border-surface-border p-4 transition has-[:checked]:border-primary has-[:checked]:bg-primary-soft has-[:checked]:ring-2 has-[:checked]:ring-primary/20"
             >
               <input type="radio" name="palier" value={o.palier} checked={palier === o.palier} onChange={() => setPalier(o.palier)} className="sr-only" />
-              <p className="font-heading font-semibold text-foreground">{libelles.paliers[o.palier]}</p>
+              <p className="font-heading font-semibold leading-snug break-words text-foreground">{libelles.paliers[o.palier]}</p>
               <p className="mt-1 text-sm tabular-nums text-foreground-muted">{nombre(o.prix)} {libelles.fcfa} {libelles.parMois}</p>
             </label>
           ))}

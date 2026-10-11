@@ -69,6 +69,8 @@ export default function NouveauSiteButton({ dict }: { dict: Dictionary }) {
               <select id="site-statut" name="statut_juridique" className={inputClass}>
                 <option value="prive">{dict.etablissement.statuts.prive}</option>
                 <option value="public">{dict.etablissement.statuts.public}</option>
+                <option value="professionnel">{dict.etablissement.statuts.professionnel}</option>
+                <option value="superieur">{dict.etablissement.statuts.superieur}</option>
               </select>
             </div>
           </div>

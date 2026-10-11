@@ -147,9 +147,9 @@
   },
   "paliers": {
     "elementaire": "Primary",
-    "secondaire": "Middle & high school",
+    "secondaire": "Middle, High School & Vocational",
     "complet": "Full cycle",
-    "superieur": "Supérieur"
+    "superieur": "Higher Education"
   },
   "theme": {
     "label": "Theme",
@@ -233,9 +233,11 @@
     "statutJuridique": "School status",
     "statuts": {
       "prive": "Private",
-      "public": "Public"
+      "public": "Public",
+      "professionnel": "Vocational / Professional",
+      "superieur": "Higher Education"
     },
-    "statutHint": "In private schools, tuition is usually paid every month.",
+    "statutHint": "Legal status and orientation: Private, Public, Vocational or Higher Education.",
     "moisScolarite": "Monthly payments per year",
     "moisHint": "9 by default (October to June)."
   },
@@ -385,7 +387,7 @@
     "pricingSubtitle": "Pay 10 months, your school calendar's holidays are free. Pay month by month with Mobile Money or card, or several months in advance.",
     "perYear": "FCFA / year",
     "pricingElementaire": "Pre-school and primary",
-    "pricingSecondaire": "Middle and high school",
+    "pricingSecondaire": "Middle, high school and vocational: middle, high school and vocational training",
     "pricingComplet": "Every cycle, from pre-school to final year",
     "footer": "D-Scholar, a DembaSolution product.",
     "perMonth": "FCFA / month",
@@ -1432,8 +1434,8 @@
               {
                 "ul": [
                   {
-                    "t": "Status:",
-                    "x": "in private schools, tuition is usually paid monthly; enter the number of tuition months (9 by default, October to June)."
+                    "t": "School status:",
+                    "x": "choose between Private, Public, Vocational or Higher Education. In private, vocational and higher education institutions, tuition is usually paid monthly (9 months by default, October to June)."
                   },
                   {
                     "t": "Portal access:",
