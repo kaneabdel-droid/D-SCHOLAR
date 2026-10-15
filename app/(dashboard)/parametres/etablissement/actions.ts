@@ -43,7 +43,12 @@ export async function modifierEtablissement(formData: FormData): Promise<ActionR
     p_statut_juridique: statutJuridique,
     p_mois_scolarite: mois >= 1 && mois <= 12 ? mois : 9,
   })
-  if (e2) return { error: messageErreur(e2, dict, 'modifierRegime') }
+  const menuLayout = champ('menu_layout')
+  if (menuLayout === 'horizontal' || menuLayout === 'sidebar') {
+    const { cookies } = await import('next/headers')
+    const cookieStore = await cookies()
+    cookieStore.set('menu_layout', menuLayout, { path: '/', maxAge: 31536000 })
+  }
 
   revalidatePath('/', 'layout')
   return { success: true }

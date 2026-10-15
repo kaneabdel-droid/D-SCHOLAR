@@ -52,6 +52,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
     bandeau.complement = context.role === 'direction' ? undefined : t.bannerContact
   }
 
+  const { cookies } = await import('next/headers')
+  const cookieStore = await cookies()
+  const menuLayout = (cookieStore.get('menu_layout')?.value === 'horizontal' ? 'horizontal' : 'sidebar') as 'sidebar' | 'horizontal'
+
   return (
     <ClientLayout
       role={context.role}
@@ -63,6 +67,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       notifications={<Notifications dict={dict} locale={locale} />}
       locale={locale}
       dict={dict}
+      menuLayout={menuLayout}
     >
       {children}
     </ClientLayout>

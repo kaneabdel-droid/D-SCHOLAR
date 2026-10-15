@@ -25,6 +25,10 @@ export default async function EtablissementPage() {
 
   const palier = PALIERS[context.palier]
 
+  const { cookies } = await import('next/headers')
+  const cookieStore = await cookies()
+  const menuLayout = (cookieStore.get('menu_layout')?.value === 'horizontal' ? 'horizontal' : 'sidebar') as 'sidebar' | 'horizontal'
+
   return (
     <div className="grid gap-6 lg:grid-cols-[1.7fr_1fr]">
       <section className={`${cardClass} p-5 sm:p-6`}>
@@ -35,6 +39,7 @@ export default async function EtablissementPage() {
           valeurs={etab ?? {}}
           niveaux={niveaux ?? []}
           lectureSeule={context.role !== 'direction'}
+          menuLayout={menuLayout}
         />
       </section>
 

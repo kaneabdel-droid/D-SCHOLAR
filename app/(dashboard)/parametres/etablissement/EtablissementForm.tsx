@@ -13,11 +13,13 @@ export default function EtablissementForm({
   valeurs,
   niveaux,
   lectureSeule,
+  menuLayout = 'sidebar',
 }: {
   dict: Dictionary
   valeurs: Valeurs
   niveaux: { code: string; nom: string }[]
   lectureSeule: boolean
+  menuLayout?: 'sidebar' | 'horizontal'
 }) {
   const t = dict.etablissement
   const [erreur, setErreur] = useState<string | null>(null)
@@ -79,6 +81,15 @@ export default function EtablissementForm({
           ))}
         </select>
         <p className={hintClass}>{t.niveauMinHint}</p>
+      </div>
+
+      <div className="pt-2 border-t border-surface-border">
+        <label htmlFor="etab-menu-layout" className={labelClass}>Disposition du menu</label>
+        <select id="etab-menu-layout" name="menu_layout" defaultValue={menuLayout} disabled={lectureSeule} className={`${inputClass} sm:max-w-xs`}>
+          <option value="sidebar">Barre latérale classique (à gauche)</option>
+          <option value="horizontal">Affichage horizontal en haut de page</option>
+        </select>
+        <p className={hintClass}>Choisissez le mode de navigation par défaut pour votre établissement.</p>
       </div>
       {lectureSeule ? (
         <p className="text-xs text-foreground-muted">{t.directionOnly}</p>

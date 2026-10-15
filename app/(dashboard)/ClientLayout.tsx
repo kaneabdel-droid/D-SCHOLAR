@@ -132,6 +132,7 @@ export default function ClientLayout({
   notifications,
   locale,
   dict,
+  menuLayout = 'sidebar',
 }: {
   children: React.ReactNode
   role: Role
@@ -143,6 +144,7 @@ export default function ClientLayout({
   notifications?: React.ReactNode
   locale: string
   dict: Dictionary
+  menuLayout?: 'sidebar' | 'horizontal'
 }) {
   const [ouvert, setOuvert] = useState(false)
   const pathname = usePathname()
@@ -246,11 +248,101 @@ export default function ClientLayout({
         </div>
       )}
 
-      {/* Sidebar fixe desktop */}
-      <div className="hidden lg:fixed lg:inset-y-0 lg:start-0 lg:z-40 lg:flex lg:w-64">{contenuSidebar}</div>
+      {/* Mode Horizontal Desktop */}
+      {menuLayout === 'horizontal' ? (
+        <header className="sticky top-0 z-40 hidden w-full border-b border-surface-border bg-sidebar text-sidebar-text lg:block">
+          <div className="flex h-16 items-center justify-between px-6 border-b border-sidebar-line">
+            <div className="flex items-center gap-3">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-sm font-bold text-white shadow-xs">
+                DS
+              </span>
+              <div>
+                <p className="font-heading text-sm font-bold tracking-tight text-sidebar-text-strong">D-SCHOLAR</p>
+                <p className="text-[11px] text-sidebar-text/75 truncate max-w-xs">{etablissementNom}</p>
+              </div>
+              {anneeLibelle && (
+                <span className="ms-2 inline-flex items-center gap-1 rounded-full border border-sidebar-line px-2.5 py-0.5 text-[0.7rem] font-medium text-sidebar-text">
+                  <CalendarDays className="h-3 w-3" />
+                  {anneeLibelle}
+                </span>
+              )}
+            </div>
 
-      <div className="lg:ps-64">
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-surface-border bg-background/85 px-4 backdrop-blur-md sm:px-6 lg:px-8">
+            <div className="flex items-center gap-3">
+              {notifications}
+              <LanguageSelector currentLang={locale} />
+              <ThemeSwitcher libelles={dict.theme} />
+              <div className="flex items-center gap-2 ps-2 border-s border-sidebar-line">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs font-semibold text-sidebar-text-strong">
+                  {initiales(utilisateurNom)}
+                </span>
+                <div className="text-start">
+                  <p className="text-xs font-medium text-sidebar-text-strong truncate max-w-[120px]">{utilisateurNom}</p>
+                  <p className="text-[10px] text-sidebar-text/70">{libellePoste(role, poste, dict.roles)}</p>
+                </div>
+                <a href="/logout" title={dict.common.logout} aria-label={dict.common.logout} className="rounded-lg p-1.5 text-sidebar-text hover:bg-sidebar-hover hover:text-sidebar-text-strong">
+                  <LogOut className="h-4 w-4" />
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Navigation horizontale par catégories avec dropdowns */}
+          <div className="flex items-center gap-1.5 px-6 py-1.5 overflow-x-auto text-xs">
+            {sections(role).map((section) => {
+              const aUnItemActif = section.items.some((item) => estActif(item.href))
+              return (
+                <div key={section.titre} className="relative group">
+                  <button
+                    type="button"
+                    className={`flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors whitespace-nowrap ${
+                      aUnItemActif
+                        ? 'bg-sidebar-active text-sidebar-text-strong font-semibold'
+                        : 'text-sidebar-text hover:bg-sidebar-hover hover:text-sidebar-text-strong'
+                    }`}
+                  >
+                    {nav[section.titre]}
+                    <span className="text-[9px] opacity-70">▼</span>
+                  </button>
+
+                  <div className="absolute left-0 top-full hidden group-hover:block pt-1 z-50">
+                    <div className="min-w-56 rounded-xl border border-sidebar-line bg-sidebar p-1.5 shadow-xl">
+                      {section.items.map((item) =>
+                        item.bientot ? (
+                          <span key={item.key} className="flex cursor-default items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-sidebar-text/45">
+                            <item.icon className="h-3.5 w-3.5 shrink-0" />
+                            <span className="flex-1 truncate">{nav[item.key]}</span>
+                            <span className="rounded-full border border-sidebar-line px-1.5 py-px text-[0.6rem] font-medium">{dict.common.soon}</span>
+                          </span>
+                        ) : (
+                          <Link
+                            key={item.key}
+                            href={item.href}
+                            className={`flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                              estActif(item.href)
+                                ? 'bg-sidebar-active text-sidebar-text-strong font-semibold'
+                                : 'text-sidebar-text hover:bg-sidebar-hover hover:text-sidebar-text-strong'
+                            }`}
+                          >
+                            <item.icon className="h-3.5 w-3.5 shrink-0" />
+                            <span className="truncate">{nav[item.key]}</span>
+                          </Link>
+                        )
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </header>
+      ) : (
+        /* Sidebar fixe desktop */
+        <div className="hidden lg:fixed lg:inset-y-0 lg:start-0 lg:z-40 lg:flex lg:w-64">{contenuSidebar}</div>
+      )}
+
+      <div className={menuLayout === 'horizontal' ? 'w-full' : 'lg:ps-64'}>
+        <header className={`sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-surface-border bg-background/85 px-4 backdrop-blur-md sm:px-6 lg:px-8 ${menuLayout === 'horizontal' ? 'lg:hidden' : ''}`}>
           <button type="button" className="-ms-1 rounded-lg p-2 text-foreground-muted hover:bg-primary-soft lg:hidden" onClick={() => setOuvert(true)} aria-label={nav.openSidebar}>
             <Menu className="h-6 w-6" />
           </button>
