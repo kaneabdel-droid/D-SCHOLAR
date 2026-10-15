@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -147,16 +147,37 @@ export default function ClientLayout({
   menuLayout?: 'sidebar' | 'horizontal'
 }) {
   const [ouvert, setOuvert] = useState(false)
+  const [menuOuvert, setMenuOuvert] = useState<string | null>(null)
+  const navHorizontalRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
   const [pathnamePrecedent, setPathnamePrecedent] = useState(pathname)
   const nav = dict.nav
 
-  // Referme le tiroir mobile à chaque changement de route (ajustement d'état
-  // pendant le rendu plutôt qu'un effet, cf. react-hooks/set-state-in-effect).
+  // Referme le tiroir mobile et les menus déroulants à chaque changement de route
   if (pathname !== pathnamePrecedent) {
     setPathnamePrecedent(pathname)
     setOuvert(false)
+    setMenuOuvert(null)
   }
+
+  useEffect(() => {
+    function handleClickDehors(event: MouseEvent) {
+      if (navHorizontalRef.current && !navHorizontalRef.current.contains(event.target as Node)) {
+        setMenuOuvert(null)
+      }
+    }
+    function handleToucheClavier(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setMenuOuvert(null)
+      }
+    }
+    document.addEventListener('mousedown', handleClickDehors)
+    document.addEventListener('keydown', handleToucheClavier)
+    return () => {
+      document.removeEventListener('mousedown', handleClickDehors)
+      document.removeEventListener('keydown', handleToucheClavier)
+    }
+  }, [])
 
   const estActif = (href: string) => pathname === href || pathname.startsWith(href + '/')
 
@@ -288,24 +309,37 @@ export default function ClientLayout({
           </div>
 
           {/* Navigation horizontale par catégories avec dropdowns */}
-          <div className="flex items-center gap-1.5 px-6 py-1.5 overflow-x-auto text-xs">
+          <div ref={navHorizontalRef} className="flex items-center gap-1.5 px-6 py-1.5 flex-wrap text-xs relative">
             {sections(role).map((section) => {
               const aUnItemActif = section.items.some((item) => estActif(item.href))
+              const estOuvert = menuOuvert === section.titre
+
               return (
-                <div key={section.titre} className="relative group">
+                <div
+                  key={section.titre}
+                  className="relative group"
+                  onMouseEnter={() => setMenuOuvert(section.titre)}
+                  onMouseLeave={() => setMenuOuvert((actuel) => (actuel === section.titre ? null : actuel))}
+                >
                   <button
                     type="button"
-                    className={`flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors whitespace-nowrap ${
-                      aUnItemActif
+                    onClick={() => setMenuOuvert((actuel) => (actuel === section.titre ? null : section.titre))}
+                    aria-expanded={estOuvert}
+                    className={`flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                      aUnItemActif || estOuvert
                         ? 'bg-sidebar-active text-sidebar-text-strong font-semibold'
                         : 'text-sidebar-text hover:bg-sidebar-hover hover:text-sidebar-text-strong'
                     }`}
                   >
                     {nav[section.titre]}
-                    <span className="text-[9px] opacity-70">▼</span>
+                    <span className={`text-[9px] opacity-70 transition-transform duration-150 ${estOuvert ? 'rotate-180' : ''}`}>▼</span>
                   </button>
 
-                  <div className="absolute left-0 top-full hidden group-hover:block pt-1 z-50">
+                  <div
+                    className={`absolute left-0 top-full pt-1 z-50 transition-all duration-150 ${
+                      estOuvert ? 'block opacity-100 scale-100 pointer-events-auto' : 'hidden group-hover:block'
+                    }`}
+                  >
                     <div className="min-w-56 rounded-xl border border-sidebar-line bg-sidebar p-1.5 shadow-xl">
                       {section.items.map((item) =>
                         item.bientot ? (
@@ -318,6 +352,7 @@ export default function ClientLayout({
                           <Link
                             key={item.key}
                             href={item.href}
+                            onClick={() => setMenuOuvert(null)}
                             className={`flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
                               estActif(item.href)
                                 ? 'bg-sidebar-active text-sidebar-text-strong font-semibold'
