@@ -23,6 +23,7 @@ import {
   Ticket,
   Settings,
   Shirt,
+  UploadCloud,
   UserPlus,
   Users,
   X,
@@ -100,6 +101,7 @@ function sections(role: Role): Section[] {
             titre: 'sectionAdministration' as CleNav,
             items: [
               { key: 'parametres' as CleNav, href: '/parametres', icon: Settings },
+              { key: 'importDonnees' as CleNav, href: '/parametres/import', icon: UploadCloud },
               ...(role === 'direction' ? [{ key: 'abonnement' as CleNav, href: '/abonnement', icon: CreditCard }] : []),
             ],
           },

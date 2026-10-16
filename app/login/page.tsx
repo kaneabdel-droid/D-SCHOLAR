@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import AuthShell from '@/components/AuthShell'
+import PasswordInput from '@/components/PasswordInput'
 import { btnPrimary, inputClass, labelClass } from '@/components/ui/styles'
 import { getDictionary, getLocale } from '@/dictionaries'
 import { login } from './actions'
@@ -24,7 +25,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
               {t.forgotPassword}
             </a>
           </div>
-          <input id="password" name="password" type="password" autoComplete="current-password" required className={inputClass} />
+          <PasswordInput id="password" name="password" autoComplete="current-password" required className={inputClass} />
         </div>
         <button type="submit" className={`${btnPrimary} w-full py-2.5`}>{t.submit}</button>
       </form>
