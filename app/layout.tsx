@@ -3,6 +3,7 @@ import { Inter, Outfit, Noto_Sans_Arabic } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { getDictionary, getLocale } from "@/dictionaries";
+import { RegisterServiceWorker } from "@/components/RegisterServiceWorker";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -21,7 +22,11 @@ const notoArabic = Noto_Sans_Arabic({
 
 export async function generateMetadata(): Promise<Metadata> {
   const dict = await getDictionary();
-  return { title: dict.meta.title, description: dict.meta.description };
+  return { 
+    title: dict.meta.title, 
+    description: dict.meta.description,
+    manifest: '/manifest.json'
+  };
 }
 
 // Le thème (classe sur <html>) est appliqué avant le premier rendu pour éviter
@@ -47,6 +52,7 @@ export default async function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: scriptTheme }} />
       </head>
       <body className="min-h-full flex flex-col">
+        <RegisterServiceWorker />
         {children}
         <Toaster position={dir === "rtl" ? "top-left" : "top-right"} richColors />
       </body>

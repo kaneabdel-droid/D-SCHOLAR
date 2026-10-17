@@ -31,6 +31,7 @@ import {
 } from 'lucide-react'
 import { ThemeSwitcher } from '@/components/ThemeSwitcher'
 import LanguageSelector from '@/components/LanguageSelector'
+import { OfflineSyncBar } from '@/components/offline/OfflineSyncBar'
 import type { Dictionary } from '@/dictionaries'
 import { libellePoste, peutGererParametres, type Role } from '@/lib/roles'
 
@@ -292,6 +293,7 @@ export default function ClientLayout({
             </div>
 
             <div className="flex items-center gap-3">
+              <OfflineSyncBar />
               {notifications}
               <LanguageSelector currentLang={locale} />
               <ThemeSwitcher libelles={dict.theme} />
@@ -386,6 +388,7 @@ export default function ClientLayout({
           <p className="min-w-0 flex-1 truncate text-sm font-semibold text-foreground lg:hidden">{etablissementNom}</p>
           <div className="hidden flex-1 lg:block" />
           <div className="flex shrink-0 items-center gap-1">
+            <OfflineSyncBar />
             {notifications}
             <LanguageSelector currentLang={locale} />
             <ThemeSwitcher libelles={dict.theme} />
