@@ -5,9 +5,10 @@
  */
 
 const DB_NAME = 'demba_offline_dscholar'
-const DB_VERSION = 1
+const DB_VERSION = 2
 const STORE_PENDING = 'pending_queue'
 const STORE_CACHED_DATA = 'cached_data'
+const STORE_ACCOUNTS = 'auth_accounts'
 
 export interface QueuedAction {
   id: string
@@ -18,6 +19,29 @@ export interface QueuedAction {
   retryCount: number
   status: 'pending' | 'syncing' | 'failed'
   error?: string
+}
+
+export interface OfflineStoredAccount {
+  id: string
+  identifier: string // normalisé
+  identifiers: string[] // [identifiant, telephone, email] (tous normalisés)
+  salt: string
+  passwordHash: string
+  userContext: {
+    userId: string
+    nomComplet?: string | null
+    identifiant: string
+    telephone?: string | null
+    email?: string | null
+    role: string
+    etablissementId?: string
+    etablissementNom?: string
+    gieId?: string
+    gieNom?: string
+    devise?: string
+    permissions?: any
+  }
+  lastLoginAt: string
 }
 
 function openDB(): Promise<IDBDatabase> {
@@ -38,6 +62,10 @@ function openDB(): Promise<IDBDatabase> {
       }
       if (!db.objectStoreNames.contains(STORE_CACHED_DATA)) {
         db.createObjectStore(STORE_CACHED_DATA, { keyPath: 'key' })
+      }
+      if (!db.objectStoreNames.contains(STORE_ACCOUNTS)) {
+        const accStore = db.createObjectStore(STORE_ACCOUNTS, { keyPath: 'id' })
+        accStore.createIndex('identifier', 'identifier', { unique: false })
       }
     }
 
@@ -162,5 +190,76 @@ export async function getCachedData<T = any>(key: string): Promise<T | null> {
     })
   } catch {
     return null
+  }
+}
+
+// ==========================================
+// GESTION DES COMPTES AUTH HORS-LIGNE
+// ==========================================
+
+export async function saveOfflineAccount(account: OfflineStoredAccount): Promise<void> {
+  try {
+    const db = await openDB()
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(STORE_ACCOUNTS, 'readwrite')
+      tx.objectStore(STORE_ACCOUNTS).put(account)
+      tx.oncomplete = () => resolve()
+      tx.onerror = () => reject(tx.error)
+    })
+  } catch (e) {
+    try {
+      const raw = localStorage.getItem('demba_offline_dscholar_accounts')
+      const list: OfflineStoredAccount[] = raw ? JSON.parse(raw) : []
+      const filtered = list.filter(a => a.id !== account.id)
+      filtered.push(account)
+      localStorage.setItem('demba_offline_dscholar_accounts', JSON.stringify(filtered))
+    } catch (err) {
+      console.error('Save offline account fallback failed:', err)
+    }
+  }
+}
+
+export async function getOfflineAccounts(): Promise<OfflineStoredAccount[]> {
+  try {
+    const db = await openDB()
+    return await new Promise<OfflineStoredAccount[]>((resolve, reject) => {
+      const tx = db.transaction(STORE_ACCOUNTS, 'readonly')
+      const req = tx.objectStore(STORE_ACCOUNTS).getAll()
+      req.onsuccess = () => resolve(req.result || [])
+      req.onerror = () => reject(req.error)
+    })
+  } catch {
+    try {
+      const raw = localStorage.getItem('demba_offline_dscholar_accounts')
+      return raw ? JSON.parse(raw) : []
+    } catch {
+      return []
+    }
+  }
+}
+
+export async function findOfflineAccount(identifierOrPhone: string): Promise<OfflineStoredAccount | null> {
+  const norm = identifierOrPhone.trim().toLowerCase()
+  const accounts = await getOfflineAccounts()
+  return accounts.find(a => 
+    a.identifier === norm || 
+    (a.identifiers && a.identifiers.includes(norm))
+  ) || null
+}
+
+export async function removeOfflineAccount(id: string): Promise<void> {
+  try {
+    const db = await openDB()
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(STORE_ACCOUNTS, 'readwrite')
+      tx.objectStore(STORE_ACCOUNTS).delete(id)
+      tx.oncomplete = () => resolve()
+      tx.onerror = () => reject(tx.error)
+    })
+  } catch {
+    try {
+      const accounts = (await getOfflineAccounts()).filter(a => a.id !== id)
+      localStorage.setItem('demba_offline_dscholar_accounts', JSON.stringify(accounts))
+    } catch {}
   }
 }

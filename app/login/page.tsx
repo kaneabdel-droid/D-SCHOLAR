@@ -1,9 +1,7 @@
 import Link from 'next/link'
 import AuthShell from '@/components/AuthShell'
-import PasswordInput from '@/components/PasswordInput'
-import { btnPrimary, inputClass, labelClass } from '@/components/ui/styles'
+import ClientLoginForm from './ClientLoginForm'
 import { getDictionary, getLocale } from '@/dictionaries'
-import { login } from './actions'
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ message?: string }> }) {
   const { message } = await searchParams
@@ -13,22 +11,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
 
   return (
     <AuthShell dict={dict} locale={locale} title={t.title} desc={t.desc} message={message}>
-      <form className="space-y-5" action={login}>
-        <div>
-          <label htmlFor="email" className={labelClass}>{t.identifiant}</label>
-          <input id="email" name="email" type="text" autoComplete="username" required className={inputClass} />
-        </div>
-        <div>
-          <div className="flex items-center justify-between">
-            <label htmlFor="password" className={labelClass}>{t.password}</label>
-            <a href="/forgot-password" className="text-sm font-semibold text-primary hover:text-primary-hover">
-              {t.forgotPassword}
-            </a>
-          </div>
-          <PasswordInput id="password" name="password" autoComplete="current-password" required className={inputClass} />
-        </div>
-        <button type="submit" className={`${btnPrimary} w-full py-2.5`}>{t.submit}</button>
-      </form>
+      <ClientLoginForm dict={dict} />
       <Link href="/decouvrir-dscholar" className="mt-6 flex w-full items-center justify-center rounded-lg border border-surface-border bg-surface px-3.5 py-2.5 text-sm font-semibold text-foreground hover:bg-primary-soft">
         {dict.demo.lien}
       </Link>
