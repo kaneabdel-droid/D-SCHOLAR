@@ -164,6 +164,18 @@ export default function ClientLayout({
   }
 
   useEffect(() => {
+    // 1. Assurer la présence du cookie hors-ligne pour le Service Worker
+    try {
+      document.cookie = 'demba_offline_active=1; path=/; max-age=2592000; SameSite=Lax'
+      if (typeof window !== 'undefined' && 'caches' in window && navigator.onLine) {
+        caches.open('demba-offline-dscholar-v3').then((cache) => {
+          fetch('/dashboard').then((res) => {
+            if (res.ok) cache.put('/dashboard', res)
+          }).catch(() => {})
+        })
+      }
+    } catch {}
+
     function handleClickDehors(event: MouseEvent) {
       if (navHorizontalRef.current && !navHorizontalRef.current.contains(event.target as Node)) {
         setMenuOuvert(null)

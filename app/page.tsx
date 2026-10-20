@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ArrowRight, BookOpen, Check, FileBadge, GraduationCap, Route, School, Users } from 'lucide-react'
 import LanguageSelector from '@/components/LanguageSelector'
+import { OfflineLandingBanner } from '@/components/offline/OfflineLandingBanner'
 import { PALIERS, PALIER_CODES, type PalierCode } from '@/lib/abonnements/paliers'
 import { intlLocale } from '@/lib/i18n'
 import { getDictionary, getLocale } from '@/dictionaries'
@@ -21,6 +22,7 @@ export default async function LandingPage() {
 
   return (
     <div className="min-h-dvh bg-background">
+      <OfflineLandingBanner appName="D-SCHOLAR" dashboardUrl="/dashboard" loginUrl="/login" />
       <header className="relative overflow-hidden bg-[var(--sidebar)] text-white">
         <div aria-hidden className="pointer-events-none absolute -top-40 end-0 h-[32rem] w-[32rem] rounded-full opacity-30 blur-3xl" style={{ background: 'radial-gradient(circle, #5B7FEA, transparent 70%)' }} />
         <div aria-hidden className="pointer-events-none absolute -bottom-48 start-0 h-[28rem] w-[28rem] rounded-full opacity-20 blur-3xl" style={{ background: 'radial-gradient(circle, #C9972B, transparent 70%)' }} />

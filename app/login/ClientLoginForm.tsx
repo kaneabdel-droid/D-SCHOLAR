@@ -56,6 +56,9 @@ export default function ClientLoginForm({ dict }: { dict: any }) {
       startTransition(async () => {
         const offRes = await verifyOfflineCredentials(cleanIdentifier, password)
         if (offRes.success && offRes.session) {
+          try {
+            document.cookie = 'demba_offline_active=1; path=/; max-age=2592000; SameSite=Lax'
+          } catch {}
           setSuccessNotice('Connexion locale validée ! Accès à votre espace scolaire hors-ligne...')
           setTimeout(() => {
             window.location.href = offRes.session?.user.role === 'famille' ? '/portail' : '/dashboard'
@@ -85,6 +88,9 @@ export default function ClientLoginForm({ dict }: { dict: any }) {
           ) {
             const offRes = await verifyOfflineCredentials(cleanIdentifier, password)
             if (offRes.success) {
+              try {
+                document.cookie = 'demba_offline_active=1; path=/; max-age=2592000; SameSite=Lax'
+              } catch {}
               setSuccessNotice('Réseau instable : connexion locale hors-ligne activée !')
               setTimeout(() => {
                 window.location.href = offRes.session?.user.role === 'famille' ? '/portail' : '/dashboard'
@@ -97,6 +103,17 @@ export default function ClientLoginForm({ dict }: { dict: any }) {
         }
 
         if (res.success) {
+          try {
+            document.cookie = 'demba_offline_active=1; path=/; max-age=2592000; SameSite=Lax'
+            if (typeof window !== 'undefined' && 'caches' in window) {
+              caches.open('demba-offline-dscholar-v3').then((cache) => {
+                fetch('/dashboard').then((dashRes) => {
+                  if (dashRes.ok) cache.put('/dashboard', dashRes)
+                }).catch(() => {})
+              })
+            }
+          } catch {}
+
           if (res.userContext) {
             try {
               await cacheOfflineAccount(cleanIdentifier, password, res.userContext)
@@ -111,6 +128,9 @@ export default function ClientLoginForm({ dict }: { dict: any }) {
       } catch (networkError: any) {
         const offRes = await verifyOfflineCredentials(cleanIdentifier, password)
         if (offRes.success) {
+          try {
+            document.cookie = 'demba_offline_active=1; path=/; max-age=2592000; SameSite=Lax'
+          } catch {}
           setSuccessNotice('Connexion hors-ligne de secours validée !')
           setTimeout(() => {
             window.location.href = offRes.session?.user.role === 'famille' ? '/portail' : '/dashboard'
