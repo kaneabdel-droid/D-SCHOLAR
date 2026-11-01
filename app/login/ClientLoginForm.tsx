@@ -58,11 +58,14 @@ export default function ClientLoginForm({ dict }: { dict: any }) {
         if (offRes.success && offRes.session) {
           try {
             document.cookie = 'demba_offline_active=1; path=/; max-age=2592000; SameSite=Lax'
+            if (typeof navigator !== 'undefined' && navigator.serviceWorker?.controller) {
+              navigator.serviceWorker.controller.postMessage({ type: 'SET_OFFLINE_SESSION', active: true })
+            }
           } catch {}
           setSuccessNotice('Connexion locale validée ! Accès à votre espace scolaire hors-ligne...')
           setTimeout(() => {
             window.location.href = offRes.session?.user.role === 'famille' ? '/portail' : '/dashboard'
-          }, 600)
+          }, 400)
         } else {
           setMessage(offRes.error || 'Identifiant ou mot de passe incorrect en mode hors-ligne.')
         }
@@ -90,11 +93,14 @@ export default function ClientLoginForm({ dict }: { dict: any }) {
             if (offRes.success) {
               try {
                 document.cookie = 'demba_offline_active=1; path=/; max-age=2592000; SameSite=Lax'
+                if (typeof navigator !== 'undefined' && navigator.serviceWorker?.controller) {
+                  navigator.serviceWorker.controller.postMessage({ type: 'SET_OFFLINE_SESSION', active: true })
+                }
               } catch {}
               setSuccessNotice('Réseau instable : connexion locale hors-ligne activée !')
               setTimeout(() => {
                 window.location.href = offRes.session?.user.role === 'famille' ? '/portail' : '/dashboard'
-              }, 600)
+              }, 400)
               return
             }
           }
@@ -105,8 +111,11 @@ export default function ClientLoginForm({ dict }: { dict: any }) {
         if (res.success) {
           try {
             document.cookie = 'demba_offline_active=1; path=/; max-age=2592000; SameSite=Lax'
+            if (typeof navigator !== 'undefined' && navigator.serviceWorker?.controller) {
+              navigator.serviceWorker.controller.postMessage({ type: 'SET_OFFLINE_SESSION', active: true })
+            }
             if (typeof window !== 'undefined' && 'caches' in window) {
-              caches.open('demba-offline-dscholar-v3').then((cache) => {
+              caches.open('demba-offline-dscholar-v4').then((cache) => {
                 fetch('/dashboard').then((dashRes) => {
                   if (dashRes.ok) cache.put('/dashboard', dashRes)
                 }).catch(() => {})

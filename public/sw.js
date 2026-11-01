@@ -1,16 +1,33 @@
-const CACHE_NAME = 'demba-offline-dscholar-v3'
+const CACHE_NAME = 'demba-offline-dscholar-v4'
+const APP_SHELL = '/dashboard'
 const STATIC_ASSETS = [
   '/',
   '/login',
+  '/dashboard',
   '/manifest.json'
 ]
 
+let isOfflineSessionActive = false
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SET_OFFLINE_SESSION') {
+    isOfflineSessionActive = Boolean(event.data.active)
+  }
+})
+
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS).catch((err) => {
-        console.warn('Pré-mise en cache SW partielle D-SCHOLAR:', err)
-      })
+    caches.open(CACHE_NAME).then(async (cache) => {
+      for (const asset of STATIC_ASSETS) {
+        try {
+          const res = await fetch(asset, { cache: 'reload' })
+          if (res && (res.status === 200 || res.type === 'opaque')) {
+            await cache.put(asset, res)
+          }
+        } catch (err) {
+          console.warn(`Pré-mise en cache SW [${asset}]:`, err)
+        }
+      }
     }).then(() => self.skipWaiting())
   )
 })
@@ -31,24 +48,9 @@ self.addEventListener('fetch', (event) => {
 
   if (request.method !== 'GET' || !url.protocol.startsWith('http')) return
 
-  if (url.pathname.startsWith('/api/')) return
+  if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/videos/') || url.pathname.endsWith('.mp4')) return
 
-  // Détection des requêtes RSC Next.js (React Server Components)
-  if (url.searchParams.has('_rsc')) {
-    event.respondWith(
-      fetch(request).catch(() => {
-        // En hors-ligne, renvoyer 503 pour forcer Next.js à basculer vers un rechargement de page complet (interceptable par le SW)
-        return new Response(null, {
-          status: 503,
-          statusText: 'Service Unavailable (Offline RSC Fallback)',
-          headers: { 'Retry-After': '0' }
-        })
-      })
-    )
-    return
-  }
-
-  // 1. Navigation requests (HTML pages) : Network-First with Smart Cache Fallback
+  // 1. Navigation requests (Pages HTML) : Network-First avec repli App Shell résilient
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request)
@@ -57,59 +59,103 @@ self.addEventListener('fetch', (event) => {
             const clone = response.clone()
             caches.open(CACHE_NAME).then((cache) => {
               cache.put(request, clone)
-              if (url.pathname === '/dashboard') {
-                cache.put('/dashboard', response.clone())
+              if (url.pathname.startsWith('/dashboard') || (!STATIC_ASSETS.includes(url.pathname) && url.pathname !== '/login')) {
+                cache.put(APP_SHELL, response.clone())
               }
             })
           }
           return response
         })
         .catch(async () => {
-          const hasOfflineSessionCookie = event.request.headers.get('cookie')?.includes('demba_offline_active=1') || false
+          const isDashboardTarget = url.pathname.startsWith('/dashboard') || (
+            url.pathname !== '/' &&
+            url.pathname !== '/login' &&
+            url.pathname !== '/signup' &&
+            url.pathname !== '/tarifs' &&
+            !url.pathname.startsWith('/decouvrir') &&
+            !url.pathname.startsWith('/guide')
+          )
 
-          // Match direct de la route
-          const cachedResponse = await caches.match(request)
-          if (cachedResponse) return cachedResponse
+          const cached = await caches.match(request)
+          if (cached) return cached
 
-          // Si l'utilisateur ouvre la racine "/" hors-ligne mais qu'une session existe, rediriger vers l'espace de travail
-          if (url.pathname === '/' && hasOfflineSessionCookie) {
-            const fallbackDashboard = await caches.match('/dashboard')
-            if (fallbackDashboard) return fallbackDashboard
+          const cachedWithoutQuery = await caches.match(url.pathname)
+          if (cachedWithoutQuery) return cachedWithoutQuery
+
+          if (isDashboardTarget || isOfflineSessionActive) {
+            const fallbackShell = await caches.match(APP_SHELL)
+            if (fallbackShell) return fallbackShell
+
+            const cache = await caches.open(CACHE_NAME)
+            const keys = await cache.keys()
+            for (const key of keys) {
+              const u = new URL(key.url)
+              if (u.pathname.startsWith('/dashboard') || (u.pathname !== '/' && u.pathname !== '/login')) {
+                const match = await cache.match(key)
+                if (match) return match
+              }
+            }
           }
 
-          // Routes de l'application connectée
-          if (
-            url.pathname.startsWith('/dashboard') ||
-            url.pathname.startsWith('/eleves') ||
-            url.pathname.startsWith('/classes') ||
-            url.pathname.startsWith('/facturation') ||
-            url.pathname.startsWith('/tresorerie') ||
-            url.pathname.startsWith('/notes') ||
-            url.pathname.startsWith('/assiduite') ||
-            url.pathname.startsWith('/enseignants') ||
-            url.pathname.startsWith('/admissions') ||
-            url.pathname.startsWith('/passages') ||
-            url.pathname.startsWith('/portail')
-          ) {
-            const fallbackDashboard = await caches.match('/dashboard')
-            if (fallbackDashboard) return fallbackDashboard
+          if (url.pathname === '/') {
+            const cachedRoot = await caches.match('/')
+            if (cachedRoot) return cachedRoot
+          }
 
+          if (url.pathname === '/login') {
             const fallbackLogin = await caches.match('/login')
             if (fallbackLogin) return fallbackLogin
           }
 
-          // Fallback login
-          const fallbackLogin = await caches.match('/login')
-          if (fallbackLogin && url.pathname.includes('/login')) return fallbackLogin
+          const fallbackShell = await caches.match(APP_SHELL)
+          if (fallbackShell) return fallbackShell
 
-          // Fallback landing page ou page générique
-          return (await caches.match('/')) || new Response('Application D-SCHOLAR hors-ligne', { status: 503 })
+          const fallbackRoot = await caches.match('/')
+          if (fallbackRoot) return fallbackRoot
+
+          const fallbackLogin = await caches.match('/login')
+          if (fallbackLogin) return fallbackLogin
+
+          return new Response('Application D-SCHOLAR hors-ligne', {
+            status: 200,
+            headers: { 'Content-Type': 'text/html; charset=utf-8' }
+          })
         })
     )
     return
   }
 
-  // 2. Static build assets (_next/static, fonts, images) : Cache-First
+  // 2. Next.js RSC Prefetch & Data requests (_rsc query param)
+  if (url.searchParams.has('_rsc')) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const clone = response.clone()
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone))
+          }
+          return response
+        })
+        .catch(async () => {
+          const cached = await caches.match(request)
+          if (cached) return cached
+
+          const cachedPath = await caches.match(url.pathname)
+          if (cachedPath) return cachedPath
+
+          const shellRsc = await caches.match(`${APP_SHELL}?_rsc=1`)
+          if (shellRsc) return shellRsc
+
+          return new Response(null, {
+            status: 204,
+            statusText: 'No Content Offline RSC'
+          })
+        })
+    )
+    return
+  }
+
+  // 3. Static build assets (_next/static, fonts, images) : Cache-First
   if (
     url.pathname.startsWith('/_next/static/') ||
     url.pathname.endsWith('.svg') ||
@@ -134,8 +180,16 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  // 3. Autres requêtes : Network-first
+  // 4. Autres requêtes : Network avec Cache Fallback
   event.respondWith(
-    fetch(request).catch(() => caches.match(request))
+    fetch(request)
+      .then((res) => {
+        if (res && res.status === 200) {
+          const clone = res.clone()
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone))
+        }
+        return res
+      })
+      .catch(() => caches.match(request))
   )
 })

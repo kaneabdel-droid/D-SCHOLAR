@@ -32,6 +32,7 @@ import {
 import { ThemeSwitcher } from '@/components/ThemeSwitcher'
 import LanguageSelector from '@/components/LanguageSelector'
 import { OfflineSyncBar } from '@/components/offline/OfflineSyncBar'
+import { warmAppOfflineCache } from '@/lib/offline/warmer'
 import type { Dictionary } from '@/dictionaries'
 import { libellePoste, peutGererParametres, type Role } from '@/lib/roles'
 
@@ -167,12 +168,22 @@ export default function ClientLayout({
     // 1. Assurer la présence du cookie hors-ligne pour le Service Worker
     try {
       document.cookie = 'demba_offline_active=1; path=/; max-age=2592000; SameSite=Lax'
-      if (typeof window !== 'undefined' && 'caches' in window && navigator.onLine) {
-        caches.open('demba-offline-dscholar-v3').then((cache) => {
-          fetch('/dashboard').then((res) => {
-            if (res.ok) cache.put('/dashboard', res)
-          }).catch(() => {})
-        })
+      if (typeof navigator !== 'undefined' && navigator.serviceWorker?.controller) {
+        navigator.serviceWorker.controller.postMessage({ type: 'SET_OFFLINE_SESSION', active: true })
+      }
+      if (typeof window !== 'undefined' && navigator.onLine) {
+        const routesToWarm = [
+          '/dashboard',
+          '/eleves',
+          '/classes',
+          '/finances',
+          '/bulletins',
+          '/enseignants',
+          '/presences',
+          '/emplois-du-temps',
+          '/parametres',
+        ]
+        warmAppOfflineCache(routesToWarm, 'demba-offline-dscholar-v4')
       }
     } catch {}
 
