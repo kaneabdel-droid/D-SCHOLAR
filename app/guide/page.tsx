@@ -1,3 +1,4 @@
+import { GuideAntiScreenshotShield } from "@/components/GuideAntiScreenshotShield";
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import LanguageSelector from '@/components/LanguageSelector'
@@ -133,6 +134,7 @@ export default async function GuidePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <GuideAntiScreenshotShield />
       <header className="border-b border-surface-border bg-surface/80">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center gap-2 text-sm font-medium text-foreground-muted hover:text-primary">

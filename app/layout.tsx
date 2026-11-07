@@ -1,3 +1,4 @@
+import { ClientSecurityShield } from "@/components/ClientSecurityShield";
 import type { Metadata } from "next";
 import { Inter, Outfit, Noto_Sans_Arabic } from "next/font/google";
 import "./globals.css";
@@ -52,6 +53,7 @@ export default async function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: scriptTheme }} />
       </head>
       <body className="min-h-full flex flex-col">
+        <ClientSecurityShield />
         <RegisterServiceWorker />
         {children}
         <Toaster position={dir === "rtl" ? "top-left" : "top-right"} richColors />
