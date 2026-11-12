@@ -5,6 +5,8 @@ import type { PalierCode } from '@/lib/abonnements/paliers'
 import type { Acces } from '@/lib/abonnements/plans'
 import { peutEcrire, peutGererParametres, type Module, type Role } from '@/lib/roles'
 
+export type StatutJuridique = 'prive' | 'public' | 'professionnel' | 'superieur'
+
 export type UserContext = {
   userId: string
   email: string | null
@@ -16,6 +18,7 @@ export type UserContext = {
   etablissementId: string
   etablissementNom: string
   etablissementStatut: 'actif' | 'suspendu'
+  statutJuridique: StatutJuridique
   palier: PalierCode
   anneeActive: { id: string; libelle: string } | null
   // Calculé en base depuis les échéances (public.mon_acces(), 05_abonnements.sql).
@@ -35,7 +38,7 @@ export const getCurrentUserContext = cache(async (): Promise<UserContext> => {
     supabase
       .from('utilisateurs')
       // `*` : inclut poste sans échouer si la migration 15 n'est pas encore appliquée.
-      .select('*, etablissements(nom, statut, palier, est_demo)')
+      .select('*, etablissements(nom, statut, palier, est_demo, statut_juridique)')
       .eq('id', user.id)
       .maybeSingle(),
     // RLS : ne renvoie que les années de l'établissement de l'utilisateur.
@@ -64,6 +67,7 @@ export const getCurrentUserContext = cache(async (): Promise<UserContext> => {
     etablissementId: data.etablissement_id,
     etablissementNom: etablissement?.nom ?? '',
     etablissementStatut: etablissement?.statut ?? 'actif',
+    statutJuridique: (etablissement?.statut_juridique ?? 'prive') as StatutJuridique,
     palier: (etablissement?.palier ?? 'elementaire') as PalierCode,
     anneeActive: annee ?? null,
     acces: ((acces as Acces | null) ?? 'lecture_seule'),

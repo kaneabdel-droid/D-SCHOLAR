@@ -49,8 +49,9 @@ export type Bandeau = {
 
 // Les modules marqués `bientot` arrivent dans les lots suivants : affichés
 // (feuille de route visible) mais non cliquables.
-function sections(role: Role): Section[] {
+function sections(role: Role, statutJuridique?: string): Section[] {
   const parametrage = peutGererParametres(role)
+  const estPublic = statutJuridique === 'public'
   return [
     {
       titre: 'sectionPilotage',
@@ -86,19 +87,23 @@ function sections(role: Role): Section[] {
     },
     ...(parametrage
       ? [
-          {
-            titre: 'sectionFinances' as CleNav,
-            items: [
-              { key: 'facturation' as CleNav, href: '/facturation', icon: CreditCard },
-              { key: 'tresorerie' as CleNav, href: '/tresorerie', icon: FileText },
-            ],
-          },
-          {
-            titre: 'sectionRh' as CleNav,
-            items: [
-              { key: 'rh' as CleNav, href: '/rh', icon: Users },
-            ],
-          },
+          ...(!estPublic
+            ? [
+                {
+                  titre: 'sectionFinances' as CleNav,
+                  items: [
+                    { key: 'facturation' as CleNav, href: '/facturation', icon: CreditCard },
+                    { key: 'tresorerie' as CleNav, href: '/tresorerie', icon: FileText },
+                  ],
+                },
+                {
+                  titre: 'sectionRh' as CleNav,
+                  items: [
+                    { key: 'rh' as CleNav, href: '/rh', icon: Users },
+                  ],
+                },
+              ]
+            : []),
           {
             titre: 'sectionAdministration' as CleNav,
             items: [
@@ -130,6 +135,7 @@ export default function ClientLayout({
   role,
   poste,
   etablissementNom,
+  statutJuridique,
   anneeLibelle,
   utilisateurNom,
   bandeau,
@@ -142,6 +148,7 @@ export default function ClientLayout({
   role: Role
   poste: string | null
   etablissementNom: string
+  statutJuridique?: string
   anneeLibelle: string | null
   utilisateurNom: string
   bandeau: Bandeau | null
@@ -225,7 +232,7 @@ export default function ClientLayout({
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 pb-4">
-        {sections(role).map((section) => (
+        {sections(role, statutJuridique).map((section) => (
           <div key={section.titre} className="mt-4">
             <p className="px-3 pb-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-sidebar-text/60">{nav[section.titre]}</p>
             <ul className="space-y-0.5">
@@ -337,7 +344,7 @@ export default function ClientLayout({
 
           {/* Navigation horizontale par catégories avec dropdowns */}
           <div ref={navHorizontalRef} className="flex items-center gap-1.5 px-6 py-1.5 flex-wrap text-xs relative">
-            {sections(role).map((section) => {
+            {sections(role, statutJuridique).map((section) => {
               const aUnItemActif = section.items.some((item) => estActif(item.href))
               const estOuvert = menuOuvert === section.titre
 
