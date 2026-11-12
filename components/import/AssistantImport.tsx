@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import * as XLSX from 'xlsx'
 import {
   UploadCloud,
   Download,
@@ -10,7 +11,8 @@ import {
   GraduationCap,
   Users,
   BookOpen,
-  FileText
+  FileText,
+  FileSpreadsheet
 } from 'lucide-react'
 
 export interface TypeImportOption {
@@ -47,18 +49,6 @@ export function AssistantImport({
 
   const optionCourante = optionsTypes.find(o => o.id === typeSelectionne) || optionsTypes[0]
 
-  const telechargerModele = () => {
-    if (!optionCourante) return
-    const blob = new Blob([optionCourante.modeleCSV], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', optionCourante.nomFichierModele)
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
-
   const parserTexte = (texte: string) => {
     const propre = texte.replace(/^\uFEFF/, '').trim()
     if (!propre) throw new Error('Le fichier est vide.')
@@ -80,10 +70,92 @@ export function AssistantImport({
     return { entetes, records }
   }
 
+  const telechargerModeleCSV = () => {
+    if (!optionCourante) return
+    const blob = new Blob([optionCourante.modeleCSV], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', optionCourante.nomFichierModele)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  const telechargerModeleExcel = () => {
+    if (!optionCourante) return
+    try {
+      const parsed = parserTexte(optionCourante.modeleCSV)
+      const ws = XLSX.utils.json_to_sheet(parsed.records, { header: parsed.entetes })
+      const wb = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(wb, ws, optionCourante.titre.slice(0, 31))
+      const nomExcel = optionCourante.nomFichierModele.replace(/\.csv$/, '.xlsx')
+      XLSX.writeFile(wb, nomExcel)
+    } catch {
+      telechargerModeleCSV()
+    }
+  }
+
   const gererFichier = (file: File) => {
     setErreurLecture(null)
     setRapport(null)
     setFichierNom(file.name)
+
+    const isExcel = file.name.endsWith('.xlsx') || file.name.endsWith('.xls')
+
+    if (isExcel) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        try {
+          const buffer = e.target?.result as ArrayBuffer
+          const wb = XLSX.read(new Uint8Array(buffer), { type: 'array', cellDates: true, dateNF: 'yyyy-mm-dd' })
+          const sheetName = wb.SheetNames[0]
+          if (!sheetName) throw new Error('Le classeur Excel ne contient aucune feuille.')
+          const ws = wb.Sheets[sheetName]
+          const rawRecords: any[] = XLSX.utils.sheet_to_json(ws, { defval: '' })
+          if (rawRecords.length === 0) throw new Error('La feuille Excel ne contient aucune ligne de données.')
+
+          const entetes = Object.keys(rawRecords[0]).map((h) => h.trim().toLowerCase())
+          const records = rawRecords.map((row) => {
+            const cleanRow: Record<string, string> = {}
+            for (const [key, val] of Object.entries(row)) {
+              const k = key.trim().toLowerCase()
+              if (val instanceof Date) {
+                const y = val.getFullYear()
+                const m = String(val.getMonth() + 1).padStart(2, '0')
+                const d = String(val.getDate()).padStart(2, '0')
+                cleanRow[k] = `${y}-${m}-${d}`
+              } else if (typeof val === 'string') {
+                const v = val.trim()
+                const matchFr = v.match(/^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$/)
+                if (matchFr) {
+                  cleanRow[k] = `${matchFr[3]}-${matchFr[2].padStart(2, '0')}-${matchFr[1].padStart(2, '0')}`
+                } else {
+                  cleanRow[k] = v
+                }
+              } else if (val !== null && val !== undefined) {
+                cleanRow[k] = String(val).trim()
+              } else {
+                cleanRow[k] = ''
+              }
+            }
+            return cleanRow
+          })
+
+          setColonnesApercu(entetes)
+          setLignesApercu(records.slice(0, 5))
+          setTotalLignes(records.length)
+          setDonneesCompletes(records)
+        } catch (err: any) {
+          setErreurLecture(err.message || 'Impossible de lire le fichier Excel.')
+          setDonneesCompletes([])
+          setLignesApercu([])
+          setTotalLignes(0)
+        }
+      }
+      reader.readAsArrayBuffer(file)
+      return
+    }
 
     const reader = new FileReader()
     reader.onload = (e) => {
@@ -146,16 +218,29 @@ export function AssistantImport({
           <div>
             <h2 className="text-xl font-bold tracking-tight text-foreground">{titreModule}</h2>
             <p className="mt-1 text-sm text-foreground-muted">
-              Importez les listes d'élèves, enseignants et classes existants dans {nomApplication}.
+              Importez vos fichiers Excel (.xlsx, .xls) ou CSV d&apos;élèves, enseignants et classes existants dans {nomApplication}.
             </p>
           </div>
-          <button
-            onClick={telechargerModele}
-            className="inline-flex items-center gap-2 rounded-lg border border-surface-border bg-surface px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-surface-muted hover:text-primary shadow-xs"
-          >
-            <Download className="h-4 w-4" />
-            Télécharger le modèle CSV ({optionCourante?.titre})
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={telechargerModeleExcel}
+              className="inline-flex items-center gap-2 rounded-lg border border-emerald-600/30 bg-emerald-500/10 px-4 py-2 text-sm font-medium text-emerald-700 dark:text-emerald-300 transition-colors hover:bg-emerald-500/20 shadow-xs"
+              title="Télécharger le modèle sous format Microsoft Excel"
+            >
+              <FileSpreadsheet className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              Modèle Excel (.xlsx)
+            </button>
+            <button
+              type="button"
+              onClick={telechargerModeleCSV}
+              className="inline-flex items-center gap-2 rounded-lg border border-surface-border bg-surface px-3 py-2 text-sm font-medium text-foreground-muted transition-colors hover:bg-surface-muted hover:text-foreground shadow-xs"
+              title="Télécharger le modèle sous format texte CSV"
+            >
+              <Download className="h-4 w-4" />
+              Modèle CSV
+            </button>
+          </div>
         </div>
       </div>
 
@@ -192,7 +277,7 @@ export function AssistantImport({
 
       <div className="space-y-3">
         <label className="text-sm font-semibold text-foreground">
-          2. Téléversez votre fichier (CSV ou JSON) :
+          2. Téléversez votre fichier (Excel .xlsx / .xls, CSV ou JSON) :
         </label>
         <label
           onDragOver={(e) => e.preventDefault()}
@@ -203,21 +288,21 @@ export function AssistantImport({
           className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-surface-border bg-surface-muted/30 p-8 text-center transition-colors hover:border-primary/50 hover:bg-primary/5 cursor-pointer"
         >
           <div className="rounded-full bg-primary/10 p-4 text-primary">
-            <UploadCloud className="h-8 w-8" />
+            <FileSpreadsheet className="h-8 w-8" />
           </div>
           <p className="mt-3 text-sm font-medium text-foreground">
             {fichierNom ? (
               <span className="font-semibold text-primary">{fichierNom}</span>
             ) : (
-              'Glissez-déposez votre fichier ici, ou cliquez pour parcourir'
+              'Glissez-déposez votre fichier Excel (.xlsx, .xls) ou CSV ici, ou cliquez pour parcourir'
             )}
           </p>
           <p className="mt-1 text-xs text-foreground-muted">
-            Format CSV (séparateur point-virgule ou virgule) ou JSON • Encodage UTF-8
+            Fichiers Excel (.xlsx, .xls), CSV (séparateur virgule ou point-virgule) ou JSON • Encodage UTF-8
           </p>
           <input
             type="file"
-            accept=".csv, .txt, .json"
+            accept=".xlsx, .xls, .csv, .txt, .json"
             onChange={(e) => {
               if (e.target.files?.[0]) gererFichier(e.target.files[0])
             }}

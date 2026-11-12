@@ -750,6 +750,11 @@
     "dateSortie": "Date de sortie",
     "motif": "Précisions",
     "sortieOk": "Sortie enregistrée",
+    "annulerSortie": "Annuler la sortie / transfert",
+    "annulerSortieTitre": "Annuler la sortie de l'élève",
+    "annulerSortieConfirmation": "Êtes-vous sûr de vouloir annuler le transfert sortant ou la sortie de cet élève ? L'élève retrouvera son statut actif et le mouvement de sortie sera supprimé.",
+    "annulerSortieOk": "Sortie / transfert annulé avec succès",
+    "annulerSortieAction": "Confirmer l'annulation",
     "acces": {
       "bouton": "Accès portail",
       "titre": "Accès au portail des familles",

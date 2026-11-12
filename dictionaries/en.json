@@ -598,6 +598,11 @@
     "dateSortie": "Departure date",
     "motif": "Details",
     "sortieOk": "Departure recorded",
+    "annulerSortie": "Cancel departure / transfer",
+    "annulerSortieTitre": "Cancel student departure",
+    "annulerSortieConfirmation": "Are you sure you want to cancel the outgoing transfer or departure of this student? The student will be restored to active status and the departure record will be deleted.",
+    "annulerSortieOk": "Departure / transfer canceled successfully",
+    "annulerSortieAction": "Confirm cancellation",
     "acces": {
       "bouton": "Portal access",
       "titre": "Family portal access",

@@ -141,6 +141,50 @@ export async function declarerSortie(eleveId: string, formData: FormData): Promi
   return { success: true }
 }
 
+export async function annulerSortie(eleveId: string): Promise<ActionResult> {
+  const dict = await getDictionary()
+  const garde = await contexteEcriture('eleves', dict)
+  if ('erreur' in garde) return { error: garde.erreur }
+
+  const supabase = await createClient()
+
+  // Supprimer le dernier mouvement de sortie (transfert sortant, abandon, exclusion, etc.)
+  const { data: dernierMouvement, error: errFind } = await supabase
+    .from('mouvements')
+    .select('id')
+    .eq('etablissement_id', garde.context.etablissementId)
+    .eq('eleve_id', eleveId)
+    .in('type', SORTIES as unknown as string[])
+    .order('date_mouvement', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (errFind) return { error: messageErreur(errFind, dict, 'annulerSortie(recherche)') }
+
+  if (dernierMouvement) {
+    const { error: errDel } = await supabase
+      .from('mouvements')
+      .delete()
+      .eq('id', dernierMouvement.id)
+    if (errDel) return { error: messageErreur(errDel, dict, 'annulerSortie(suppression)') }
+  }
+
+  // Réactiver l'élève
+  const { error: errUpdate } = await supabase
+    .from('eleves')
+    .update({ statut: 'actif' })
+    .eq('id', eleveId)
+    .eq('etablissement_id', garde.context.etablissementId)
+
+  if (errUpdate) return { error: messageErreur(errUpdate, dict, 'annulerSortie(statut)') }
+
+  revalidatePath('/eleves')
+  revalidatePath(`/eleves/${eleveId}`)
+  revalidatePath('/attestations')
+  revalidatePath('/dashboard')
+  return { success: true }
+}
+
 // Code d'accès au portail (parent ou élève), à remettre à la famille.
 export async function genererCodeAcces(eleveId: string, type: 'parent' | 'eleve', lien: 'pere' | 'mere' | 'tuteur'): Promise<ActionResult & { code?: string }> {
   const dict = await getDictionary()

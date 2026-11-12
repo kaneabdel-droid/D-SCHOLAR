@@ -1,16 +1,16 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { ArrowLeftRight, KeyRound, LogOut, Pencil } from 'lucide-react'
+import { ArrowLeftRight, KeyRound, LogOut, Pencil, RotateCcw } from 'lucide-react'
 import { toast } from 'sonner'
 import Modal from '@/components/ui/Modal'
 import { btnPrimary, btnSecondary, hintClass, inputClass, labelClass } from '@/components/ui/styles'
 import type { Dictionary } from '@/dictionaries'
 import { fmt } from '@/lib/i18n'
-import { changerClasse, declarerSortie, genererCodeAcces, modifierEleve } from '../actions'
+import { annulerSortie, changerClasse, declarerSortie, genererCodeAcces, modifierEleve } from '../actions'
 import EleveChamps, { type IdentiteEleve } from '../EleveChamps'
 
-type Fenetre = 'modifier' | 'classe' | 'sortie' | 'acces' | null
+type Fenetre = 'modifier' | 'classe' | 'sortie' | 'annuler-sortie' | 'acces' | null
 
 export default function EleveActions({
   eleveId,
@@ -70,8 +70,16 @@ export default function EleveActions({
         <button type="button" onClick={() => setFenetre('classe')} className={btnSecondary}><ArrowLeftRight className="h-4 w-4" /> {t.changerClasse}</button>
       )}
       <button type="button" onClick={() => setFenetre('acces')} className={btnSecondary}><KeyRound className="h-4 w-4" /> {t.acces.bouton}</button>
-      {!sorti && (
+      {!sorti ? (
         <button type="button" onClick={() => setFenetre('sortie')} className={`${btnSecondary} hover:text-danger`}><LogOut className="h-4 w-4 rtl:-scale-x-100" /> {t.sortie}</button>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setFenetre('annuler-sortie')}
+          className={`${btnSecondary} text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10`}
+        >
+          <RotateCcw className="h-4 w-4" /> {t.annulerSortie || 'Annuler la sortie / transfert'}
+        </button>
       )}
 
       <Modal open={fenetre === 'modifier'} onClose={fermer} title={t.modifierTitre} closeLabel={c.close} size="lg" footer={pied('form-modifier-eleve')}>
@@ -117,6 +125,33 @@ export default function EleveActions({
             <input id="sortie-motif" name="motif" className={inputClass} />
           </div>
         </form>
+      </Modal>
+
+      <Modal
+        open={fenetre === 'annuler-sortie'}
+        onClose={fermer}
+        title={t.annulerSortieTitre || "Annuler la sortie de l'élève"}
+        closeLabel={c.close}
+        footer={
+          <>
+            <button type="button" onClick={fermer} className={btnSecondary}>{c.cancel}</button>
+            <button
+              type="button"
+              disabled={enCours}
+              onClick={() => executer(() => annulerSortie(eleveId), t.annulerSortieOk || 'Sortie annulée avec succès')}
+              className={`${btnPrimary} bg-emerald-600 hover:bg-emerald-700 text-white`}
+            >
+              {enCours ? c.saving : (t.annulerSortieAction || "Confirmer l'annulation")}
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-3">
+          {erreur && <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{erreur}</p>}
+          <p className="text-sm text-foreground">
+            {t.annulerSortieConfirmation || "Êtes-vous sûr de vouloir annuler le transfert sortant ou la sortie de cet élève ? L'élève retrouvera son statut actif et le mouvement de sortie sera supprimé."}
+          </p>
+        </div>
       </Modal>
 
       <Modal

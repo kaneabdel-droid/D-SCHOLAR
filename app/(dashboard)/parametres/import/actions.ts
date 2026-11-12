@@ -60,7 +60,13 @@ export async function importerDonneesScholar(
           sexe = sexe.startsWith('F') ? 'F' : 'M'
         }
 
-        const dateNaissance = row.date_naissance ? row.date_naissance.toString().trim() : null
+        let dateNaissance = row.date_naissance ? row.date_naissance.toString().trim() : null
+        if (dateNaissance) {
+          const matchFr = dateNaissance.match(/^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$/)
+          if (matchFr) {
+            dateNaissance = `${matchFr[3]}-${matchFr[2].padStart(2, '0')}-${matchFr[1].padStart(2, '0')}`
+          }
+        }
         const lieuNaissance = row.lieu_naissance ? row.lieu_naissance.toString().trim() : null
         const adresse = row.adresse ? row.adresse.toString().trim() : null
         const tuteurNom = (row.tuteur_nom || row.parent_nom || '').toString().trim() || null
