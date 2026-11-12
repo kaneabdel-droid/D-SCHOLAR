@@ -6,6 +6,7 @@ import { contexteEcriture } from '@/lib/auth/getCurrentUserContext'
 import { messageErreur } from '@/lib/erreurs'
 import { fmt } from '@/lib/i18n'
 import { getDictionary } from '@/dictionaries'
+import { peutGererParametres } from '@/lib/roles'
 
 type ActionResult = { success?: true; error?: string; id?: string }
 
@@ -197,4 +198,170 @@ export async function genererCodeAcces(eleveId: string, type: 'parent' | 'eleve'
 
   revalidatePath(`/eleves/${eleveId}`)
   return { success: true, code: data as string }
+}
+
+// Suppression définitive d'un élève : réservée à l'administrateur local (direction / censeur)
+// autorisée UNIQUEMENT si l'élève n'a aucune information pédagogique (notes, assiduité, examens, décisions)
+// ni financière (paiements, factures, souscriptions). Cas typique : erreur de saisie ou inscription annulée.
+export async function supprimerEleve(eleveId: string): Promise<ActionResult> {
+  const dict = await getDictionary()
+  const garde = await contexteEcriture('eleves', dict)
+  if ('erreur' in garde) return { error: garde.erreur }
+
+  // Seul l'administrateur local (direction ou censeur) peut supprimer définitivement un élève
+  if (!peutGererParametres(garde.context.role) && garde.context.role !== 'direction' && garde.context.role !== 'censeur') {
+    return { error: "Seul l'administrateur de l'établissement (direction ou censeur) a le droit de supprimer un élève." }
+  }
+
+  const supabase = await createClient()
+  const etabId = garde.context.etablissementId
+
+  // 1. Vérification d'existence
+  const { data: eleve } = await supabase
+    .from('eleves')
+    .select('id, prenom, nom, matricule')
+    .eq('id', eleveId)
+    .eq('etablissement_id', etabId)
+    .maybeSingle()
+
+  if (!eleve) return { error: "Élève introuvable dans cet établissement." }
+
+  // 2. Vérifications Pédagogiques
+  // A. Notes / évaluations
+  const { count: countNotes } = await supabase
+    .from('notes')
+    .select('id', { count: 'exact', head: true })
+    .eq('eleve_id', eleveId)
+
+  if (countNotes && countNotes > 0) {
+    return {
+      error: `Suppression impossible : ${eleve.prenom} ${eleve.nom} possède ${countNotes} note(s) enregistrée(s). Déclarez une sortie (abandon, transfert) pour conserver l'historique pédagogique.`,
+    }
+  }
+
+  // B. Assiduité (absences, retards)
+  const { count: countAbsences } = await supabase
+    .from('absences')
+    .select('id', { count: 'exact', head: true })
+    .eq('eleve_id', eleveId)
+
+  if (countAbsences && countAbsences > 0) {
+    return {
+      error: `Suppression impossible : cet élève possède des enregistrements d'assiduité (${countAbsences} absence(s)/retard(s)). Déclarez une sortie pour archiver son dossier.`,
+    }
+  }
+
+  // C. Examens officiels
+  const { count: countExamens } = await supabase
+    .from('examens_officiels')
+    .select('id', { count: 'exact', head: true })
+    .eq('eleve_id', eleveId)
+
+  if (countExamens && countExamens > 0) {
+    return {
+      error: "Suppression impossible : cet élève est inscrit à un ou plusieurs examens officiels.",
+    }
+  }
+
+  // D. Billets de surveillance / discipline
+  const { count: countBillets } = await supabase
+    .from('billets')
+    .select('id', { count: 'exact', head: true })
+    .eq('eleve_id', eleveId)
+
+  if (countBillets && countBillets > 0) {
+    return {
+      error: "Suppression impossible : cet élève possède des billets de surveillance ou de discipline.",
+    }
+  }
+
+  // E. Décisions de conseil de classe
+  const { data: inscriptions } = await supabase
+    .from('inscriptions')
+    .select('id')
+    .eq('eleve_id', eleveId)
+
+  if (inscriptions && inscriptions.length > 0) {
+    const inscriptionIds = inscriptions.map((i) => i.id)
+    const { count: countDecisions } = await supabase
+      .from('decisions_conseil')
+      .select('id', { count: 'exact', head: true })
+      .in('inscription_id', inscriptionIds)
+
+    if (countDecisions && countDecisions > 0) {
+      return {
+        error: "Suppression impossible : cet élève possède des décisions de conseil de classe validées.",
+      }
+    }
+  }
+
+  // 3. Vérifications Financières
+  // A. Paiements / Reçus
+  const { count: countPaiements } = await supabase
+    .from('paiements_eleves')
+    .select('id', { count: 'exact', head: true })
+    .eq('eleve_id', eleveId)
+
+  if (countPaiements && countPaiements > 0) {
+    return {
+      error: `Suppression impossible : cet élève possède ${countPaiements} paiement(s) ou reçu(s) financier(s) enregistré(s). L'intégrité comptable interdit sa suppression.`,
+    }
+  }
+
+  // B. Factures émises
+  const { count: countFactures } = await supabase
+    .from('factures_eleves')
+    .select('id', { count: 'exact', head: true })
+    .eq('eleve_id', eleveId)
+
+  if (countFactures && countFactures > 0) {
+    return {
+      error: `Suppression impossible : des factures (${countFactures}) sont émises au nom de cet élève.`,
+    }
+  }
+
+  // C. Souscriptions à des services payants (cantine, transport)
+  const { count: countServices } = await supabase
+    .from('souscriptions_services')
+    .select('id', { count: 'exact', head: true })
+    .eq('eleve_id', eleveId)
+
+  if (countServices && countServices > 0) {
+    return {
+      error: "Suppression impossible : cet élève a des souscriptions enregistrées à des services scolaires (cantine, transport).",
+    }
+  }
+
+  // D. Documents officiels émis (bulletins, certificats, attestations)
+  const { count: countDocs } = await supabase
+    .from('documents_emis')
+    .select('id', { count: 'exact', head: true })
+    .eq('eleve_id', eleveId)
+
+  if (countDocs && countDocs > 0) {
+    return {
+      error: "Suppression impossible : des documents officiels vérifiables ont été émis pour cet élève.",
+    }
+  }
+
+  // 4. Si aucune donnée pédagogique ni financière : suppression complète
+  await Promise.all([
+    supabase.from('codes_activation').delete().eq('eleve_id', eleveId),
+    supabase.from('liens_famille').delete().eq('eleve_id', eleveId),
+    supabase.from('mouvements').delete().eq('eleve_id', eleveId),
+    supabase.from('inscriptions').delete().eq('eleve_id', eleveId),
+  ])
+
+  const { error: errDelete } = await supabase
+    .from('eleves')
+    .delete()
+    .eq('id', eleveId)
+    .eq('etablissement_id', etabId)
+
+  if (errDelete) return { error: messageErreur(errDelete, dict, 'supprimerEleve') }
+
+  revalidatePath('/eleves')
+  revalidatePath('/classes')
+  revalidatePath('/dashboard')
+  return { success: true }
 }

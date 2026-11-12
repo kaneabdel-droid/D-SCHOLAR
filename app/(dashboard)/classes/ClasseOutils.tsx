@@ -103,7 +103,7 @@ export function ClasseFormButton({ anneeId, classeId, valeurs = {}, referentiel,
   )
 }
 
-export function SupprimerClasseButton({ classeId, nom, dict }: { classeId: string; nom: string; dict: Dictionary }) {
+export function SupprimerClasseButton({ classeId, nom, dict, compact = false }: { classeId: string; nom: string; dict: Dictionary; compact?: boolean }) {
   const router = useRouter()
   const [enCours, startTransition] = useTransition()
   return (
@@ -111,16 +111,22 @@ export function SupprimerClasseButton({ classeId, nom, dict }: { classeId: strin
       type="button"
       disabled={enCours}
       onClick={() => {
-        if (!confirm(fmt(dict.common.confirmDelete, { nom }))) return
+        const msg = fmt(dict.common.confirmDelete, { nom }) || `Êtes-vous sûr de vouloir supprimer définitivement la classe "${nom}" ?`
+        if (!confirm(msg)) return
         startTransition(async () => {
           const res = await supprimerClasse(classeId)
           if (res.error) toast.error(res.error)
-          else router.push('/classes')
+          else {
+            toast.success(`La classe "${nom}" a été supprimée avec succès.`)
+            router.push('/classes')
+            router.refresh()
+          }
         })
       }}
-      className={`${btnSecondary} hover:text-danger`}
+      className={compact ? "inline-flex items-center gap-1 text-xs font-medium text-danger hover:bg-danger/10 px-2.5 py-1 rounded-lg border border-danger/30 transition" : `${btnSecondary} hover:text-danger hover:border-danger/30`}
+      title="Supprimer cette classe vide"
     >
-      <Trash2 className="h-4 w-4" /> {dict.common.delete}
+      <Trash2 className={compact ? "h-3.5 w-3.5" : "h-4 w-4"} /> {dict.common.delete}
     </button>
   )
 }

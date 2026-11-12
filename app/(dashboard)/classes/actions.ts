@@ -6,6 +6,7 @@ import { contexteEcriture } from '@/lib/auth/getCurrentUserContext'
 import { messageErreur } from '@/lib/erreurs'
 import { fmt } from '@/lib/i18n'
 import { getDictionary } from '@/dictionaries'
+import { peutGererParametres } from '@/lib/roles'
 
 type ActionResult = { success?: true; error?: string; id?: string }
 
@@ -99,10 +100,20 @@ export async function supprimerClasse(classeId: string): Promise<ActionResult> {
   const garde = await contexteEcriture('organisation', dict)
   if ('erreur' in garde) return { error: garde.erreur }
 
+  // Seul l'administrateur local (direction ou censeur) peut supprimer une classe
+  if (!peutGererParametres(garde.context.role) && garde.context.role !== 'direction' && garde.context.role !== 'censeur') {
+    return { error: "Seul l'administrateur de l'établissement (direction ou censeur) a le droit de supprimer une classe." }
+  }
+
   const supabase = await createClient()
   // Une classe avec des élèves inscrits ne se supprime pas (historique du cursus).
   const { count } = await supabase.from('inscriptions').select('id', { count: 'exact', head: true }).eq('classe_id', classeId)
-  if (count) return { error: dict.errors.inUse }
+  if (count && count > 0) {
+    return {
+      error: `Impossible de supprimer cette classe car elle contient encore ${count} élève(s) inscrit(s). Veuillez d'abord réaffecter ou retirer les élèves.`,
+    }
+  }
+
   const { error } = await supabase.from('classes').delete().eq('id', classeId)
   if (error) return { error: messageErreur(error, dict, 'supprimerClasse') }
 
@@ -117,7 +128,7 @@ export async function genererEnseignements(classeId: string): Promise<ActionResu
   const supabase = await createClient()
   const { ajoutes } = await completerEnseignements(supabase, classeId, garde.context.etablissementId)
   revalidatePath(`/classes/${classeId}`)
-  const message = ajoutes > 0 
+  const message = ajoutes > 0
     ? `${ajoutes} matière(s) synchronisée(s) avec succès`
     : "Toutes les matières sont déjà synchronisées"
   return { success: true, message }

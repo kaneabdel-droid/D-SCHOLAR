@@ -7,7 +7,7 @@ import { createClient } from '@/utils/supabase/server'
 import { getCurrentUserContext } from '@/lib/auth/getCurrentUserContext'
 import { anneesEtSelection, appreciationPour, baremeAppreciations, libellePeriode, moyenneLisible, TEINTES_APPRECIATION, TEINTES_DECISION, un } from '@/lib/scolarite'
 import { fmt, intlLocale } from '@/lib/i18n'
-import { peutEcrire } from '@/lib/roles'
+import { peutEcrire, peutGererParametres } from '@/lib/roles'
 import EleveActions from './EleveActions'
 import { situationsFinancieres } from '@/lib/finances'
 import type { TypeDocument } from '@/lib/documents'
@@ -123,12 +123,12 @@ export default async function EleveFichePage({ params, searchParams }: { params:
   const courante = inscriptions[inscriptions.length - 1] ?? null
   const [{ data: classesAnnee }, { data: etabNiveau }, { data: niveauCourant }, { data: liens }, { data: codes }] = gestion
     ? await Promise.all([
-        courante ? supabase.from('classes').select('id, nom').eq('annee_id', courante.annee_id).order('nom') : Promise.resolve({ data: [] }),
-        supabase.from('etablissements').select('niveau_min_compte_eleve').eq('id', context.etablissementId).single(),
-        courante ? supabase.from('classes').select('niveaux(ordre)').eq('id', courante.classe_id).single() : Promise.resolve({ data: null }),
-        supabase.from('liens_famille').select('lien, comptes_famille(prenom, nom, telephone)').eq('eleve_id', id),
-        supabase.from('codes_activation').select('code, type, expire_le').eq('eleve_id', id).is('utilise_le', null).gt('expire_le', new Date().toISOString()),
-      ])
+      courante ? supabase.from('classes').select('id, nom').eq('annee_id', courante.annee_id).order('nom') : Promise.resolve({ data: [] }),
+      supabase.from('etablissements').select('niveau_min_compte_eleve').eq('id', context.etablissementId).single(),
+      courante ? supabase.from('classes').select('niveaux(ordre)').eq('id', courante.classe_id).single() : Promise.resolve({ data: null }),
+      supabase.from('liens_famille').select('lien, comptes_famille(prenom, nom, telephone)').eq('eleve_id', id),
+      supabase.from('codes_activation').select('code, type, expire_le').eq('eleve_id', id).is('utilise_le', null).gt('expire_le', new Date().toISOString()),
+    ])
     : [{ data: [] }, { data: null }, { data: null }, { data: [] }, { data: [] }]
   const { data: niveauMin } = gestion && etabNiveau
     ? await supabase.from('niveaux').select('ordre').eq('code', etabNiveau.niveau_min_compte_eleve).maybeSingle()
@@ -141,10 +141,10 @@ export default async function EleveFichePage({ params, searchParams }: { params:
   const finance = ['direction', 'censeur', 'intendant', 'secretariat'].includes(context.role)
   const [situations, { data: servicesEleve }, { data: paiementsEleve }] = finance && inscription
     ? await Promise.all([
-        situationsFinancieres(supabase, inscription.annee_id, [id]),
-        supabase.from('souscriptions_services').select('details, services(nom, tarif, periodicite)').eq('eleve_id', id).eq('annee_id', inscription.annee_id),
-        supabase.from('paiements_eleves').select('libelle, montant, numero_recu, date_paiement').eq('eleve_id', id).eq('annee_id', inscription.annee_id).order('date_paiement', { ascending: false }).limit(6),
-      ])
+      situationsFinancieres(supabase, inscription.annee_id, [id]),
+      supabase.from('souscriptions_services').select('details, services(nom, tarif, periodicite)').eq('eleve_id', id).eq('annee_id', inscription.annee_id),
+      supabase.from('paiements_eleves').select('libelle, montant, numero_recu, date_paiement').eq('eleve_id', id).eq('annee_id', inscription.annee_id).order('date_paiement', { ascending: false }).limit(6),
+    ])
     : [null, { data: [] }, { data: [] }]
   const situation = situations?.get(id) ?? null
 
@@ -193,6 +193,7 @@ export default async function EleveFichePage({ params, searchParams }: { params:
               sorti={eleve.statut === 'sorti'}
               urlActivation={`${siteUrl}/activer`}
               dict={dict}
+              estAdmin={peutGererParametres(context.role)}
             />
             {((liens ?? []).length > 0 || (codes ?? []).length > 0) && (
               <div className="flex flex-wrap gap-2 text-xs">

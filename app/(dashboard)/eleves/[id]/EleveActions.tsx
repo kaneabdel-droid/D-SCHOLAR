@@ -1,16 +1,17 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { ArrowLeftRight, KeyRound, LogOut, Pencil, RotateCcw } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { AlertTriangle, ArrowLeftRight, KeyRound, LogOut, Pencil, RotateCcw, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import Modal from '@/components/ui/Modal'
 import { btnPrimary, btnSecondary, hintClass, inputClass, labelClass } from '@/components/ui/styles'
 import type { Dictionary } from '@/dictionaries'
 import { fmt } from '@/lib/i18n'
-import { annulerSortie, changerClasse, declarerSortie, genererCodeAcces, modifierEleve } from '../actions'
+import { annulerSortie, changerClasse, declarerSortie, genererCodeAcces, modifierEleve, supprimerEleve } from '../actions'
 import EleveChamps, { type IdentiteEleve } from '../EleveChamps'
 
-type Fenetre = 'modifier' | 'classe' | 'sortie' | 'annuler-sortie' | 'acces' | null
+type Fenetre = 'modifier' | 'classe' | 'sortie' | 'annuler-sortie' | 'acces' | 'supprimer' | null
 
 export default function EleveActions({
   eleveId,
@@ -21,6 +22,7 @@ export default function EleveActions({
   sorti,
   urlActivation,
   dict,
+  estAdmin = false,
 }: {
   eleveId: string
   identite: IdentiteEleve
@@ -30,7 +32,9 @@ export default function EleveActions({
   sorti: boolean
   urlActivation: string
   dict: Dictionary
+  estAdmin?: boolean
 }) {
+  const router = useRouter()
   const t = dict.eleves
   const c = dict.common
   const [fenetre, setFenetre] = useState<Fenetre>(null)
@@ -79,6 +83,16 @@ export default function EleveActions({
           className={`${btnSecondary} text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10`}
         >
           <RotateCcw className="h-4 w-4" /> {t.annulerSortie || 'Annuler la sortie / transfert'}
+        </button>
+      )}
+      {estAdmin && (
+        <button
+          type="button"
+          onClick={() => setFenetre('supprimer')}
+          className={`${btnSecondary} text-danger hover:bg-danger/10 border-danger/30`}
+          title="Supprimer définitivement l'élève (si aucune information pédagogique ni financière)"
+        >
+          <Trash2 className="h-4 w-4" /> {dict.common.delete || 'Supprimer'}
         </button>
       )}
 
@@ -194,6 +208,55 @@ export default function EleveActions({
             {!compteEleveDisponible && <p className={hintClass}>{dict.errors.niveauCompteEleve}</p>}
           </form>
         )}
+      </Modal>
+
+      <Modal
+        open={fenetre === 'supprimer'}
+        onClose={fermer}
+        title="Supprimer définitivement cet élève"
+        closeLabel={c.close}
+        footer={
+          <>
+            <button type="button" onClick={fermer} className={btnSecondary}>{c.cancel}</button>
+            <button
+              type="button"
+              disabled={enCours}
+              onClick={() =>
+                startTransition(async () => {
+                  setErreur(null)
+                  const res = await supprimerEleve(eleveId)
+                  if (res.error) setErreur(res.error)
+                  else {
+                    toast.success('Élève supprimé avec succès.')
+                    router.push('/eleves')
+                  }
+                })
+              }
+              className={`${btnPrimary} bg-danger hover:bg-danger/90 text-white`}
+            >
+              {enCours ? c.saving : 'Confirmer la suppression'}
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-3">
+          {erreur && <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger font-medium">{erreur}</p>}
+          <div className="flex items-start gap-3 p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-amber-900 dark:text-amber-200 text-xs">
+            <AlertTriangle className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
+            <div className="space-y-1">
+              <p className="font-bold">Règle de sécurité de l&apos;établissement :</p>
+              <p>
+                La suppression définitive est réservée aux <strong>erreurs de saisie ou inscriptions sans suite</strong>. Elle n&apos;est autorisée que si l&apos;élève n&apos;a <strong>aucune note, aucune absence, aucun paiement, aucune facture ni document officiel</strong>.
+              </p>
+              <p className="text-[11px] opacity-80">
+                Si cet élève a déjà participé aux cours ou réglé des frais, utilisez plutôt le bouton <em>Déclarer une sortie</em> (abandon, transfert, exclusion).
+              </p>
+            </div>
+          </div>
+          <p className="text-sm text-foreground">
+            Confirmez-vous la suppression de la fiche de <strong>{identite.prenom} {identite.nom}</strong> ? Cette action est irréversible.
+          </p>
+        </div>
       </Modal>
     </div>
   )
